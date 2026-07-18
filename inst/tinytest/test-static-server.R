@@ -1,0 +1,213 @@
+# These tests are time-sensitive, which makes CRAN unhappy.
+if (Sys.getenv("HTTPUV2_FULL_TESTING") != "yes") { return(NULL) }
+if (!requireNamespace("curl")) { return(NULL) }
+
+path_example_site <- function(...) {
+  system.file("example-static-site", ..., package = "httpuv")
+}
+
+index_file_content <- raw_file_content(path_example_site("index.html"))
+office_file_content <- raw_file_content(path_example_site("office.html"))
+
+expect_example_site <- function(port, host = "127.0.0.1") {
+  res <- fetch(local_url("/index.html", port), gzip = FALSE)
+  expect_equal(res$status_code, 200)
+  expect_identical(res$content, index_file_content)
+
+  res <- fetch(local_url("/office.html", port), gzip = FALSE)
+  expect_equal(res$status_code, 200)
+  expect_identical(res$content, office_file_content)
+}
+
+start_example_server <- function(port) {
+  r <- callr::r_bg(
+    function(port) {
+      ex <- system.file("example-static-site", package = "httpuv")
+      httpuv::runStaticServer(
+        ex,
+        port = port,
+        background = FALSE,
+        browse = FALSE
+      )
+    },
+    list(port = port)
+  )
+
+  max <- Sys.time() + 2
+  while (length(r$read_error_lines()) == 0) {
+    if (Sys.time() > max) {
+      skip("Server didn't start up in 2 seconds")
+    }
+    Sys.sleep(0.1)
+  }
+
+  r
+}
+
+local({
+  # runStaticServer() in foreground with custom port ----
+
+  port <- randomPort()
+
+  r <- start_example_server(port)
+  on.exit(
+    {
+      r$kill()
+    },
+    add = TRUE
+  )
+
+  expect_example_site(port)
+})
+
+local({
+  # runStaticServer() in foreground with default port ----
+
+  if (isFALSE(httpuv2:::is_port_available(7446))) { return(NULL) }
+
+  r <- start_example_server(NULL)
+  on.exit(
+    {
+      r$kill()
+    },
+    add = TRUE
+  )
+
+  expect_example_site(7446)
+})
+
+local({
+  # runStaticServer() throws an error for invalid ports ----
+
+  on.exit({
+    stopAllServers()
+  }) # in case of a test failure
+
+  expect_error(
+    runStaticServer(path_example_site(), port = 0, background = TRUE)
+  )
+  expect_error(
+    runStaticServer(path_example_site(), port = 700:720, background = TRUE)
+  )
+  expect_error(
+    runStaticServer(path_example_site(), port = 74469, background = TRUE)
+  )
+  expect_error(
+    runStaticServer(path_example_site(), port = "1234", background = TRUE)
+  )
+})
+
+local({
+  # runStaticServer() throws an error if the requested port is used ----
+
+  on.exit({
+    stopAllServers()
+  }) # in case of a test failure
+
+  s1 <- runStaticServer(path_example_site(), background = TRUE, browse = FALSE)
+
+  expect_error(
+    runStaticServer(
+      path_example_site(),
+      port = s1$getPort(),
+      background = TRUE,
+      browse = FALSE
+    )
+  )
+})
+
+local({
+  # runStaticServer() in background uses default port ----
+
+  if (isFALSE(httpuv2:::is_port_available(7446))) { return(NULL) }
+
+  s <- runStaticServer(path_example_site(), background = TRUE, browse = FALSE)
+  on.exit(
+    {
+      stopServer(s)
+    },
+    add = TRUE
+  )
+
+  expect_example_site(7446)
+})
+
+local({
+  # runStaticServer() in background uses default port or random port ----
+
+  if (isFALSE(httpuv2:::is_port_available(7446))) { return(NULL) }
+
+  s1 <- runStaticServer(path_example_site(), background = TRUE, browse = FALSE)
+  on.exit(
+    {
+      s1$stop()
+    },
+    add = TRUE
+  )
+
+  s2 <- runStaticServer(path_example_site(), background = TRUE, browse = FALSE)
+  on.exit(
+    {
+      s2$stop()
+    },
+    add = TRUE
+  )
+
+  expect_example_site(7446)
+  expect_example_site(s2$getPort())
+})
+
+local({
+  # runStaticServer() in background errors if requested port is in use ----
+
+  s1 <- runStaticServer(path_example_site(), background = TRUE, browse = FALSE)
+  on.exit(
+    {
+      s1$stop()
+    },
+    add = TRUE
+  )
+
+  used_port <- s1$getPort()
+
+  expect_error({
+    s2 <- runStaticServer(
+      path_example_site(),
+      port = used_port,
+      background = TRUE,
+      browse = FALSE
+    )
+    s2$stop() # clean up in case test fails
+  })
+})
+
+local({
+  # runStaticServer() prints informative console messages ----
+
+  # tinytest has no expect_snapshot(). message() writes to the "message"
+  # stream, so we capture it with capture.output(type = "message") and
+  # compare against a fixed expected value, after redacting the parts that
+  # vary between runs/machines (site path and port).
+  msgs <- capture.output(
+    {
+      s <- runStaticServer(
+        path_example_site(),
+        background = TRUE,
+        browse = FALSE
+      )
+      s$stop()
+    },
+    type = "message"
+  )
+
+  msgs <- sub(path_example_site(), "/Users/user/path/to/site", msgs, fixed = TRUE)
+  msgs <- sub(":\\d+$", ":PORT", msgs)
+
+  expect_equal(
+    msgs,
+    c(
+      "Serving: '/Users/user/path/to/site'",
+      "View at: http://127.0.0.1:PORT"
+    )
+  )
+})

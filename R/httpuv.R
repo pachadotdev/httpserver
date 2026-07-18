@@ -78,7 +78,7 @@ rookCall <- function(func, req, data = NULL, dataLength = -1) {
 
     req$rook.errors <- stdErrStream
 
-    req$httpuv.version <- httpuv_version()
+    req$httpuv2.version <- httpuv2_version()
 
     # These appear to be required for Rook multipart parsing to work
     if (!is.null(req$HTTP_CONTENT_TYPE)) {
@@ -148,7 +148,7 @@ rookCall <- function(func, req, data = NULL, dataLength = -1) {
   }
 
   if (is.promise(response)) {
-    response %...>% prepare_response %...!% on_error
+    then(response, onFulfilled = prepare_response, onRejected = on_error)
   } else {
     tryCatch(prepare_response(response), error = on_error)
   }
@@ -249,7 +249,7 @@ AppWrapper <- R6Class(
 
       if (is.promise(resp)) {
         # Slower path if resp is a promise
-        resp <- resp %...>% invokeCppCallback(., cpp_callback)
+        resp <- then(resp, function(value) invokeCppCallback(value, cpp_callback))
         finally(resp, clean_up)
       } else {
         # Fast path if resp is a regular value
@@ -308,7 +308,7 @@ AppWrapper <- R6Class(
 #' Note that this WebSocket class is different from the one provided by the
 #' package named websocket. This class is meant to be used on the server side,
 #' whereas the one in the websocket package is to be used as a client. The
-#' WebSocket class in httpuv has an older API than the one in the websocket
+#' WebSocket class in httpuv2 has an older API than the one in the websocket
 #' package.
 #'
 #' WebSocket objects should never be created directly. They are obtained by
