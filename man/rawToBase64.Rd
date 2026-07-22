@@ -15,7 +15,7 @@ vector.
 }
 \examples{
 set.seed(100)
-result <- rawToBase64(as.raw(runif(19, min=0, max=256)))
+result <- rawToBase64(as.raw(runif(19, min = 0, max = 256)))
 stopifnot(identical(result, "TkGNDnd7z16LK5/hR2bDqzRbXA=="))
 
 }

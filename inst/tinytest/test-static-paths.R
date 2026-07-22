@@ -857,10 +857,9 @@ local({
 
   # Workaround for https://github.com/rstudio/httpuv/issues/264
   # On Unix platforms that are using a non-UTF-8 locale, don't do these tests.
-  testthat::skip_if(
-    .Platform$OS.type == "unix" && !l10n_info()[["UTF-8"]],
-    "Skipping non-ASCII path tests on UTF-8 Unix system"
-  )
+  if (.Platform$OS.type == "unix" && !l10n_info()[["UTF-8"]]) {
+    return(NULL)
+  }
 
   # "apps/fü", in UTF-8 encoding.
   nonascii_path <- test_path("apps/f\U00FC")

@@ -133,13 +133,14 @@ and \code{304} responses, as well as responses to \code{HEAD} requests.}
 \examples{
 \dontrun{
 # A very basic application
-s <- startServer("0.0.0.0", 5000,
+s <- startServer(
+  "0.0.0.0", 5000,
   list(
     call = function(req) {
       list(
         status = 200L,
         headers = list(
-          'Content-Type' = 'text/html'
+          "Content-Type" = "text/html"
         ),
         body = "Hello world!"
       )
@@ -151,13 +152,14 @@ s$stop()
 
 
 # An application that serves static assets at the URL paths /assets and /lib
-s <- startServer("0.0.0.0", 5000,
+s <- startServer(
+  "0.0.0.0", 5000,
   list(
     call = function(req) {
       list(
         status = 200L,
         headers = list(
-          'Content-Type' = 'text/html'
+          "Content-Type" = "text/html"
         ),
         body = "Hello world!"
       )

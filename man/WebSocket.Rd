@@ -19,10 +19,10 @@ WebSocket objects should never be created directly. They are obtained by
 passing an \code{onWSOpen} function to \code{\link[=startServer]{startServer()}}.
 }
 \examples{
-
 \dontrun{
 # A WebSocket echo server that listens on port 8080
-startServer("0.0.0.0", 8080,
+startServer(
+  "0.0.0.0", 8080,
   list(
     onHeaders = function(req) {
       # Print connection headers
@@ -38,7 +38,6 @@ startServer("0.0.0.0", 8080,
       ws$onClose(function() {
         cat("Connection closed.\n")
       })
-
     }
   )
 )

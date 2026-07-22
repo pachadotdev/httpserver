@@ -73,7 +73,7 @@ a single static directory, either in the foreground or the background.
 }
 \examples{
 \dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
-website_dir <- system.file("example-static-site", package = "httpuv")
+website_dir <- system.file("example-static-site", package = "tinyhttpserver")
 runStaticServer(dir = website_dir)
 \dontshow{\}) # examplesIf}
 }

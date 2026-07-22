@@ -24,6 +24,25 @@ check-$(1)-$(2):
 	./scripts/check_restore.sh "$(1)" "$(2)"
 endef
 
+# CRAN-like containers (pair: CRAN name : r-hub image)
+CRAN_PAIRS := \
+	r-devel-linux-x86_64-debian-clang:ubuntu-clang \
+ 	r-devel-linux-x86_64-debian-gcc:ubuntu-gcc15 \
+ 	r-patched-linux-x86_64:ubuntu-next \
+ 	r-release-linux-x86_64:ubuntu-release
+
+# Extra CRAN check images
+CRAN_EXTRA := atlas clang-asan clang-ubsan clang21 clang22 donttest \
+	gcc16 gcc-asan lto mkl nold nosuggests rchk valgrind
+
+check-cran:
+	@chmod +x ./check-docker/check.sh
+	@for pair in $(CRAN_PAIRS); do \
+		cran=$${pair%%:*}; rhub=$${pair##*:}; \
+		echo "=== checking $$cran (r-hub: $$rhub) ==="; \
+		./check-docker/check.sh $$rhub; \
+	done
+
 clang_format=`which clang-format-21`
 
 format: $(shell find . -name '*.h') $(shell find . -name '*.hpp') $(shell find . -name '*.cpp')

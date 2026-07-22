@@ -3,7 +3,7 @@ if (Sys.getenv("tinyhttpserver_FULL_TESTING") != "yes") { return(NULL) }
 if (!requireNamespace("curl")) { return(NULL) }
 
 path_example_site <- function(...) {
-  system.file("example-static-site", ..., package = "httpuv")
+  system.file("example-static-site", ..., package = "tinyhttpserver")
 }
 
 index_file_content <- raw_file_content(path_example_site("index.html"))
@@ -22,7 +22,7 @@ expect_example_site <- function(port, host = "127.0.0.1") {
 start_example_server <- function(port) {
   r <- callr::r_bg(
     function(port) {
-      ex <- system.file("example-static-site", package = "httpuv")
+      ex <- system.file("example-static-site", package = "tinyhttpserver")
       httpuv::runStaticServer(
         ex,
         port = port,

@@ -19,6 +19,7 @@
 ^.*/\.deps$
 ^revdep$
 ^\.github$
+^\.vscode$
 ^cran-comments\.md$
 ^CRAN-RELEASE$
 ^CRAN-SUBMISSION$
@@ -30,4 +31,5 @@ scripts
 ^dev$
 ^src/libuv/\.clang-tidy$
 ^check-gcc-clang$
+^check-docker$
 ^LICENSE\.txt$

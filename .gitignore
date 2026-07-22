@@ -20,3 +20,6 @@ configure.log
 *.orig
 docs
 scripts/R-devel
+check-docker/cache/
+check-docker/rchk-packages/
+check-docker/*.Rcheck/

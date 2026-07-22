@@ -1,7 +1,7 @@
 # tinywebsocket: HTTP and WebSocket server library for R
 
   <!-- badges: start -->
-  [![BuyMeACoffee](https://raw.githubusercontent.com/pachadotdev/buymeacoffee-badges/main/bmc-yellow.svg)](https://www.buymeacoffee.com/pacha)
+  [![BuyMeACoffee](https://raw.githubusercontent.com/pachadotdev/buymeacoffee-badges/main/bmc-yellow.svg)](https://buymeacoffee.com/pacha)
   <!-- badges: end -->
 
 tinyhttpserver provides low-level socket and protocol support for handling HTTP and WebSocket requests directly from within R. It uses a multithreaded architecture, where I/O is handled on one thread, and the R callbacks are handled on another. This is derived from [httpuv](https://github.com/rstudio/httpuv) with a focus on reducing dependencies and streamlining the build process.
