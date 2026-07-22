@@ -5,7 +5,7 @@ local({
 
   if (!requireNamespace("curl", quietly = TRUE)) { return (NULL) }
 
-  s1 <- httpuv2::startServer(
+  s1 <- tinyhttpserver::startServer(
     "127.0.0.1",
     randomPort(),
     list(
@@ -21,7 +21,7 @@ local({
 
   expect_equal(length(listServers()), 1)
 
-  s2 <- httpuv2::startServer(
+  s2 <- tinyhttpserver::startServer(
     "127.0.0.1",
     randomPort(),
     list(
@@ -57,7 +57,7 @@ local({
 local({
   # Empty and NULL headers are OK ----
 
-  s <- httpuv2::startServer(
+  s <- tinyhttpserver::startServer(
     "127.0.0.1",
     randomPort(),
     list(
@@ -102,7 +102,7 @@ local({
 local({
   # Content length depends on the presence of 'body' ----
 
-  s <- httpuv2::startServer(
+  s <- tinyhttpserver::startServer(
     "127.0.0.1",
     randomPort(),
     list(

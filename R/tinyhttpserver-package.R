@@ -2,7 +2,7 @@
 "_PACKAGE"
 
 ## usethis namespace: start
-#' @useDynLib httpuv2, .registration=TRUE
+#' @useDynLib tinyhttpserver, .registration=TRUE
 ## usethis namespace: end
 NULL
 

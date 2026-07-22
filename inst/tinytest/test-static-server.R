@@ -1,5 +1,5 @@
 # These tests are time-sensitive, which makes CRAN unhappy.
-if (Sys.getenv("HTTPUV2_FULL_TESTING") != "yes") { return(NULL) }
+if (Sys.getenv("tinyhttpserver_FULL_TESTING") != "yes") { return(NULL) }
 if (!requireNamespace("curl")) { return(NULL) }
 
 path_example_site <- function(...) {
@@ -63,7 +63,7 @@ local({
 local({
   # runStaticServer() in foreground with default port ----
 
-  if (isFALSE(httpuv2:::is_port_available(7446))) { return(NULL) }
+  if (isFALSE(tinyhttpserver:::is_port_available(7446))) { return(NULL) }
 
   r <- start_example_server(NULL)
   on.exit(
@@ -119,7 +119,7 @@ local({
 local({
   # runStaticServer() in background uses default port ----
 
-  if (isFALSE(httpuv2:::is_port_available(7446))) { return(NULL) }
+  if (isFALSE(tinyhttpserver:::is_port_available(7446))) { return(NULL) }
 
   s <- runStaticServer(path_example_site(), background = TRUE, browse = FALSE)
   on.exit(
@@ -135,7 +135,7 @@ local({
 local({
   # runStaticServer() in background uses default port or random port ----
 
-  if (isFALSE(httpuv2:::is_port_available(7446))) { return(NULL) }
+  if (isFALSE(tinyhttpserver:::is_port_available(7446))) { return(NULL) }
 
   s1 <- runStaticServer(path_example_site(), background = TRUE, browse = FALSE)
   on.exit(

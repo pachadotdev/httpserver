@@ -1,6 +1,6 @@
 # Implementation of Rook input stream
 InputStream <- R6Class(
-  'InputStream',
+  "InputStream",
   public = list(
     initialize = function(conn, length) {
       private$conn <- conn
@@ -34,7 +34,7 @@ InputStream <- R6Class(
 )
 
 NullInputStream <- R6Class(
-  'NullInputStream',
+  "NullInputStream",
   public = list(
     read_lines = function(n = -1L) {
       character()
@@ -49,9 +49,9 @@ NullInputStream <- R6Class(
 )
 nullInputStream <- NullInputStream$new()
 
-#Implementation of Rook error stream
+# Implementation of Rook error stream
 ErrorStream <- R6Class(
-  'ErrorStream',
+  "ErrorStream",
   public = list(
     cat = function(..., sep = " ", fill = FALSE, labels = NULL) {
       base::cat(..., sep = sep, fill = fill, labels = labels, file = stderr())
@@ -78,7 +78,7 @@ rookCall <- function(func, req, data = NULL, dataLength = -1) {
 
     req$rook.errors <- stdErrStream
 
-    req$httpuv2.version <- httpuv2_version()
+    req$tinyhttpserver.version <- tinyhttpserver_version()
 
     # These appear to be required for Rook multipart parsing to work
     if (!is.null(req$HTTP_CONTENT_TYPE)) {
@@ -109,10 +109,10 @@ rookCall <- function(func, req, data = NULL, dataLength = -1) {
     # Coerce all headers to character
     resp$headers <- lapply(resp$headers, paste)
 
-    if ('file' %in% names(resp$body)) {
-      filename <- resp$body[['file']]
+    if ("file" %in% names(resp$body)) {
+      filename <- resp$body[["file"]]
       owned <- FALSE
-      if ('owned' %in% names(resp$body)) {
+      if ("owned" %in% names(resp$body)) {
         owned <- as.logical(resp$body$owned)
       }
 
@@ -127,7 +127,7 @@ rookCall <- function(func, req, data = NULL, dataLength = -1) {
     list(
       status = 500L,
       headers = list(
-        'Content-Type' = 'text/plain; charset=UTF-8'
+        "Content-Type" = "text/plain; charset=UTF-8"
       ),
       body = charToRaw(enc2utf8(
         paste("ERROR:", conditionMessage(e), collapse = "\n")
@@ -155,7 +155,7 @@ rookCall <- function(func, req, data = NULL, dataLength = -1) {
 }
 
 AppWrapper <- R6Class(
-  'AppWrapper',
+  "AppWrapper",
   private = list(
     app = NULL, # List defining app
     wsconns = NULL, # An environment containing websocket connections
@@ -218,7 +218,7 @@ AppWrapper <- R6Class(
     },
     onBodyData = function(req, bytes) {
       if (is.null(req$.bodyData)) {
-        req$.bodyData <- file(open = 'w+b', encoding = 'UTF-8')
+        req$.bodyData <- file(open = "w+b", encoding = "UTF-8")
       }
       writeBin(bytes, req$.bodyData)
     },
@@ -265,7 +265,7 @@ AppWrapper <- R6Class(
       result <- try(private$app$onWSOpen(ws))
 
       # If an unexpected error happened, just close up
-      if (inherits(result, 'try-error')) {
+      if (inherits(result, "try-error")) {
         ws$close(1011, "Error in onWSOpen")
       }
     },
@@ -274,7 +274,7 @@ AppWrapper <- R6Class(
         handle
       )]]$messageCallbacks) {
         result <- try(handler(binary, message))
-        if (inherits(result, 'try-error')) {
+        if (inherits(result, "try-error")) {
           private$wsconns[[wsconn_address(handle)]]$close(
             1011,
             "Error executing onWSMessage"
@@ -292,7 +292,6 @@ AppWrapper <- R6Class(
         handler()
       }
     },
-
     staticPaths = NULL, # List of static paths
     staticPathOptions = NULL # StaticPathOptions object
   )
@@ -308,7 +307,7 @@ AppWrapper <- R6Class(
 #' Note that this WebSocket class is different from the one provided by the
 #' package named websocket. This class is meant to be used on the server side,
 #' whereas the one in the websocket package is to be used as a client. The
-#' WebSocket class in httpuv2 has an older API than the one in the websocket
+#' WebSocket class in tinyhttpserver has an older API than the one in the websocket
 #' package.
 #'
 #' WebSocket objects should never be created directly. They are obtained by
@@ -316,10 +315,10 @@ AppWrapper <- R6Class(
 #'
 #' @export
 #' @examples
-#'
 #' \dontrun{
 #' # A WebSocket echo server that listens on port 8080
-#' startServer("0.0.0.0", 8080,
+#' startServer(
+#'   "0.0.0.0", 8080,
 #'   list(
 #'     onHeaders = function(req) {
 #'       # Print connection headers
@@ -335,14 +334,13 @@ AppWrapper <- R6Class(
 #'       ws$onClose(function() {
 #'         cat("Connection closed.\n")
 #'       })
-#'
 #'     }
 #'   )
 #' )
 #' }
 #' @param handle An C++ WebSocket handle.
 WebSocket <- R6Class(
-  'WebSocket',
+  "WebSocket",
   public = list(
     #' @description
     #' Initializes a new WebSocket object.
@@ -538,13 +536,14 @@ WebSocket <- R6Class(
 #' @examples
 #' \dontrun{
 #' # A very basic application
-#' s <- startServer("0.0.0.0", 5000,
+#' s <- startServer(
+#'   "0.0.0.0", 5000,
 #'   list(
 #'     call = function(req) {
 #'       list(
 #'         status = 200L,
 #'         headers = list(
-#'           'Content-Type' = 'text/html'
+#'           "Content-Type" = "text/html"
 #'         ),
 #'         body = "Hello world!"
 #'       )
@@ -556,13 +555,14 @@ WebSocket <- R6Class(
 #'
 #'
 #' # An application that serves static assets at the URL paths /assets and /lib
-#' s <- startServer("0.0.0.0", 5000,
+#' s <- startServer(
+#'   "0.0.0.0", 5000,
 #'   list(
 #'     call = function(req) {
 #'       list(
 #'         status = 200L,
 #'         headers = list(
-#'           'Content-Type' = 'text/html'
+#'           "Content-Type" = "text/html"
 #'         ),
 #'         body = "Hello world!"
 #'       )
@@ -687,13 +687,14 @@ service <- function(timeoutMs = ifelse(interactive(), 100, 1000)) {
 #' @examples
 #' \dontrun{
 #' # A very basic application
-#' runServer("0.0.0.0", 5000,
+#' runServer(
+#'   "0.0.0.0", 5000,
 #'   list(
 #'     call = function(req) {
 #'       list(
 #'         status = 200L,
 #'         headers = list(
-#'           'Content-Type' = 'text/html'
+#'           "Content-Type" = "text/html"
 #'         ),
 #'         body = "Hello world!"
 #'       )
@@ -732,7 +733,7 @@ interrupt <- function() {
 #'
 #' @examples
 #' set.seed(100)
-#' result <- rawToBase64(as.raw(runif(19, min=0, max=256)))
+#' result <- rawToBase64(as.raw(runif(19, min = 0, max = 256)))
 #' stopifnot(identical(result, "TkGNDnd7z16LK5/hR2bDqzRbXA=="))
 #'
 #' @export
@@ -741,16 +742,3 @@ rawToBase64 <- function(x) {
 }
 
 .globals <- new.env()
-
-
-#' Create an HTTP/WebSocket daemonized server (deprecated)
-#'
-#' This function will be removed in a future release of httpuv. It is simply a
-#' wrapper for [startServer()]. In previous versions of httpuv (1.3.5
-#' and below), `startServer` ran applications in the foreground and
-#' `startDaemonizedServer` ran applications in the background, but now both
-#' of them run applications in the background.
-#'
-#' @inheritParams startServer
-#' @export
-startDaemonizedServer <- startServer

@@ -1,36 +1,30 @@
-# httpuv: HTTP and WebSocket server library for R
+# tinywebsocket: HTTP and WebSocket server library for R
 
   <!-- badges: start -->
-  [![R build status](https://github.com/rstudio/httpuv/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rstudio/httpuv/actions)
+  [![BuyMeACoffee](https://raw.githubusercontent.com/pachadotdev/buymeacoffee-badges/main/bmc-yellow.svg)](https://www.buymeacoffee.com/pacha)
   <!-- badges: end -->
 
-httpuv provides low-level socket and protocol support for handling HTTP and WebSocket requests directly from within R. It uses a multithreaded architecture, where I/O is handled on one thread, and the R callbacks are handled on another.
+tinyhttpserver provides low-level socket and protocol support for handling HTTP and WebSocket requests directly from within R. It uses a multithreaded architecture, where I/O is handled on one thread, and the R callbacks are handled on another. This is derived from [httpuv](https://github.com/rstudio/httpuv) with a focus on reducing dependencies and streamlining the build process.
 
-It is primarily intended as a building block for other packages, rather than making it particularly easy to create complete web applications using httpuv alone. httpuv is built on top of the [libuv](https://github.com/libuv/libuv) and [http-parser](https://github.com/nodejs/http-parser) C libraries, both of which were developed by Joyent, Inc.
-
+It is primarily intended as a building block for other packages, rather than making it particularly easy to create complete web applications using tinyhttpserver alone. tinyhttpserver is built on top of the [libuv](https://github.com/libuv/libuv) and [http-parser](https://github.com/nodejs/http-parser) libraries, both of which were developed by Joyent, Inc.
 
 ## Installing
 
-You can install the stable version from CRAN, or the development version using **pak**:
+You can install the development version using **pak**. It is not on CRAN at the present time.
 
 ```r
-# install from CRAN
-install.packages("httpuv")
-
 # or if you want to test the development version here
-pak::pak("rstudio/httpuv")
+pak::pak("pachadotdev/tinyhttpserver")
 ```
 
-Since httpuv contains C code, you'll need to make sure you're set up to install packages with compiled code. Follow the instructions at http://www.rstudio.com/ide/docs/packages/prerequisites
-
-httpuv may optionally be built using a `libuv` system package, which you can install prior to installing the R package. It goes by different names on different package managers: `libuv1-dev` (deb), `libuv-devel` (rpm), `libuv` (brew). Version 1.43 or greater is required. If `libuv` is not found on the system, it will be built from source along with the R package.
+tinyhttpserver may optionally be built using a `libuv` system package, which you can install prior to installing the R package. It goes by different names on different package managers: `libuv1-dev` (deb), `libuv-devel` (rpm), `libuv` (brew). Version 1.43 or greater is required. If `libuv` is not found on the system, it will be built from source along with the R package.
 
 ## Basic Usage
 
 This is a basic web server that listens on port 8080 and responds to HTTP requests with a web page containing the current system time and the path of the request:
 
 ```R
-library(httpuv)
+library(tinyhttpserver)
 
 s <- startServer(host = "0.0.0.0", port = 8080,
   app = list(
@@ -58,16 +52,15 @@ To stop the server:
 s$stop()
 ```
 
-Or, to stop all running httpuv servers:
+Or, to stop all running tinyhttpserver servers:
 
 ```R
 stopAllServers()
 ```
 
-
 ### Static paths
 
-A httpuv server application can serve up files on disk. This happens entirely within the I/O thread, so doing so will not block or be blocked by activity in the main R thread.
+A tinyhttpserver server application can serve up files on disk. This happens entirely within the I/O thread, so doing so will not block or be blocked by activity in the main R thread.
 
 To serve a path, use `staticPaths` in the app. This will serve the `www/` subdirectory of the current directory (from when `startServer` is called) as the root of the web path:
 
@@ -104,10 +97,9 @@ s <- startServer("0.0.0.0", 8080,
 )
 ```
 
-
 ### WebSocket server
 
-httpuv also can handle WebSocket connections. For example, this app acts as a WebSocket echo server:
+tinyhttpserver also can handle WebSocket connections. For example, this app acts as a WebSocket echo server:
 
 ```R
 s <- startServer("127.0.0.1", 8080,
@@ -128,44 +120,11 @@ s <- startServer("127.0.0.1", 8080,
 )
 ```
 
-
-To test it out, you can connect to it using the [websocket](https://github.com/rstudio/websocket) package (which provides a WebSocket client). You can do this from the same R process or a different one.
-
-```R
-ws <- websocket::WebSocket$new("ws://127.0.0.1:8080/")
-ws$onMessage(function(event) {
-  cat("Client received message:", event$data, "\n")
-})
-
-# Wait for a moment before running next line
-ws$send("hello world")
-
-# Close client
-ws$close()
-```
-
-Note that both the httpuv and websocket packages provide a class named `WebSocket`; however, in httpuv, that class acts as a server, and in websocket, it acts as a client. They also have different APIs. For more information about the WebSocket client package, see the [project page](https://github.com/rstudio/websocket).
-
----
-
-
 ## Debugging builds
 
-httpuv can be built with debugging options enabled. This can be done by uncommenting these lines in src/Makevars, and then installing. The first one enables thread assertions, to ensure that code is running on the correct thread; if not. The second one enables tracing statements: httpuv will print lots of messages when various events occur.
+tinyhttpserver can be built with debugging options enabled. This can be done by uncommenting these lines in src/Makevars, and then installing. The first one enables thread assertions, to ensure that code is running on the correct thread; if not. The second one enables tracing statements: tinyhttpserver will print lots of messages when various events occur.
 
 ```
 PKG_CPPFLAGS += -DDEBUG_THREAD -UNDEBUG
 PKG_CPPFLAGS += -DDEBUG_TRACE
 ```
-
-To install it directly from GitHub with these options, you can use `with_makevars`, like this:
-
-```R
-withr::with_makevars(
-  c(PKG_CPPFLAGS="-DDEBUG_TRACE -DDEBUG_THREAD -UNDEBUG"), {
-    devtools::install_github("rstudio/httpuv")
-  }, assignment = "+="
-)
-```
-
-&copy; 2013-2020 RStudio, Inc.

@@ -31,7 +31,7 @@ server <- PipeServer$new("my_pipe", -1, app)
 }
 \keyword{internal}
 \section{Super class}{
-\code{\link[httpuv2:Server]{Server}} -> \code{PipeServer}
+\code{\link[tinyhttpserver:Server]{Server}} -> \code{PipeServer}
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -43,13 +43,13 @@ server <- PipeServer$new("my_pipe", -1, app)
 }
 \if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
-  <li><span class="pkg-link" data-pkg="httpuv2" data-topic="Server" data-id="getStaticPathOptions"><a href='../../httpuv2/html/Server.html#method-Server-getStaticPathOptions'><code>Server$getStaticPathOptions()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="httpuv2" data-topic="Server" data-id="getStaticPaths"><a href='../../httpuv2/html/Server.html#method-Server-getStaticPaths'><code>Server$getStaticPaths()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="httpuv2" data-topic="Server" data-id="isRunning"><a href='../../httpuv2/html/Server.html#method-Server-isRunning'><code>Server$isRunning()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="httpuv2" data-topic="Server" data-id="removeStaticPath"><a href='../../httpuv2/html/Server.html#method-Server-removeStaticPath'><code>Server$removeStaticPath()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="httpuv2" data-topic="Server" data-id="setStaticPath"><a href='../../httpuv2/html/Server.html#method-Server-setStaticPath'><code>Server$setStaticPath()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="httpuv2" data-topic="Server" data-id="setStaticPathOption"><a href='../../httpuv2/html/Server.html#method-Server-setStaticPathOption'><code>Server$setStaticPathOption()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="httpuv2" data-topic="Server" data-id="stop"><a href='../../httpuv2/html/Server.html#method-Server-stop'><code>Server$stop()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="tinyhttpserver" data-topic="Server" data-id="getStaticPathOptions"><a href='../../tinyhttpserver/html/Server.html#method-Server-getStaticPathOptions'><code>Server$getStaticPathOptions()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="tinyhttpserver" data-topic="Server" data-id="getStaticPaths"><a href='../../tinyhttpserver/html/Server.html#method-Server-getStaticPaths'><code>Server$getStaticPaths()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="tinyhttpserver" data-topic="Server" data-id="isRunning"><a href='../../tinyhttpserver/html/Server.html#method-Server-isRunning'><code>Server$isRunning()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="tinyhttpserver" data-topic="Server" data-id="removeStaticPath"><a href='../../tinyhttpserver/html/Server.html#method-Server-removeStaticPath'><code>Server$removeStaticPath()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="tinyhttpserver" data-topic="Server" data-id="setStaticPath"><a href='../../tinyhttpserver/html/Server.html#method-Server-setStaticPath'><code>Server$setStaticPath()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="tinyhttpserver" data-topic="Server" data-id="setStaticPathOption"><a href='../../tinyhttpserver/html/Server.html#method-Server-setStaticPathOption'><code>Server$setStaticPathOption()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="tinyhttpserver" data-topic="Server" data-id="stop"><a href='../../tinyhttpserver/html/Server.html#method-Server-stop'><code>Server$stop()</code></a></span></li>
 </ul>
 </details>}}
 \if{html}{\out{<hr>}}
@@ -58,7 +58,7 @@ server <- PipeServer$new("my_pipe", -1, app)
 \subsection{\code{PipeServer$new()}}{
   Initialize a new PipeServer object
 
-Create a new \code{PipeServer} object. \code{app} is an httpuv2 application
+Create a new \code{PipeServer} object. \code{app} is an tinyhttpserver application
 object as described in \code{\link[=startServer]{startServer()}}.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
@@ -70,7 +70,7 @@ object as described in \code{\link[=startServer]{startServer()}}.
     \describe{
       \item{\code{name}}{The name of the named pipe to bind the server to.}
       \item{\code{mask}}{The mask for the named pipe. If NULL, it defaults to -1.}
-      \item{\code{app}}{An httpuv2 application object as described in
+      \item{\code{app}}{An tinyhttpserver application object as described in
 \code{\link[=startServer]{startServer()}}.}
       \item{\code{quiet}}{If TRUE, suppresses output from the server.}
     }

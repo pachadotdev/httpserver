@@ -1,11 +1,11 @@
-library(httpuv2)
+library(tinyhttpserver)
 
 .lastMessage <- NULL
 
 app <- list(
   call = function(req) {
-    wsUrl = paste(
-      sep = '',
+    wsUrl <- paste(
+      sep = "",
       '"',
       "ws://",
       ifelse(is.null(req$HTTP_HOST), req$SERVER_NAME, req$HTTP_HOST),
@@ -15,7 +15,7 @@ app <- list(
     list(
       status = 200L,
       headers = list(
-        'Content-Type' = 'text/html'
+        "Content-Type" = "text/html"
       ),
       body = paste(
         sep = "\r\n",
@@ -23,9 +23,9 @@ app <- list(
         "<html>",
         "<head>",
         '<style type="text/css">',
-        'body { font-family: Helvetica; }',
-        'pre { margin: 0 }',
-        '</style>',
+        "body { font-family: Helvetica; }",
+        "pre { margin: 0 }",
+        "</style>",
         "<script>",
         sprintf("var ws = new WebSocket(%s);", wsUrl),
         "ws.onmessage = function(msg) {",
@@ -41,12 +41,12 @@ app <- list(
         "</script>",
         "</head>",
         "<body>",
-        '<h3>Send Message</h3>',
+        "<h3>Send Message</h3>",
         '<form action="" onsubmit="sendInput(); return false">',
         '<input type="text" id="input"/>',
-        '<h3>Received</h3>',
+        "<h3>Received</h3>",
         '<div id="output"/>',
-        '</form>',
+        "</form>",
         "</body>",
         "</html>"
       )
@@ -65,4 +65,4 @@ server <- startDaemonizedServer("0.0.0.0", 9454, app)
 # check the value of .lastMessage after echoing to check it is being updated
 
 # call this after done
-#stopDaemonizedServer(server)
+# stopDaemonizedServer(server)

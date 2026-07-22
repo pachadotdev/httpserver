@@ -1,5 +1,3 @@
-
 if (requireNamespace("tinytest", quietly = TRUE)) {
-  tinytest::test_package("httpuv2")
+  tinytest::test_package("tinyhttpserver")
 }
-
