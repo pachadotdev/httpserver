@@ -98,6 +98,9 @@ local({
 
 local({
   # Missing file fallthrough ----
+
+  if (!requireNamespace("curl", quietly = TRUE)) { return (NULL) }
+
   s <- startServer(
     "127.0.0.1",
     randomPort(),
@@ -130,6 +133,9 @@ local({
 
 local({
   # Longer paths override shorter ones ----
+
+  if (!requireNamespace("curl", quietly = TRUE)) { return (NULL) }
+
   s <- startServer(
     "127.0.0.1",
     randomPort(),
@@ -174,6 +180,9 @@ local({
 
 local({
   # Options and option inheritance ----
+
+  if (!requireNamespace("curl", quietly = TRUE)) { return (NULL) }
+
   s <- startServer(
     "127.0.0.1",
     randomPort(),
@@ -247,6 +256,8 @@ local({
 
 local({
   # Excluding subpaths ----
+
+  if (!requireNamespace("curl", quietly = TRUE)) { return (NULL) }
 
   s <- startServer(
     "127.0.0.1",
@@ -334,6 +345,8 @@ local({
 
 local({
   # Header validation ----
+
+  if (!requireNamespace("curl", quietly = TRUE)) { return (NULL) }
 
   s <- startServer(
     "127.0.0.1",
@@ -431,6 +444,8 @@ local({
 local({
   # Dynamically changing paths ----
 
+  if (!requireNamespace("curl", quietly = TRUE)) { return (NULL) }
+
   s <- startServer(
     "127.0.0.1",
     randomPort(),
@@ -495,6 +510,8 @@ local({
 local({
   # Dynamically changing options ----
 
+  if (!requireNamespace("curl", quietly = TRUE)) { return (NULL) }
+
   s <- startServer(
     "127.0.0.1",
     randomPort(),
@@ -553,6 +570,8 @@ local({
 local({
   # Escaped characters in paths ----
 
+  if (!requireNamespace("curl", quietly = TRUE)) { return (NULL) }
+
   # Need to create files with weird names
   static_dir <- tempfile("httpuv_test")
   dir.create(static_dir)
@@ -589,6 +608,8 @@ local({
 
 local({
   # Paths with .. ----
+
+  if (!requireNamespace("curl", quietly = TRUE)) { return (NULL) }
 
   s <- startServer(
     "127.0.0.1",
@@ -699,6 +720,8 @@ local({
 local({
   # HEAD, POST, PUT requests ----
 
+  if (!requireNamespace("curl", quietly = TRUE)) { return (NULL) }
+
   s <- startServer(
     "127.0.0.1",
     randomPort(),
@@ -755,6 +778,8 @@ local({
 
 local({
   # Last-Modified and If-Modified-Since headers ----
+
+  if (!requireNamespace("curl", quietly = TRUE)) { return (NULL) }
 
   s <- startServer(
     "127.0.0.1",
@@ -854,6 +879,8 @@ local({
 
 local({
   # Paths with non-ASCII characters ----
+
+  if (!requireNamespace("curl", quietly = TRUE)) { return (NULL) }
 
   # Workaround for https://github.com/rstudio/httpuv/issues/264
   # On Unix platforms that are using a non-UTF-8 locale, don't do these tests.

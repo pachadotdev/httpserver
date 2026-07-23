@@ -1,14 +1,15 @@
+# `skip()` is a testthat function and isn't available under tinytest, so
+# this returns TRUE/FALSE and callers do `if (skip_if_not_possible()) return(NULL)`.
 skip_if_not_possible <- function() {
   # @pachadotdev: run sudo pacman -S apache
   # this is to run all tests for the WebTechnologies view
 
-  # Temporarily disable these tests because they may not run reliably on
-  # some platforms (comment this to run)
-  # skip("")
-
   if (Sys.which("ab")[[1]] == "") {
-    skip("ab (Apache bench) not available for running traffic tests")
+    message("ab (Apache bench) not available for running traffic tests")
+    return(TRUE)
   }
+
+  FALSE
 }
 
 parse_ab_output <- function(p) {
@@ -81,7 +82,7 @@ start_ab <- function(port, path, n = 400, concurrent = 100) {
 local({
   # Basic traffic test ----
 
-  skip_if_not_possible()
+  if (skip_if_not_possible()) return(NULL)
   port <- randomPort()
   p <- start_app(port)
   Sys.sleep(1)
@@ -100,7 +101,7 @@ local({
 local({
   # Two concurrent ----
 
-  skip_if_not_possible()
+  if (skip_if_not_possible()) return(NULL)
   port <- randomPort()
   p <- start_app(port)
   Sys.sleep(1)
@@ -128,7 +129,7 @@ local({
 local({
   # /header /sync endpoints ----
 
-  skip_if_not_possible()
+  if (skip_if_not_possible()) return(NULL)
   port <- randomPort()
   p <- start_app(port)
 
@@ -157,7 +158,7 @@ local({
 local({
   # /header /async endpoints ----
 
-  skip_if_not_possible()
+  if (skip_if_not_possible()) return(NULL)
   port <- randomPort()
   p <- start_app(port)
 
@@ -186,7 +187,7 @@ local({
 local({
   # /header /async-error endpoints
 
-  skip_if_not_possible()
+  if (skip_if_not_possible()) return(NULL)
   port <- randomPort()
   p <- start_app(port)
 
@@ -215,7 +216,7 @@ local({
 local({
   # /async /async-error endpoints ----
 
-  skip_if_not_possible()
+  if (skip_if_not_possible()) return(NULL)
   port <- randomPort()
   p <- start_app(port)
 
@@ -244,7 +245,7 @@ local({
 local({
   # /body-error /async-error endpoints ----
 
-  skip_if_not_possible()
+  if (skip_if_not_possible()) return(NULL)
   port <- randomPort()
   p <- start_app(port)
 
@@ -273,7 +274,7 @@ local({
 local({
   # static paths ----
 
-  skip_if_not_possible()
+  if (skip_if_not_possible()) return(NULL)
   port <- randomPort()
   p <- start_app(port)
 

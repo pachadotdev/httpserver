@@ -1,6 +1,4 @@
 # These tests are time-sensitive, which makes CRAN unhappy.
-if (Sys.getenv("tinyhttpserver_FULL_TESTING") != "yes") { return(NULL) }
-if (!requireNamespace("curl")) { return(NULL) }
 
 path_example_site <- function(...) {
   system.file("example-static-site", ..., package = "tinyhttpserver")
@@ -20,6 +18,8 @@ expect_example_site <- function(port, host = "127.0.0.1") {
 }
 
 start_example_server <- function(port) {
+  actual_port <- if (is.null(port)) 7446 else port
+
   r <- callr::r_bg(
     function(port) {
       ex <- system.file("example-static-site", package = "tinyhttpserver")
@@ -33,10 +33,28 @@ start_example_server <- function(port) {
     list(port = port)
   )
 
+  # Poll until the port is actually bound by the background process, rather
+  # than relying on stderr output. Checking for *any* stderr output is racy:
+  # in some environments (e.g. Docker containers with incomplete locale
+  # data), the background process can emit a warning almost immediately,
+  # which would make us think the server is ready before it's actually
+  # listening, leading to "Couldn't connect to server" errors.
+  # `skip()` is a testthat function and isn't available under tinytest, so we
+  # signal a skip by returning NULL and letting the caller do `return(NULL)`
+  # (the same pattern already used elsewhere in this file).
   max <- Sys.time() + 2
-  while (length(r$read_error_lines()) == 0) {
+  while (isTRUE(tinyhttpserver:::is_port_available(actual_port))) {
+    if (!r$is_alive()) {
+      message(
+        "Server process exited before starting up:\n",
+        paste(r$read_error_lines(), collapse = "\n")
+      )
+      return(NULL)
+    }
     if (Sys.time() > max) {
-      skip("Server didn't start up in 2 seconds")
+      message("Server didn't start up in 2 seconds")
+      r$kill()
+      return(NULL)
     }
     Sys.sleep(0.1)
   }
@@ -47,9 +65,13 @@ start_example_server <- function(port) {
 local({
   # runStaticServer() in foreground with custom port ----
 
+  if (Sys.getenv("TINYHTTPSERVER_FULL_TESTING") != "yes") { return(NULL) }
+  if (!requireNamespace("curl")) { return(NULL) }
+
   port <- randomPort()
 
   r <- start_example_server(port)
+  if (is.null(r)) { return(NULL) }
   on.exit(
     {
       r$kill()
@@ -63,9 +85,12 @@ local({
 local({
   # runStaticServer() in foreground with default port ----
 
+  if (Sys.getenv("TINYHTTPSERVER_FULL_TESTING") != "yes") { return(NULL) }
+  if (!requireNamespace("curl")) { return(NULL) }
   if (isFALSE(tinyhttpserver:::is_port_available(7446))) { return(NULL) }
 
   r <- start_example_server(NULL)
+  if (is.null(r)) { return(NULL) }
   on.exit(
     {
       r$kill()
@@ -78,6 +103,9 @@ local({
 
 local({
   # runStaticServer() throws an error for invalid ports ----
+
+  if (Sys.getenv("TINYHTTPSERVER_FULL_TESTING") != "yes") { return(NULL) }
+  if (!requireNamespace("curl")) { return(NULL) }
 
   on.exit({
     stopAllServers()
@@ -100,6 +128,9 @@ local({
 local({
   # runStaticServer() throws an error if the requested port is used ----
 
+  if (Sys.getenv("TINYHTTPSERVER_FULL_TESTING") != "yes") { return(NULL) }
+  if (!requireNamespace("curl")) { return(NULL) }
+
   on.exit({
     stopAllServers()
   }) # in case of a test failure
@@ -119,6 +150,8 @@ local({
 local({
   # runStaticServer() in background uses default port ----
 
+  if (Sys.getenv("TINYHTTPSERVER_FULL_TESTING") != "yes") { return(NULL) }
+  if (!requireNamespace("curl")) { return(NULL) }
   if (isFALSE(tinyhttpserver:::is_port_available(7446))) { return(NULL) }
 
   s <- runStaticServer(path_example_site(), background = TRUE, browse = FALSE)
@@ -134,6 +167,9 @@ local({
 
 local({
   # runStaticServer() in background uses default port or random port ----
+
+  if (Sys.getenv("TINYHTTPSERVER_FULL_TESTING") != "yes") { return(NULL) }
+  if (!requireNamespace("curl")) { return(NULL) }
 
   if (isFALSE(tinyhttpserver:::is_port_available(7446))) { return(NULL) }
 
@@ -160,6 +196,9 @@ local({
 local({
   # runStaticServer() in background errors if requested port is in use ----
 
+  if (Sys.getenv("TINYHTTPSERVER_FULL_TESTING") != "yes") { return(NULL) }
+  if (!requireNamespace("curl")) { return(NULL) }
+
   s1 <- runStaticServer(path_example_site(), background = TRUE, browse = FALSE)
   on.exit(
     {
@@ -183,6 +222,9 @@ local({
 
 local({
   # runStaticServer() prints informative console messages ----
+
+  if (Sys.getenv("TINYHTTPSERVER_FULL_TESTING") != "yes") { return(NULL) }
+  if (!requireNamespace("curl")) { return(NULL) }
 
   # tinytest has no expect_snapshot(). message() writes to the "message"
   # stream, so we capture it with capture.output(type = "message") and

@@ -88,7 +88,6 @@ extract <- function(promise) {
   }
 }
 
-
 # Make an HTTP request using curl.
 fetch <- function(url, handle = curl::new_handle(), gzip = TRUE) {
   if (!gzip) {
@@ -107,7 +106,6 @@ http_request_con <- function(request, host, port) {
   p <- http_request_con_async(request, host, port)
   extract(p)
 }
-
 
 local_url <- function(path, port) {
   stopifnot(grepl("^/", path))
@@ -130,20 +128,8 @@ http_date_string <- function(time) {
   weekday_num <- as.integer(strftime(time, format = "%w", tz = "GMT"))
   weekday_name <- weekday_names[weekday_num + 1]
 
-  month_names <- c(
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec"
-  )
+  month_names <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
+    "Sep", "Oct", "Nov", "Dec")
   month_num <- as.integer(strftime(time, format = "%m", tz = "GMT"))
   month_name <- month_names[month_num]
 

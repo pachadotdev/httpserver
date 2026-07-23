@@ -76,6 +76,8 @@ local({
 local({
   # Large HTTP header field names are preserved ----
 
+  if (!requireNamespace("curl", quietly = TRUE)) { return (NULL) }
+
   # Also for https://github.com/rstudio/httpuv/issues/275
   # This tests for field names that are split across messages.
   headers_received <- NULL
@@ -94,6 +96,7 @@ local({
       }
     )
   )
+  
   on.exit(s$stop())
   # Test for long field names, as in:
   #  aaaaaa...aaaaaa: A

@@ -57,6 +57,8 @@ local({
 local({
   # Empty and NULL headers are OK ----
 
+  if (!requireNamespace("curl", quietly = TRUE)) { return (NULL) }
+
   s <- tinyhttpserver::startServer(
     "127.0.0.1",
     randomPort(),
@@ -83,7 +85,9 @@ local({
       }
     )
   )
+
   on.exit(s$stop())
+  
   expect_equal(length(listServers()), 1)
 
   r <- fetch(local_url("/null", s$getPort()))
@@ -101,6 +105,8 @@ local({
 
 local({
   # Content length depends on the presence of 'body' ----
+
+  if (!requireNamespace("curl", quietly = TRUE)) { return (NULL) }
 
   s <- tinyhttpserver::startServer(
     "127.0.0.1",
