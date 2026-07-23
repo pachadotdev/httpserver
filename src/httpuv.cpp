@@ -156,7 +156,11 @@ void ensure_io_thread() {
 
   // Use a shared_ptr because the lifetime of this object might be longer than
   // this function, since it is passed to the background thread.
-  std::shared_ptr<Barrier> blocker = std::make_shared<Barrier>(2);
+  //
+  // Note: intentionally uses `new Barrier(2)` rather than std::make_shared,
+  // since allocate_shared's in-place construction triggers a GCC
+  // -Warray-bounds false positive (seen with gcc16) on this class.
+  std::shared_ptr<Barrier> blocker = std::shared_ptr<Barrier>(new Barrier(2));
 
   // We want to pass a copy of the shared_ptr to the new pthread. To do that, we
   // need to create a new shared_ptr and get the regular pointer to it.
@@ -254,7 +258,11 @@ void ensure_io_thread() {
 
   // Use a shared_ptr because the lifetime of this object might be longer than
   // this function, since it is passed to the background thread.
-  std::shared_ptr<Barrier> blocker = std::make_shared<Barrier>(2);
+  //
+  // Note: intentionally uses `new Barrier(2)` rather than std::make_shared,
+  // since allocate_shared's in-place construction triggers a GCC
+  // -Warray-bounds false positive (seen with gcc16) on this class.
+  std::shared_ptr<Barrier> blocker = std::shared_ptr<Barrier>(new Barrier(2));
 
   uv_stream_t *pServer;
 
