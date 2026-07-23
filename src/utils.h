@@ -310,7 +310,7 @@ inline bool constant_time_compare(const std::string &a, const std::string &b) {
   int len = a.length();
 
   for (int i = 0; i < len; i++) {
-    result |= ac[i] ^ bc[i];
+    result = result | (ac[i] ^ bc[i]);
   }
 
   return (result == 0);
