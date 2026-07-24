@@ -1,7 +1,7 @@
 # These tests are time-sensitive, which makes CRAN unhappy.
 
 path_example_site <- function(...) {
-  system.file("example-static-site", ..., package = "tinyhttpserver")
+  system.file("example-static-site", ..., package = "httpserver")
 }
 
 index_file_content <- raw_file_content(path_example_site("index.html"))
@@ -22,7 +22,7 @@ start_example_server <- function(port) {
 
   r <- callr::r_bg(
     function(port) {
-      ex <- system.file("example-static-site", package = "tinyhttpserver")
+      ex <- system.file("example-static-site", package = "httpserver")
       httpuv::runStaticServer(
         ex,
         port = port,
@@ -43,7 +43,7 @@ start_example_server <- function(port) {
   # signal a skip by returning NULL and letting the caller do `return(NULL)`
   # (the same pattern already used elsewhere in this file).
   max <- Sys.time() + 2
-  while (isTRUE(tinyhttpserver:::is_port_available(actual_port))) {
+  while (isTRUE(httpserver:::is_port_available(actual_port))) {
     if (!r$is_alive()) {
       message(
         "Server process exited before starting up:\n",
@@ -87,7 +87,7 @@ local({
 
   if (Sys.getenv("TINYHTTPSERVER_FULL_TESTING") != "yes") { return(NULL) }
   if (!requireNamespace("curl")) { return(NULL) }
-  if (isFALSE(tinyhttpserver:::is_port_available(7446))) { return(NULL) }
+  if (isFALSE(httpserver:::is_port_available(7446))) { return(NULL) }
 
   r <- start_example_server(NULL)
   if (is.null(r)) { return(NULL) }
@@ -152,7 +152,7 @@ local({
 
   if (Sys.getenv("TINYHTTPSERVER_FULL_TESTING") != "yes") { return(NULL) }
   if (!requireNamespace("curl")) { return(NULL) }
-  if (isFALSE(tinyhttpserver:::is_port_available(7446))) { return(NULL) }
+  if (isFALSE(httpserver:::is_port_available(7446))) { return(NULL) }
 
   s <- runStaticServer(path_example_site(), background = TRUE, browse = FALSE)
   on.exit(
@@ -171,7 +171,7 @@ local({
   if (Sys.getenv("TINYHTTPSERVER_FULL_TESTING") != "yes") { return(NULL) }
   if (!requireNamespace("curl")) { return(NULL) }
 
-  if (isFALSE(tinyhttpserver:::is_port_available(7446))) { return(NULL) }
+  if (isFALSE(httpserver:::is_port_available(7446))) { return(NULL) }
 
   s1 <- runStaticServer(path_example_site(), background = TRUE, browse = FALSE)
   on.exit(

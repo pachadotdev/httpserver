@@ -8,7 +8,7 @@ local({
   # This is a test for https://github.com/rstudio/httpuv/issues/275
   # When there is a very large header, it may span multiple TCP messages.
   # Previously, these headers would get truncated.
-  s <- tinyhttpserver::startServer(
+  s <- httpserver::startServer(
     "0.0.0.0",
     randomPort(),
     list(
@@ -81,7 +81,7 @@ local({
   # Also for https://github.com/rstudio/httpuv/issues/275
   # This tests for field names that are split across messages.
   headers_received <- NULL
-  s <- tinyhttpserver::startServer(
+  s <- httpserver::startServer(
     "0.0.0.0",
     randomPort(),
     list(

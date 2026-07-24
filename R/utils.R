@@ -2,12 +2,12 @@
 # which is called often. We can't get the version at build time because the
 # package won't have been installed yet. Instead, we'll get it at run time and
 # cache it.
-tinyhttpserver_version <- local({
+httpserver_version <- local({
   version <- NULL
 
   function() {
     if (is.null(version)) {
-      version <<- utils::packageVersion("tinyhttpserver")
+      version <<- utils::packageVersion("httpserver")
     }
     version
   }
@@ -43,7 +43,7 @@ drop_duplicate_names <- function(x) {
 
 #' Get and set logging level
 #'
-#' The logging level for tinyhttpserver can be set to report differing levels of
+#' The logging level for httpserver can be set to report differing levels of
 #' information. Possible logging levels (from least to most information
 #' reported) are: `"OFF"`, `"ERROR"`, `"WARN"`, `"INFO"`, or
 #' `"DEBUG"`. The default level is `ERROR`.

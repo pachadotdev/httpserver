@@ -4,8 +4,8 @@
 GZipDataSource::GZipDataSource(std::shared_ptr<DataSource> pData)
     : _pData(pData), _state(Streaming) {
 
-  _zstrm = {0};
-  _inputBuf = {0};
+  _zstrm = {};
+  _inputBuf = {};
   int res =
       deflateInit2(&_zstrm, 6, Z_DEFLATED, 15 + 16, 8, Z_DEFAULT_STRATEGY);
   if (res != Z_OK) {
@@ -32,7 +32,7 @@ uint64_t GZipDataSource::size() const {
 uv_buf_t GZipDataSource::getData(size_t bytesDesired) {
   if (_state == Done) {
     // GZip stream written, nothing more to do
-    return {0};
+    return {};
   }
 
   // Prepare the output area to be written to
@@ -61,7 +61,7 @@ uv_buf_t GZipDataSource::getData(size_t bytesDesired) {
 
   freeInputBuffer();
 
-  uv_buf_t ret = {0};
+  uv_buf_t ret = {};
   ret.base = (char *)outputBuf;
   ret.len = bytesDesired - _zstrm.avail_out;
   return ret;
@@ -86,7 +86,7 @@ void GZipDataSource::deflateNext() {
 bool GZipDataSource::freeInputBuffer(bool force) {
   if ((force || _zstrm.avail_in == 0) && _inputBuf.base) {
     _pData->freeData(_inputBuf);
-    _inputBuf = {0};
+    _inputBuf = {};
     _zstrm.next_in = Z_NULL;
     _zstrm.avail_in = 0;
     return true;

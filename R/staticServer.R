@@ -4,7 +4,7 @@
 #' a single static directory, either in the foreground or the background.
 #'
 #' @examplesIf interactive()
-#' website_dir <- system.file("example-static-site", package = "tinyhttpserver")
+#' website_dir <- system.file("example-static-site", package = "httpserver")
 #' runStaticServer(dir = website_dir)
 #'
 #' @param dir The directory to serve. Defaults to the current working directory.

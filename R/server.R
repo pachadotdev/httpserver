@@ -1,6 +1,3 @@
-#' @include socket.R
-NULL
-
 # Note that the methods listed for Server, WebServer, and PipeServer were copied
 # and pasted among all three, with a few additional methods added to WebServer
 # and PipeServer. When changes are made in the future, make sure that they're
@@ -165,11 +162,11 @@ WebServer <- R6Class(
     #' @description
     #' Initialize a new WebServer object
     #'
-    #' Create a new `WebServer` object. `app` is an tinyhttpserver application
+    #' Create a new `WebServer` object. `app` is an httpserver application
     #' object as described in [startServer()].
     #' @param host The host name or IP address to bind the server to.
     #' @param port The port number to bind the server to.
-    #' @param app An tinyhttpserver application object as described in [startServer()].
+    #' @param app An httpserver application object as described in [startServer()].
     #' @param quiet If TRUE, suppresses output from the server.
     #' @return A new `WebServer` object.
     #' @examples
@@ -248,11 +245,11 @@ PipeServer <- R6Class(
     #' @description
     #' Initialize a new PipeServer object
     #'
-    #' Create a new `PipeServer` object. `app` is an tinyhttpserver application
+    #' Create a new `PipeServer` object. `app` is an httpserver application
     #' object as described in [startServer()].
     #' @param name The name of the named pipe to bind the server to.
     #' @param mask The mask for the named pipe. If NULL, it defaults to -1.
-    #' @param app An tinyhttpserver application object as described in
+    #' @param app An httpserver application object as described in
     #'   [startServer()].
     #' @param quiet If TRUE, suppresses output from the server.
     #' @return A new `PipeServer` object.
@@ -357,9 +354,9 @@ stopAllServers <- function() {
 
 .globals$servers <- list()
 
-#' List all running tinyhttpserver servers
+#' List all running httpserver servers
 #'
-#' This returns a list of all running tinyhttpserver server applications.
+#' This returns a list of all running httpserver server applications.
 #'
 #' @export
 listServers <- function() {

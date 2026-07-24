@@ -11,7 +11,7 @@ void WSHixie76Parser::handshake(const std::string &url,
 }
 
 void WSHixie76Parser::createFrameHeaderFooter(
-    Opcode opcode, bool mask, size_t payloadSize, int32_t maskingKey,
+    Opcode, bool, size_t, int32_t,
     char pHeaderData[MAX_HEADER_BYTES], size_t *pHeaderLen,
     char pFooterData[MAX_FOOTER_BYTES], size_t *pFooterLen) const {
   pHeaderData[0] = 0;

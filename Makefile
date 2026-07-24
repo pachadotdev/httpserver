@@ -35,13 +35,31 @@ CRAN_PAIRS := \
 CRAN_EXTRA := atlas clang-asan clang-ubsan clang21 clang22 donttest \
 	gcc16 gcc-asan lto mkl nold nosuggests rchk valgrind
 
-check-cran:
+define run-check-cran
+check-cran-$(2):
 	@chmod +x ./check-docker/check.sh
-	@for pair in $(CRAN_PAIRS); do \
-		cran=$${pair%%:*}; rhub=$${pair##*:}; \
-		echo "=== checking $$cran (r-hub: $$rhub) ==="; \
-		./check-docker/check.sh $$rhub; \
-	done
+	@echo "=== checking $(1) (r-hub: $(2)) ==="
+	@./check-docker/check.sh $(2)
+endef
+
+check-cran: $(foreach pair,$(CRAN_PAIRS),check-cran-$(word 2,$(subst :, ,$(pair))))
+
+$(foreach pair,$(CRAN_PAIRS),$(eval $(call run-check-cran,$(word 1,$(subst :, ,$(pair))),$(word 2,$(subst :, ,$(pair))))))
+
+define run-check-cran-extra
+check-cran-extra-$(1):
+	@chmod +x ./check-docker/check.sh
+	@echo "=== checking $(1) ==="
+	@./check-docker/check.sh $(1)
+endef
+
+check-cran-extra: $(foreach rhub,$(CRAN_EXTRA),check-cran-extra-$(rhub))
+
+$(foreach rhub,$(CRAN_EXTRA),$(eval $(call run-check-cran-extra,$(rhub))))
+
+check-cxx:
+	@chmod +x ./check-docker/check-cxx.sh
+	@./check-docker/check-cxx.sh
 
 clang_format=`which clang-format-21`
 

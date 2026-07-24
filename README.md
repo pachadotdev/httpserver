@@ -4,9 +4,9 @@
   [![BuyMeACoffee](https://raw.githubusercontent.com/pachadotdev/buymeacoffee-badges/main/bmc-yellow.svg)](https://buymeacoffee.com/pacha)
   <!-- badges: end -->
 
-tinyhttpserver provides low-level socket and protocol support for handling HTTP and WebSocket requests directly from within R. It uses a multithreaded architecture, where I/O is handled on one thread, and the R callbacks are handled on another. This is derived from [httpuv](https://github.com/rstudio/httpuv) with a focus on reducing dependencies and streamlining the build process.
+httpserver provides low-level socket and protocol support for handling HTTP and WebSocket requests directly from within R. It uses a multithreaded architecture, where I/O is handled on one thread, and the R callbacks are handled on another. This is derived from [httpuv](https://github.com/rstudio/httpuv) with a focus on reducing dependencies and streamlining the build process.
 
-It is primarily intended as a building block for other packages, rather than making it particularly easy to create complete web applications using tinyhttpserver alone. tinyhttpserver is built on top of the [libuv](https://github.com/libuv/libuv) and [http-parser](https://github.com/nodejs/http-parser) libraries, both of which were developed by Joyent, Inc.
+It is primarily intended as a building block for other packages, rather than making it particularly easy to create complete web applications using httpserver alone. httpserver is built on top of the [libuv](https://github.com/libuv/libuv) and [http-parser](https://github.com/nodejs/http-parser) libraries, both of which were developed by Joyent, Inc.
 
 ## Installing
 
@@ -14,17 +14,17 @@ You can install the development version using **pak**. It is not on CRAN at the 
 
 ```r
 # or if you want to test the development version here
-pak::pak("pachadotdev/tinyhttpserver")
+pak::pak("pachadotdev/httpserver")
 ```
 
-tinyhttpserver may optionally be built using a `libuv` system package, which you can install prior to installing the R package. It goes by different names on different package managers: `libuv1-dev` (deb), `libuv-devel` (rpm), `libuv` (brew). Version 1.43 or greater is required. If `libuv` is not found on the system, it will be built from source along with the R package.
+httpserver may optionally be built using a `libuv` system package, which you can install prior to installing the R package. It goes by different names on different package managers: `libuv1-dev` (deb), `libuv-devel` (rpm), `libuv` (brew). Version 1.43 or greater is required. If `libuv` is not found on the system, it will be built from source along with the R package.
 
 ## Basic Usage
 
 This is a basic web server that listens on port 8080 and responds to HTTP requests with a web page containing the current system time and the path of the request:
 
 ```R
-library(tinyhttpserver)
+library(httpserver)
 
 s <- startServer(host = "0.0.0.0", port = 8080,
   app = list(
@@ -52,7 +52,7 @@ To stop the server:
 s$stop()
 ```
 
-Or, to stop all running tinyhttpserver servers:
+Or, to stop all running httpserver servers:
 
 ```R
 stopAllServers()
@@ -60,7 +60,7 @@ stopAllServers()
 
 ### Static paths
 
-A tinyhttpserver server application can serve up files on disk. This happens entirely within the I/O thread, so doing so will not block or be blocked by activity in the main R thread.
+A httpserver server application can serve up files on disk. This happens entirely within the I/O thread, so doing so will not block or be blocked by activity in the main R thread.
 
 To serve a path, use `staticPaths` in the app. This will serve the `www/` subdirectory of the current directory (from when `startServer` is called) as the root of the web path:
 
@@ -99,7 +99,7 @@ s <- startServer("0.0.0.0", 8080,
 
 ### WebSocket server
 
-tinyhttpserver also can handle WebSocket connections. For example, this app acts as a WebSocket echo server:
+httpserver also can handle WebSocket connections. For example, this app acts as a WebSocket echo server:
 
 ```R
 s <- startServer("127.0.0.1", 8080,
@@ -122,7 +122,7 @@ s <- startServer("127.0.0.1", 8080,
 
 ## Debugging builds
 
-tinyhttpserver can be built with debugging options enabled. This can be done by uncommenting these lines in src/Makevars, and then installing. The first one enables thread assertions, to ensure that code is running on the correct thread; if not. The second one enables tracing statements: tinyhttpserver will print lots of messages when various events occur.
+httpserver can be built with debugging options enabled. This can be done by uncommenting these lines in src/Makevars, and then installing. The first one enables thread assertions, to ensure that code is running on the correct thread; if not. The second one enables tracing statements: httpserver will print lots of messages when various events occur.
 
 ```
 PKG_CPPFLAGS += -DDEBUG_THREAD -UNDEBUG

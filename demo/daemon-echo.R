@@ -1,4 +1,4 @@
-library(tinyhttpserver)
+library(httpserver)
 
 .lastMessage <- NULL
 

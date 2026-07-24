@@ -23,7 +23,7 @@ FileDataSourceResult FileDataSource::initialize(const std::string &path,
       return FDS_ERROR;
     }
   } else {
-    struct stat info = {0};
+    struct stat info = {};
     if (fstat(_fd, &info)) {
       _lastErrorMessage =
           "Error opening path " + path + ": " + toString(errno) + "\n";

@@ -3,7 +3,7 @@
 #include "fs.h"
 #include "http.h"
 #include "httprequest.h"
-#include "httpuv.h"
+#include "httpserver.h"
 #include "mime.h"
 #include "staticpath.h"
 #include "thread.h"

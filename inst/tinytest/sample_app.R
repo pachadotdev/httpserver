@@ -1,4 +1,4 @@
-library(tinyhttpserver)
+library(httpserver)
 
 # The working directory is set by the caller (see test-traffic.R) before this
 # file is sourced, so a plain file.path() resolves paths correctly here.

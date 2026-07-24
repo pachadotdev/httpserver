@@ -142,7 +142,7 @@ void WSHyBiParser::handshake(const std::string &url,
 void WSHyBiParser::createFrameHeaderFooter(
     Opcode opcode, bool mask, size_t payloadSize, int32_t maskingKey,
     char pHeaderData[MAX_HEADER_BYTES], size_t *pHeaderLen,
-    char pFooterData[MAX_FOOTER_BYTES], size_t *pFooterLen) const {
+    char[MAX_FOOTER_BYTES], size_t *) const {
   _pProto->createFrameHeader(opcode, mask, payloadSize, maskingKey, pHeaderData,
                              pHeaderLen);
 }

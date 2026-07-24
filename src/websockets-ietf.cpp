@@ -6,18 +6,18 @@
 #include "sha1/sha1.h"
 
 bool WebSocketProto_IETF::canHandle(const RequestHeaders &requestHeaders,
-                                    const char *pData, size_t len) const {
+                                    const char *, size_t) const {
 
   return requestHeaders.find("upgrade") != requestHeaders.end() &&
          strcasecmp(requestHeaders.at("upgrade").c_str(), "websocket") == 0 &&
          requestHeaders.find("sec-websocket-key") != requestHeaders.end();
 }
 
-void WebSocketProto_IETF::handshake(const std::string &url,
+void WebSocketProto_IETF::handshake(const std::string &,
                                     const RequestHeaders &requestHeaders,
-                                    char **ppData, size_t *pLen,
+                                    char **, size_t *,
                                     ResponseHeaders *pResponseHeaders,
-                                    std::vector<uint8_t> *pResponse) const {
+                                    std::vector<uint8_t> *) const {
 
   std::string key = requestHeaders.at("sec-websocket-key");
 

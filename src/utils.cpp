@@ -119,7 +119,7 @@ time_t parse_http_date_string(const std::string &date) {
     return 0;
   }
 
-  std::tm t = {0};
+  std::tm t = {};
 
   try {
     std::istringstream date_ss(date);

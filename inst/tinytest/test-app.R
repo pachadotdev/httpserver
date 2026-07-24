@@ -5,7 +5,7 @@ local({
 
   if (!requireNamespace("curl", quietly = TRUE)) { return (NULL) }
 
-  s1 <- tinyhttpserver::startServer(
+  s1 <- httpserver::startServer(
     "127.0.0.1",
     randomPort(),
     list(
@@ -21,7 +21,7 @@ local({
 
   expect_equal(length(listServers()), 1)
 
-  s2 <- tinyhttpserver::startServer(
+  s2 <- httpserver::startServer(
     "127.0.0.1",
     randomPort(),
     list(
@@ -59,7 +59,7 @@ local({
 
   if (!requireNamespace("curl", quietly = TRUE)) { return (NULL) }
 
-  s <- tinyhttpserver::startServer(
+  s <- httpserver::startServer(
     "127.0.0.1",
     randomPort(),
     list(
@@ -108,7 +108,7 @@ local({
 
   if (!requireNamespace("curl", quietly = TRUE)) { return (NULL) }
 
-  s <- tinyhttpserver::startServer(
+  s <- httpserver::startServer(
     "127.0.0.1",
     randomPort(),
     list(

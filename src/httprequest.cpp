@@ -21,7 +21,7 @@ http_parser_settings &request_settings() {
   return settings;
 }
 
-void on_alloc(uv_handle_t *handle, size_t suggested_size, uv_buf_t *buf) {
+void on_alloc(uv_handle_t *, size_t suggested_size, uv_buf_t *buf) {
   ASSERT_BACKGROUND_THREAD()
   // Freed in HttpRequest::_on_request_read
   void *result = malloc(suggested_size);
@@ -65,7 +65,7 @@ Address HttpRequest::serverAddress() {
   Address address;
 
   if (_handle.isTcp) {
-    struct sockaddr_in addr = {0};
+    struct sockaddr_in addr = {};
     int len = sizeof(sockaddr_in);
     int r = uv_tcp_getsockname(&_handle.tcp, (struct sockaddr *)&addr, &len);
     if (r) {
@@ -95,7 +95,7 @@ Address HttpRequest::clientAddress() {
   Address address;
 
   if (_handle.isTcp) {
-    struct sockaddr_in addr = {0};
+    struct sockaddr_in addr = {};
     int len = sizeof(sockaddr_in);
     int r = uv_tcp_getpeername(&_handle.tcp, (struct sockaddr *)&addr, &len);
     if (r) {
@@ -190,27 +190,27 @@ void HttpRequest::requestCompleted() {
 // Miscellaneous callbacks for http parser
 // ============================================================================
 
-int HttpRequest::_on_message_begin(http_parser *pParser) {
+int HttpRequest::_on_message_begin(http_parser *) {
   ASSERT_BACKGROUND_THREAD()
   debug_log("HttpRequest::_on_message_begin", LOG_DEBUG);
   _newRequest();
   return 0;
 }
 
-int HttpRequest::_on_url(http_parser *pParser, const char *pAt, size_t length) {
+int HttpRequest::_on_url(http_parser *, const char *pAt, size_t length) {
   ASSERT_BACKGROUND_THREAD()
   debug_log("HttpRequest::_on_url", LOG_DEBUG);
   _url = std::string(pAt, length);
   return 0;
 }
 
-int HttpRequest::_on_status(http_parser *pParser, const char *pAt,
-                            size_t length) {
+int HttpRequest::_on_status(http_parser *, const char *,
+                            size_t) {
   ASSERT_BACKGROUND_THREAD()
   debug_log("HttpRequest::_on_status", LOG_DEBUG);
   return 0;
 }
-int HttpRequest::_on_header_field(http_parser *pParser, const char *pAt,
+int HttpRequest::_on_header_field(http_parser *, const char *pAt,
                                   size_t length) {
   ASSERT_BACKGROUND_THREAD()
   debug_log("HttpRequest::_on_header_field", LOG_DEBUG);
@@ -224,7 +224,7 @@ int HttpRequest::_on_header_field(http_parser *pParser, const char *pAt,
   return 0;
 }
 
-int HttpRequest::_on_header_value(http_parser *pParser, const char *pAt,
+int HttpRequest::_on_header_value(http_parser *, const char *pAt,
                                   size_t length) {
   ASSERT_BACKGROUND_THREAD()
   debug_log("HttpRequest::_on_header_value", LOG_DEBUG);
@@ -304,7 +304,7 @@ bool HttpRequest::isUpgrade() const { return _is_upgrade; }
 // asynchronously, we don't know at this point if there has been an error. If
 // one of those conditions occurs, we'll set it later, but before we call
 // http_parser_execute() again.
-int HttpRequest::_on_headers_complete(http_parser *pParser) {
+int HttpRequest::_on_headers_complete(http_parser *) {
   ASSERT_BACKGROUND_THREAD()
   debug_log("HttpRequest::_on_headers_complete", LOG_DEBUG);
   updateUpgradeStatus();
@@ -416,7 +416,7 @@ void HttpRequest::_on_headers_complete_complete(
 // Message body (for POST)
 // ============================================================================
 
-int HttpRequest::_on_body(http_parser *pParser, const char *pAt,
+int HttpRequest::_on_body(http_parser *, const char *pAt,
                           size_t length) {
   ASSERT_BACKGROUND_THREAD()
   debug_log("HttpRequest::_on_body", LOG_DEBUG);
@@ -467,7 +467,7 @@ void HttpRequest::_on_body_error(std::shared_ptr<HttpResponse> pResponse) {
 // Message complete
 // ============================================================================
 
-int HttpRequest::_on_message_complete(http_parser *pParser) {
+int HttpRequest::_on_message_complete(http_parser *) {
   ASSERT_BACKGROUND_THREAD()
   debug_log("HttpRequest::_on_message_complete", LOG_DEBUG);
 
@@ -558,7 +558,7 @@ void HttpRequest::onWSMessage(bool binary, const char *data, size_t len) {
                          binary, buf, error_callback));
 }
 
-void HttpRequest::onWSClose(int code) {
+void HttpRequest::onWSClose(int) {
   debug_log("HttpRequest::onWSClose", LOG_DEBUG);
   // TODO: Call close() here?
 }
@@ -574,7 +574,7 @@ typedef struct {
   std::vector<char> *pFooter;
 } ws_send_t;
 
-void on_ws_message_sent(uv_write_t *handle, int status) {
+void on_ws_message_sent(uv_write_t *handle, int) {
   ASSERT_BACKGROUND_THREAD()
   debug_log("on_ws_message_sent", LOG_DEBUG);
   // TODO: Handle error if status != 0
@@ -617,7 +617,7 @@ void HttpRequest::closeWSSocket() {
 // Closing connection
 // ============================================================================
 
-void HttpRequest::_on_closed(uv_handle_t *handle) {
+void HttpRequest::_on_closed(uv_handle_t *) {
   ASSERT_BACKGROUND_THREAD()
   debug_log("HttpRequest::_on_closed", LOG_DEBUG);
 

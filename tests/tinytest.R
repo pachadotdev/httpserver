@@ -1,3 +1,3 @@
 if (requireNamespace("tinytest", quietly = TRUE)) {
-  tinytest::test_package("tinyhttpserver")
+  tinytest::test_package("httpserver")
 }

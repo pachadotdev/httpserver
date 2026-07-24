@@ -30,7 +30,7 @@ bool calculateKeyValue(const std::string &key, uint32_t *pResult = NULL) {
 }
 
 bool WebSocketProto_HyBi03::canHandle(const RequestHeaders &requestHeaders,
-                                      const char *pData, size_t len) const {
+                                      const char *, size_t len) const {
 
   if (len != 8)
     return false;

@@ -1,6 +1,6 @@
 #define _FILE_OFFSET_BITS 64
 
-#include "httpuv.h"
+#include "httpserver.h"
 #include "auto_deleter.h"
 #include "base64/base64.hpp"
 #include "callbackqueue.h"
