@@ -1,68 +1,73 @@
-# Implementation of Rook input stream
-InputStream <- R6Class(
-  "InputStream",
-  public = list(
-    initialize = function(conn, length) {
-      private$conn <- conn
-      private$length <- length
-      seek(private$conn, 0)
-    },
-    read_lines = function(n = -1L) {
-      readLines(private$conn, n, warn = FALSE)
-    },
-    read = function(l = -1L) {
-      # l < 0 means read all remaining bytes
-      if (l < 0) {
-        l <- private$length - seek(private$conn)
-      }
+# Implementation of Rook input stream.
+#
+# These streams used to be implemented with R6, but are now plain
+# environments used as reference-semantics objects, to avoid the R6
+# dependency (and its Suggests, e.g. testthat).
+InputStream <- function(conn, length) {
+  private <- new.env(parent = emptyenv())
+  private$conn <- conn
+  private$length <- length
+  seek(private$conn, 0)
 
-      if (l == 0) {
-        return(raw())
-      } else {
-        return(readBin(private$conn, raw(), l))
-      }
-    },
-    rewind = function() {
-      seek(private$conn, 0)
+  self <- new.env(parent = emptyenv())
+
+  self$read_lines <- function(n = -1L) {
+    readLines(private$conn, n, warn = FALSE)
+  }
+
+  self$read <- function(l = -1L) {
+    # l < 0 means read all remaining bytes
+    if (l < 0) {
+      l <- private$length - seek(private$conn)
     }
-  ),
-  private = list(
-    conn = NULL,
-    length = NULL
-  ),
-  cloneable = FALSE
-)
 
-NullInputStream <- R6Class(
-  "NullInputStream",
-  public = list(
-    read_lines = function(n = -1L) {
-      character()
-    },
-    read = function(l = -1L) {
-      raw()
-    },
-    rewind = function() invisible(),
-    close = function() invisible()
-  ),
-  cloneable = FALSE
-)
-nullInputStream <- NullInputStream$new()
+    if (l == 0) {
+      return(raw())
+    } else {
+      return(readBin(private$conn, raw(), l))
+    }
+  }
+
+  self$rewind <- function() {
+    seek(private$conn, 0)
+  }
+
+  class(self) <- "InputStream"
+  self
+}
+
+NullInputStream <- function() {
+  self <- new.env(parent = emptyenv())
+
+  self$read_lines <- function(n = -1L) {
+    character()
+  }
+  self$read <- function(l = -1L) {
+    raw()
+  }
+  self$rewind <- function() invisible()
+  self$close <- function() invisible()
+
+  class(self) <- "NullInputStream"
+  self
+}
+nullInputStream <- NullInputStream()
 
 # Implementation of Rook error stream
-ErrorStream <- R6Class(
-  "ErrorStream",
-  public = list(
-    cat = function(..., sep = " ", fill = FALSE, labels = NULL) {
-      base::cat(..., sep = sep, fill = fill, labels = labels, file = stderr())
-    },
-    flush = function() {
-      base::flush(stderr())
-    }
-  ),
-  cloneable = FALSE
-)
-stdErrStream <- ErrorStream$new()
+ErrorStream <- function() {
+  self <- new.env(parent = emptyenv())
+
+  self$cat <- function(..., sep = " ", fill = FALSE, labels = NULL) {
+    base::cat(..., sep = sep, fill = fill, labels = labels, file = stderr())
+  }
+  self$flush <- function() {
+    base::flush(stderr())
+  }
+
+  class(self) <- "ErrorStream"
+  self
+}
+stdErrStream <- ErrorStream()
 
 rookCall <- function(func, req, data = NULL, dataLength = -1) {
   # Break the processing into two parts: first, the computation with func();
@@ -71,7 +76,7 @@ rookCall <- function(func, req, data = NULL, dataLength = -1) {
     inputStream <- if (is.null(data)) {
       nullInputStream
     } else {
-      InputStream$new(data, dataLength)
+      InputStream(data, dataLength)
     }
 
     req$rook.input <- inputStream
@@ -154,148 +159,154 @@ rookCall <- function(func, req, data = NULL, dataLength = -1) {
   }
 }
 
-AppWrapper <- R6Class(
-  "AppWrapper",
-  private = list(
-    app = NULL, # List defining app
-    wsconns = NULL, # An environment containing websocket connections
-    supportsOnHeaders = NULL # Logical
-  ),
-  public = list(
-    initialize = function(app) {
-      if (is.function(app)) {
-        private$app <- list(call = app)
-      } else {
-        private$app <- app
+AppWrapper <- function(app) {
+  private <- new.env(parent = emptyenv())
+  private$app <- NULL # List defining app
+  private$wsconns <- NULL # An environment containing websocket connections
+  private$supportsOnHeaders <- NULL # Logical
+
+  self <- new.env(parent = emptyenv())
+  self$staticPaths <- NULL # List of static paths
+  self$staticPathOptions <- NULL # StaticPathOptions object
+
+  if (is.function(app)) {
+    private$app <- list(call = app)
+  } else {
+    private$app <- app
+  }
+
+  # private$app$onHeaders can error (e.g. if private$app is a reference class)
+  private$supportsOnHeaders <- isTRUE(try(
+    !is.null(private$app$onHeaders),
+    silent = TRUE
+  ))
+
+  # staticPaths are saved in a field on this object, because they are read
+  # from the app object only during initialization. This is the only time
+  # it makes sense to read them from the app object, since they're
+  # subsequently used on the background thread, and for performance
+  # reasons it can't call back into R. Note that if the app object is a
+  # reference object and app$staticPaths is changed later, it will have no
+  # effect on the behavior of the application.
+  #
+  # If private$app is a reference class, accessing private$app$staticPaths
+  # can error if not present. Saving here in a separate var because R CMD
+  # check complains if you compare class(x) with a string.
+  try_obj_class <- class(try(private$app$staticPaths, silent = TRUE))
+  if (try_obj_class == "try-error" || is.null(private$app$staticPaths)) {
+    self$staticPaths <- list()
+  } else {
+    self$staticPaths <- normalizeStaticPaths(private$app$staticPaths)
+  }
+
+  try_obj_class <- class(try(private$app$staticPathOptions, silent = TRUE))
+  if (
+    try_obj_class == "try-error" || is.null(private$app$staticPathOptions)
+  ) {
+    # Use defaults
+    self$staticPathOptions <- staticPathOptions()
+  } else if (inherits(private$app$staticPathOptions, "staticPathOptions")) {
+    self$staticPathOptions <- normalizeStaticPathOptions(
+      private$app$staticPathOptions
+    )
+  } else {
+    stop("staticPathOptions must be an object of class staticPathOptions.")
+  }
+
+  private$wsconns <- new.env(parent = emptyenv())
+
+  self$onHeaders <- function(req) {
+    if (!private$supportsOnHeaders) {
+      return(NULL)
+    }
+
+    rookCall(private$app$onHeaders, req)
+  }
+
+  self$onBodyData <- function(req, bytes) {
+    if (is.null(req$.bodyData)) {
+      req$.bodyData <- file(open = "w+b", encoding = "UTF-8")
+    }
+    writeBin(bytes, req$.bodyData)
+  }
+
+  self$call <- function(req, cpp_callback) {
+    # The cpp_callback is an external pointer to a C++ function that writes
+    # the response.
+
+    resp <- if (is.null(private$app$call)) {
+      list(
+        status = 404L,
+        headers = list(
+          "Content-Type" = "text/plain"
+        ),
+        body = "404 Not Found\n"
+      )
+    } else {
+      rookCall(private$app$call, req, req$.bodyData, seek(req$.bodyData))
+    }
+    # Note: rookCall() should never throw error because all the work is
+    # wrapped in tryCatch().
+
+    clean_up <- function() {
+      if (!is.null(req$.bodyData)) {
+        close(req$.bodyData)
       }
+      req$.bodyData <- NULL
+    }
 
-      # private$app$onHeaders can error (e.g. if private$app is a reference class)
-      private$supportsOnHeaders <- isTRUE(try(
-        !is.null(private$app$onHeaders),
-        silent = TRUE
-      ))
+    if (is.promise(resp)) {
+      # Slower path if resp is a promise
+      resp <- then(resp, function(value) invokeCppCallback(value, cpp_callback))
+      finally(resp, clean_up)
+    } else {
+      # Fast path if resp is a regular value
+      on.exit(clean_up())
+      invokeCppCallback(resp, cpp_callback)
+    }
 
-      # staticPaths are saved in a field on this object, because they are read
-      # from the app object only during initialization. This is the only time
-      # it makes sense to read them from the app object, since they're
-      # subsequently used on the background thread, and for performance
-      # reasons it can't call back into R. Note that if the app object is a
-      # reference object and app$staticPaths is changed later, it will have no
-      # effect on the behavior of the application.
-      #
-      # If private$app is a reference class, accessing private$app$staticPaths
-      # can error if not present. Saving here in a separate var because R CMD
-      # check complains if you compare class(x) with a string.
-      try_obj_class <- class(try(private$app$staticPaths, silent = TRUE))
-      if (try_obj_class == "try-error" || is.null(private$app$staticPaths)) {
-        self$staticPaths <- list()
-      } else {
-        self$staticPaths <- normalizeStaticPaths(private$app$staticPaths)
-      }
+    invisible()
+  }
 
-      try_obj_class <- class(try(private$app$staticPathOptions, silent = TRUE))
-      if (
-        try_obj_class == "try-error" || is.null(private$app$staticPathOptions)
-      ) {
-        # Use defaults
-        self$staticPathOptions <- staticPathOptions()
-      } else if (inherits(private$app$staticPathOptions, "staticPathOptions")) {
-        self$staticPathOptions <- normalizeStaticPathOptions(
-          private$app$staticPathOptions
-        )
-      } else {
-        stop("staticPathOptions must be an object of class staticPathOptions.")
-      }
+  self$onWSOpen <- function(handle, req) {
+    ws <- WebSocket(handle, req)
+    private$wsconns[[wsconn_address(handle)]] <- ws
+    result <- try(private$app$onWSOpen(ws))
 
-      private$wsconns <- new.env(parent = emptyenv())
-    },
-    onHeaders = function(req) {
-      if (!private$supportsOnHeaders) {
-        return(NULL)
-      }
+    # If an unexpected error happened, just close up
+    if (inherits(result, "try-error")) {
+      ws$close(1011, "Error in onWSOpen")
+    }
+  }
 
-      rookCall(private$app$onHeaders, req)
-    },
-    onBodyData = function(req, bytes) {
-      if (is.null(req$.bodyData)) {
-        req$.bodyData <- file(open = "w+b", encoding = "UTF-8")
-      }
-      writeBin(bytes, req$.bodyData)
-    },
-    call = function(req, cpp_callback) {
-      # The cpp_callback is an external pointer to a C++ function that writes
-      # the response.
-
-      resp <- if (is.null(private$app$call)) {
-        list(
-          status = 404L,
-          headers = list(
-            "Content-Type" = "text/plain"
-          ),
-          body = "404 Not Found\n"
-        )
-      } else {
-        rookCall(private$app$call, req, req$.bodyData, seek(req$.bodyData))
-      }
-      # Note: rookCall() should never throw error because all the work is
-      # wrapped in tryCatch().
-
-      clean_up <- function() {
-        if (!is.null(req$.bodyData)) {
-          close(req$.bodyData)
-        }
-        req$.bodyData <- NULL
-      }
-
-      if (is.promise(resp)) {
-        # Slower path if resp is a promise
-        resp <- then(resp, function(value) invokeCppCallback(value, cpp_callback))
-        finally(resp, clean_up)
-      } else {
-        # Fast path if resp is a regular value
-        on.exit(clean_up())
-        invokeCppCallback(resp, cpp_callback)
-      }
-
-      invisible()
-    },
-    onWSOpen = function(handle, req) {
-      ws <- WebSocket$new(handle, req)
-      private$wsconns[[wsconn_address(handle)]] <- ws
-      result <- try(private$app$onWSOpen(ws))
-
-      # If an unexpected error happened, just close up
+  self$onWSMessage <- function(handle, binary, message) {
+    for (handler in private$wsconns[[wsconn_address(
+      handle
+    )]]$messageCallbacks) {
+      result <- try(handler(binary, message))
       if (inherits(result, "try-error")) {
-        ws$close(1011, "Error in onWSOpen")
+        private$wsconns[[wsconn_address(handle)]]$close(
+          1011,
+          "Error executing onWSMessage"
+        )
+        return()
       }
-    },
-    onWSMessage = function(handle, binary, message) {
-      for (handler in private$wsconns[[wsconn_address(
-        handle
-      )]]$messageCallbacks) {
-        result <- try(handler(binary, message))
-        if (inherits(result, "try-error")) {
-          private$wsconns[[wsconn_address(handle)]]$close(
-            1011,
-            "Error executing onWSMessage"
-          )
-          return()
-        }
-      }
-    },
-    onWSClose = function(handle) {
-      ws <- private$wsconns[[wsconn_address(handle)]]
-      ws$handle <- NULL
-      rm(list = wsconn_address(handle), envir = private$wsconns)
+    }
+  }
 
-      for (handler in ws$closeCallbacks) {
-        handler()
-      }
-    },
-    staticPaths = NULL, # List of static paths
-    staticPathOptions = NULL # StaticPathOptions object
-  )
-)
+  self$onWSClose <- function(handle) {
+    ws <- private$wsconns[[wsconn_address(handle)]]
+    ws$handle <- NULL
+    rm(list = wsconn_address(handle), envir = private$wsconns)
+
+    for (handler in ws$closeCallbacks) {
+      handler()
+    }
+  }
+
+  class(self) <- "AppWrapper"
+  self
+}
 
 #' @title WebSocket class
 #' @description
@@ -339,92 +350,83 @@ AppWrapper <- R6Class(
 #' )
 #' }
 #' @param handle An C++ WebSocket handle.
-WebSocket <- R6Class(
-  "WebSocket",
-  public = list(
-    #' @description
-    #' Initializes a new WebSocket object.
-    #'
-    #' @param req The Rook request environment that opened the connection.
-    initialize = function(handle, req) {
-      self$handle <- handle
-      self$request <- req
-    },
-    #' @description
-    #' Registers a callback function that will be invoked whenever a message is
-    #' received on this connection.
-    #'
-    #' @param func The callback function to be registered. The callback function will be invoked with
-    #' two arguments. The first argument is `TRUE` if the message is binary
-    #' and `FALSE` if it is text. The second argument is either a raw
-    #' vector (if the message is binary) or a character vector.
-    onMessage = function(func) {
-      self$messageCallbacks <- c(self$messageCallbacks, func)
-    },
-    #' @description
-    #' Registers a callback function that will be invoked when the connection is
-    #' closed.
-    #' @param func The callback function to be registered.
-    onClose = function(func) {
-      self$closeCallbacks <- c(self$closeCallbacks, func)
-    },
-    #' @description
-    #' Begins sending the given message over the websocket.
-    #'
-    #' @param message Either a raw vector, or a single-element character
-    #' vector that is encoded in UTF-8.
-    send = function(message) {
-      if (is.null(self$handle)) {
-        return()
-      }
+#' @param req The Rook request environment that opened the connection.
+#'
+#' @details
+#' The returned object has the following fields and methods:
+#' * `handle`: the server handle.
+#' * `request`: the Rook request environment that opened the connection.
+#'   This can be used to inspect HTTP headers, for example.
+#' * `messageCallbacks`: a list of callback functions that will be invoked
+#'   when a message is received on this connection.
+#' * `closeCallbacks`: a list of callback functions that will be invoked when
+#'   the connection is closed.
+#' * `onMessage(func)`: registers a callback function that will be invoked
+#'   whenever a message is received on this connection. The callback
+#'   function will be invoked with two arguments: the first is `TRUE` if the
+#'   message is binary and `FALSE` if it is text; the second is either a raw
+#'   vector (if the message is binary) or a character vector.
+#' * `onClose(func)`: registers a callback function that will be invoked when
+#'   the connection is closed.
+#' * `send(message)`: begins sending the given message over the websocket.
+#'   `message` is either a raw vector, or a single-element character vector
+#'   that is encoded in UTF-8.
+#' * `close(code = 1000L, reason = "")`: closes the websocket connection.
+#'   `code` is an integer that indicates the WebSocket close code
+#'   (https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/close#code).
+#'   `reason` is a concise human-readable prose explanation for the closure
+#'   (https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/close#reason).
+#' @export
+WebSocket <- function(handle, req) {
+  self <- new.env(parent = emptyenv())
 
-      if (is.raw(message)) {
-        sendWSMessage(self$handle, TRUE, message)
-      } else {
-        # TODO: Ensure that message is UTF-8 encoded
-        sendWSMessage(self$handle, FALSE, as.character(message))
-      }
-    },
-    #' @description
-    #' Closes the websocket connection
-    #' @param code An integer that indicates the [WebSocket close
-    #'   code](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/close#code).
-    #' @param reason A concise human-readable prose [explanation for the
-    #'   closure](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/close#reason).
-    close = function(code = 1000L, reason = "") {
-      if (is.null(self$handle)) {
-        return()
-      }
+  self$handle <- handle
+  self$request <- req
+  self$messageCallbacks <- list()
+  self$closeCallbacks <- list()
 
-      # Make sure the code will fit in a short int (2 bytes); if not just use
-      # "Going Away" error code.
-      code <- as.integer(code)
-      if (code < 0 || code > 2^16 - 1) {
-        warning("Invalid websocket error code: ", code)
-        code <- 1001L
-      }
-      reason <- iconv(reason, to = "UTF-8")
+  self$onMessage <- function(func) {
+    self$messageCallbacks <- c(self$messageCallbacks, func)
+  }
 
-      closeWS(self$handle, code, reason)
-      self$handle <- NULL
-    },
+  self$onClose <- function(func) {
+    self$closeCallbacks <- c(self$closeCallbacks, func)
+  }
 
-    #' @field handle The server handle
-    handle = NULL,
+  self$send <- function(message) {
+    if (is.null(self$handle)) {
+      return()
+    }
 
-    #' @field messageCallbacks A list of callback functions that will be invoked
-    #'   when a message is received on this connection.
-    messageCallbacks = list(),
+    if (is.raw(message)) {
+      sendWSMessage(self$handle, TRUE, message)
+    } else {
+      # TODO: Ensure that message is UTF-8 encoded
+      sendWSMessage(self$handle, FALSE, as.character(message))
+    }
+  }
 
-    #' @field closeCallbacks A list of callback functions that will be invoked
-    #'   when the connection is closed.
-    closeCallbacks = list(),
+  self$close <- function(code = 1000L, reason = "") {
+    if (is.null(self$handle)) {
+      return()
+    }
 
-    #' @field request The Rook request environment that opened the connection.
-    #'   This can be used to inspect HTTP headers, for example.
-    request = NULL
-  )
-)
+    # Make sure the code will fit in a short int (2 bytes); if not just use
+    # "Going Away" error code.
+    code <- as.integer(code)
+    if (code < 0 || code > 2^16 - 1) {
+      warning("Invalid websocket error code: ", code)
+      code <- 1001L
+    }
+    reason <- iconv(reason, to = "UTF-8")
+
+    closeWS(self$handle, code, reason)
+    self$handle <- NULL
+  }
+
+  class(self) <- "WebSocket"
+  self
+}
 
 #' Create an HTTP/WebSocket server
 #'
@@ -586,7 +588,7 @@ WebSocket <- R6Class(
 #' }
 #' @export
 startServer <- function(host, port, app, quiet = FALSE) {
-  WebServer$new(host, port, app, quiet)
+  WebServer(host, port, app, quiet)
 }
 
 #' @param name A string that indicates the path for the domain socket (on
@@ -600,7 +602,7 @@ startServer <- function(host, port, app, quiet = FALSE) {
 #' @rdname startServer
 #' @export
 startPipeServer <- function(name, mask, app, quiet = FALSE) {
-  PipeServer$new(name, mask, app, quiet)
+  PipeServer(name, mask, app, quiet)
 }
 
 #' Process requests
@@ -740,5 +742,3 @@ interrupt <- function() {
 rawToBase64 <- function(x) {
   base64encode(x)
 }
-
-.globals <- new.env()

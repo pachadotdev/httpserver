@@ -16,12 +16,17 @@ staticPath(
   validation = NULL
 )
 excludeStaticPath()
-print.staticPath(x, ...)
-format.staticPath(x, ...)
+\method{print}{staticPath}(x, ...)
+\method{format}{staticPath}(x, ...)
 }
 
 \arguments{
 \item{path}{The local path.}
+
+\item{x}{A `staticPath` object.}
+
+\item{...}{Further arguments passed to or from other methods (currently
+  unused).}
 
 \item{indexhtml}{If an index.html file is present, should it be served up
   when the client requests the static path or any subdirectory?}

@@ -82,19 +82,19 @@ as.staticPath <- function(path) {
 }
 
 #' @rdname as.staticPath
-#' @export
+#' @exportS3Method as.staticPath staticPath
 as.staticPath.staticPath <- function(path) {
   path
 }
 
 #' @rdname as.staticPath
-#' @export
+#' @exportS3Method as.staticPath character
 as.staticPath.character <- function(path) {
   staticPath(path)
 }
 
 #' @rdname as.staticPath
-#' @export
+#' @exportS3Method as.staticPath default
 as.staticPath.default <- function(path) {
   stop(
     "Cannot convert object of class ",
@@ -104,14 +104,17 @@ as.staticPath.default <- function(path) {
 }
 
 #' @rdname staticPath
-#' @export
+#' @param x A `staticPath` object.
+#' @param ... Further arguments passed to or from other methods (currently
+#'   unused).
+#' @exportS3Method
 print.staticPath <- function(x, ...) {
   cat(format(x, ...), sep = "\n")
   invisible(x)
 }
 
 #' @rdname staticPath
-#' @export
+#' @exportS3Method
 format.staticPath <- function(x, ...) {
   ret <- paste0(
     "<staticPath>\n",
@@ -175,7 +178,10 @@ staticPathOptions <- function(
 }
 
 #' @rdname staticPathOptions
-#' @export
+#' @param x A `staticPathOptions` object.
+#' @param ... Further arguments passed to or from other methods (currently
+#'   unused).
+#' @exportS3Method
 print.staticPathOptions <- function(x, ...) {
   cat(format(x, ...), sep = "\n")
   invisible(x)
@@ -183,7 +189,7 @@ print.staticPathOptions <- function(x, ...) {
 
 
 #' @rdname staticPathOptions
-#' @export
+#' @exportS3Method
 format.staticPathOptions <- function(x, ...) {
   paste0(
     "<staticPathOptions>\n",

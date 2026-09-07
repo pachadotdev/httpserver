@@ -26,14 +26,32 @@ UNIX="$LIBUV/src/unix"
 echo "==> Updating libuv to $VERSION"
 
 # ---------------------------------------------------------------------------
-# 2. Update the version in update_libuv.R and run it
+# 2. Update the version in tools/update_libuv.R, then download and unpack
+#    libuv directly (inlined from tools/update_libuv.R so the whole update
+#    runs as a single script, without shelling out to Rscript)
 # ---------------------------------------------------------------------------
 UPDATE_SCRIPT="tools/update_libuv.R"
 sed -i "s/^version <- \"[^\"]*\"/version <- \"$VERSION\"/" "$UPDATE_SCRIPT"
 git add "$UPDATE_SCRIPT"
 
-echo "==> Running $UPDATE_SCRIPT"
-Rscript "$UPDATE_SCRIPT"
+TAG="v$VERSION"
+DEST_FILE="$(mktemp -t "libuv-${VERSION}-XXXXXX.tar.gz")"
+URL="https://github.com/libuv/libuv/archive/${TAG}.tar.gz"
+
+echo "==> Downloading $URL"
+curl -fsSL -o "$DEST_FILE" "$URL"
+
+echo "==> Unpacking libuv $VERSION into src/"
+tar -xzf "$DEST_FILE" -C src/
+
+# Remove old libuv and replace with the freshly downloaded one
+rm -rf "$LIBUV"
+mv "src/libuv-${VERSION}" "$LIBUV"
+rm -f "$DEST_FILE"
+
+# Copy over Makefile for mingw
+cp "tools/Makefile-libuv.mingw" "$LIBUV/"
+
 git add "$LIBUV"
 
 # ---------------------------------------------------------------------------

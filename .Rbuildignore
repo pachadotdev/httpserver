@@ -28,8 +28,7 @@
 ^pkgdown$
 scripts
 ^Makefile$
-^dev$
+^scripts$
 ^src/libuv/\.clang-tidy$
-^check-gcc-clang$
 ^check-docker$
 ^LICENSE\.txt$

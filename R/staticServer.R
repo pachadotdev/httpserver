@@ -9,7 +9,8 @@
 #'
 #' @param dir The directory to serve. Defaults to the current working directory.
 #' @inheritParams startServer
-#' @inheritDotParams staticPath
+#' @param ... Additional arguments passed to [staticPath()], such as
+#'   `indexhtml`, `fallthrough`, `html_charset`, `headers`, and `validation`.
 #' @param background Whether to run the server in the background. By default,
 #'   the server runs in the foreground and blocks the R console. You can stop
 #'   the server by interrupting it with `Ctrl + C`.

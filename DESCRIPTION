@@ -3,58 +3,37 @@ Package: httpserver
 Title: HTTP and WebSocket Server Library
 Version: 0.1
 Authors@R: c(
-    person("Joe", "Cheng", , "joe@posit.co", role = "aut"),
-    person("Winston", "Chang", , "winston@posit.co", role = "aut"),
-    person("Posit, PBC", role = c("cph", "fnd"),
-           comment = c(ROR = "03wc8by49")),
-    person("Hector", "Corrada Bravo", role = "ctb"),
-    person("Jeroen", "Ooms", role = "ctb"),
-    person("Andrzej", "Krzemienski", role = "cph",
-           comment = "optional.hpp"),
-    person("libuv project contributors", role = "cph",
-           comment = "libuv library, see src/libuv/AUTHORS file"),
-    person("Joyent, Inc. and other Node contributors", role = "cph",
-           comment = "libuv library, see src/libuv/AUTHORS file; and http-parser library, see src/http-parser/AUTHORS file"),
-    person("Niels", "Provos", role = "cph",
-           comment = "libuv subcomponent: tree.h"),
-    person("Internet Systems Consortium, Inc.", role = "cph",
-           comment = "libuv subcomponent: inet_pton and inet_ntop, contained in src/libuv/src/inet.c"),
-    person("Alexander", "Chemeris", role = "cph",
-           comment = "libuv subcomponent: stdint-msvc2008.h (from msinttypes)"),
-    person("Google, Inc.", role = "cph",
-           comment = "libuv subcomponent: pthread-fixes.c"),
-    person("Sony Mobile Communcations AB", role = "cph",
-           comment = "libuv subcomponent: pthread-fixes.c"),
-    person("Berkeley Software Design Inc.", role = "cph",
-           comment = "libuv subcomponent: android-ifaddrs.h, android-ifaddrs.c"),
-    person("Kenneth", "MacKay", role = "cph",
-           comment = "libuv subcomponent: android-ifaddrs.h, android-ifaddrs.c"),
-    person("Emergya (Cloud4all, FP7/2007-2013, grant agreement no 289016)", role = "cph",
-           comment = "libuv subcomponent: android-ifaddrs.h, android-ifaddrs.c"),
-    person("Steve", "Reid", role = "aut",
-           comment = "SHA-1 implementation"),
-    person("James", "Brown", role = "aut",
-           comment = "SHA-1 implementation"),
-    person("Bob", "Trower", role = "aut",
-           comment = "base64 implementation"),
-    person("Alexander", "Peslyak", role = "aut",
-           comment = "MD5 implementation"),
-    person("Trantor Standard Systems", role = "cph",
-           comment = "base64 implementation"),
-    person("Igor", "Sysoev", role = "cph",
-           comment = "http-parser"),
     person(given = "Mauricio", family = "Vargas Sepulveda", role = c("aut", "cre"),
         email = "m.vargas.sepulveda@gmail.com",
-        comment = c(ORCID = "0000-0003-1017-7574"))
+        comment = c(ORCID = "0000-0003-1017-7574")),
+    person("Joe", "Cheng", , "joe@posit.co", role = "aut", comment = "original 'httpuv' package"),
+    person("Winston", "Chang", , "winston@posit.co", role = "aut", comment = "original 'httpuv' package"),
+    person("Posit, PBC", role = c("cph", "fnd"), comment = "original 'httpuv' package"),
+    person("Hector", "Corrada Bravo", role = "ctb", comment = "original 'httpuv' package"),
+    person("Jeroen", "Ooms", role = "ctb", comment = "original 'httpuv' package"),
+    person("Andrzej", "Krzemienski", role = "cph", comment = "optional.h"),
+    person("libuv project contributors", role = "cph", comment = "libuv library, see src/libuv/AUTHORS file"),
+    person("Joyent, Inc. and other Node contributors", role = "cph", comment = "libuv library, see src/libuv/AUTHORS file; and http-parser library, see src/http-parser/AUTHORS file"),
+    person("Niels", "Provos", role = "cph", comment = "libuv subcomponent: tree.h"),
+    person("Internet Systems Consortium, Inc.", role = "cph", comment = "libuv subcomponent: inet_pton and inet_ntop, contained in src/libuv/src/inet.c"),
+    person("Alexander", "Chemeris", role = "cph", comment = "libuv subcomponent: stdint-msvc2008.h (from msinttypes)"),
+    person("Google, Inc.", role = "cph", comment = "libuv subcomponent: pthread-fixes.c"),
+    person("Sony Mobile Communcations AB", role = "cph", comment = "libuv subcomponent: pthread-fixes.c"),
+    person("Berkeley Software Design Inc.", role = "cph", comment = "libuv subcomponent: android-ifaddrs.h, android-ifaddrs.c"),
+    person("Kenneth", "MacKay", role = "cph", comment = "libuv subcomponent: android-ifaddrs.h, android-ifaddrs.c"),
+    person("Emergya (Cloud4all, FP7/2007-2013, grant agreement no 289016)", role = "cph", comment = "libuv subcomponent: android-ifaddrs.h, android-ifaddrs.c"),
+    person("Steve", "Reid", role = "aut", comment = "SHA-1 implementation"),
+    person("James", "Brown", role = "aut", comment = "SHA-1 implementation"),
+    person("Bob", "Trower", role = "aut", comment = "base64 implementation"),
+    person("Alexander", "Peslyak", role = "aut", comment = "MD5 implementation"),
+    person("Trantor Standard Systems", role = "cph", comment = "base64 implementation"),
+    person("Igor", "Sysoev", role = "cph", comment = "http-parser")
   )
-Description: Provides low-level socket and protocol support for handling
-    HTTP and WebSocket requests directly from within R. It is primarily
-    intended as a building block for other packages, rather than making it
-    particularly easy to create complete web applications using httpuv
-    alone.  httpuv is built on top of the libuv and http-parser C
-    libraries, both of which were developed by Joyent, Inc. Derived from the
-    'httpuv' package with a focus on minimal dependencies. See the LICENSE
-    file for libuv and http-parser license information.
+Description: Provides low-level socket and protocol support for handling HTTP and WebSocket requests directly from within R.
+    It is primarily intended as a building block for other packages, rather than making it particularly easy to create
+    complete web applications using httpuv alone.  httpuv is built on top of the libuv and http-parser C libraries, both of
+    which were developed by Joyent, Inc. Derived from the 'httpuv' package with a focus on minimal dependencies. See the
+    LICENSE file for libuv and http-parser license information.
 License: Apache License 2.0
 URL: https://github.com/pachadotdev/httpserver
 BugReports: https://github.com/pachadotdev/httpserver/issues

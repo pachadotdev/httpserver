@@ -8,9 +8,9 @@
 \title{Convert an object to a staticPath object}
 \usage{
 as.staticPath(path)
-as.staticPath.staticPath(path)
-as.staticPath.character(path)
-as.staticPath.default(path)
+\method{as.staticPath}{staticPath}(path)
+\method{as.staticPath}{character}(path)
+\method{as.staticPath}{default}(path)
 }
 
 \arguments{

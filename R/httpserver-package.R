@@ -8,6 +8,7 @@
 #'  'httpuv' package with a focus on minimal dependencies. See the LICENSE
 #'  file for libuv and http-parser license information.
 #' @importFrom later2 promise then finally is.promise run_now
-#' @importFrom R6 R6Class
 #' @useDynLib httpserver, .registration=TRUE
 "_PACKAGE"
+
+.globals <- new.env()

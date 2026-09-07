@@ -14,8 +14,8 @@ staticPathOptions(
   validation = character(0),
   exclude = FALSE
 )
-print.staticPathOptions(x, ...)
-format.staticPathOptions(x, ...)
+\method{print}{staticPathOptions}(x, ...)
+\method{format}{staticPathOptions}(x, ...)
 }
 
 \arguments{
@@ -48,6 +48,11 @@ format.staticPathOptions(x, ...)
 
 \item{exclude}{Should this path be excluded from static serving? (This is
   only to be used internally, for [excludeStaticPath()].)}
+
+\item{x}{A `staticPathOptions` object.}
+
+\item{...}{Further arguments passed to or from other methods (currently
+  unused).}
 }
 
 \description{

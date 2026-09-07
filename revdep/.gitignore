@@ -1,5 +1,0 @@
-checks
-library
-*.noindex
-data.sqlite
-*.html

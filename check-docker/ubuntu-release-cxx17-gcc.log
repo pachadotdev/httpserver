@@ -1,0 +1,1120 @@
+Reading package lists...
+Building dependency tree...
+Reading state information...
+pkg-config is already the newest version (1.8.1-2build1).
+gfortran is already the newest version (4:13.2.0-7ubuntu1).
+gfortran set to manually installed.
+The following additional packages will be installed:
+  bzip2 curl dirmngr dpkg dpkg-dev file gnupg gnupg-utils gpg gpg-agent
+  gpgconf gpgsm keyboxd libb-hooks-op-check-perl
+  libclass-method-modifiers-perl libclass-xsaccessor-perl libclone-perl
+  libcurl3t64-gnutls libcurl4t64 libdevel-callchecker-perl libdpkg-perl
+  libdynaloader-functions-perl libencode-locale-perl libfile-dirlist-perl
+  libfile-homedir-perl libfile-listing-perl libfile-touch-perl
+  libfile-which-perl libhtml-parser-perl libhtml-tagset-perl libhtml-tree-perl
+  libhttp-cookies-perl libhttp-date-perl libhttp-message-perl
+  libhttp-negotiate-perl libimport-into-perl libio-html-perl libio-pty-perl
+  libio-socket-ssl-perl libipc-run-perl libksba8 liblua5.4-0
+  liblwp-mediatypes-perl liblwp-protocol-https-perl libmagic-mgc libmagic1t64
+  libmodule-runtime-perl libmoo-perl libnet-http-perl libnet-ssleay-perl
+  libparams-classify-perl libperl5.38t64 libpython3-stdlib
+  libpython3.12-minimal libpython3.12-stdlib librole-tiny-perl libsqlite3-0
+  libsub-quote-perl libtimedate-perl libtry-tiny-perl liburi-perl libuv1t64
+  libwww-perl libwww-robotrules-perl libyaml-0-2 lto-disabled-list media-types
+  pandoc-data patchutils perl perl-base perl-modules-5.38
+  perl-openssl-defaults pinentry-curses python3 python3-minimal python3.12
+  python3.12-minimal wdiff
+Suggested packages:
+  adequate at autopkgtest bls-standalone bsd-mailx | mailx build-essential
+  check-all-the-things cvs-buildpackage debhelper diffoscope disorderfs
+  dose-extra duck elpa-devscripts faketime gnuplot how-can-i-help
+  libauthen-sasl-perl libdbd-pg-perl libfile-desktopentry-perl
+  libterm-size-perl libyaml-syck-perl mmdebstrap mutt piuparts
+  postgresql-client pristine-lfs quilt ratt reprotest svn-buildpackage w3m
+  debian-keyring equivs libgitlab-api-v4-perl libsoap-lite-perl pristine-tar
+  dbus-user-session libpam-systemd pinentry-gnome3 tor debsig-verify
+  parcimonie xloadimage gpg-wks-server scdaemon libcurl4-doc libidn-dev
+  libkrb5-dev libldap2-dev librtmp-dev libssh2-1-dev libssl-dev bzr
+  libdata-dump-perl libio-compress-brotli-perl libcrypt-ssleay-perl
+  libscalar-number-perl libxstring-perl libsub-name-perl libbusiness-isbn-perl
+  libregexp-ipv6-perl libauthen-ntlm-perl texlive-latex-recommended
+  texlive-xetex texlive-luatex pandoc-citeproc texlive-latex-extra context
+  wkhtmltopdf librsvg2-bin groff ghc nodejs php python ruby r-base-core
+  libjs-mathjax libjs-katex citation-style-language-styles perl-doc
+  libterm-readline-gnu-perl | libterm-readline-perl-perl
+  libtap-harness-archive-perl pinentry-doc python3-doc python3-tk python3-venv
+  python3.12-venv python3.12-doc binfmt-support wdiff-doc
+Recommended packages:
+  dctrl-tools dput | dupload libdistro-info-perl libgit-wrapper-perl
+  libjson-perl liblist-compare-perl libstring-shellquote-perl licensecheck
+  lintian man-db python3-apt python3-debian python3-magic python3-requests
+  python3-unidiff python3-xdg strace build-essential fakeroot
+  libalgorithm-merge-perl gnupg-l10n gpg-wks-client libfile-fcntllock-perl
+  liblocale-gettext-perl libhtml-format-perl libnamespace-clean-perl
+  libdata-dump-perl libhtml-form-perl libhttp-daemon-perl libmailtools-perl
+The following NEW packages will be installed:
+  bzip2 devscripts dirmngr dpkg-dev file gnupg gnupg-utils gpg gpg-agent
+  gpgconf gpgsm keyboxd libb-hooks-op-check-perl
+  libclass-method-modifiers-perl libclass-xsaccessor-perl libclone-perl
+  libcurl4-openssl-dev libdevel-callchecker-perl libdpkg-perl
+  libdynaloader-functions-perl libencode-locale-perl libfile-dirlist-perl
+  libfile-homedir-perl libfile-listing-perl libfile-touch-perl
+  libfile-which-perl libhtml-parser-perl libhtml-tagset-perl libhtml-tree-perl
+  libhttp-cookies-perl libhttp-date-perl libhttp-message-perl
+  libhttp-negotiate-perl libimport-into-perl libio-html-perl libio-pty-perl
+  libio-socket-ssl-perl libipc-run-perl libksba8 liblua5.4-0
+  liblwp-mediatypes-perl liblwp-protocol-https-perl libmagic-mgc libmagic1t64
+  libmodule-runtime-perl libmoo-perl libnet-http-perl libnet-ssleay-perl
+  libparams-classify-perl libpython3-stdlib libpython3.12-minimal
+  libpython3.12-stdlib librole-tiny-perl libsqlite3-0 libsub-quote-perl
+  libtimedate-perl libtry-tiny-perl liburi-perl libuv1-dev libuv1t64
+  libwww-perl libwww-robotrules-perl libyaml-0-2 lto-disabled-list media-types
+  pandoc pandoc-data patchutils perl-openssl-defaults pinentry-curses python3
+  python3-minimal python3.12 python3.12-minimal wdiff
+The following packages will be upgraded:
+  curl dpkg libcurl3t64-gnutls libcurl4t64 libperl5.38t64 perl perl-base
+  perl-modules-5.38
+8 upgraded, 75 newly installed, 0 to remove and 38 not upgraded.
+Need to get 53.6 MB of archives.
+After this operation, 255 MB of additional disk space will be used.
+Get:1 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 dpkg amd64 1.22.6ubuntu6.6 [1,282 kB]
+Get:2 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libperl5.38t64 amd64 5.38.2-3.2ubuntu0.3 [4,876 kB]
+Get:3 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 perl amd64 5.38.2-3.2ubuntu0.3 [231 kB]
+Get:4 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 perl-base amd64 5.38.2-3.2ubuntu0.3 [1,827 kB]
+Get:5 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 perl-modules-5.38 all 5.38.2-3.2ubuntu0.3 [3,110 kB]
+Get:6 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libpython3.12-minimal amd64 3.12.3-1ubuntu0.15 [839 kB]
+Get:7 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 python3.12-minimal amd64 3.12.3-1ubuntu0.15 [2,334 kB]
+Get:8 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 python3-minimal amd64 3.12.3-0ubuntu2.1 [27.4 kB]
+Get:9 http://archive.ubuntu.com/ubuntu noble/main amd64 media-types all 10.1.0 [27.5 kB]
+Get:10 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libsqlite3-0 amd64 3.45.1-1ubuntu2.7 [701 kB]
+Get:11 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libpython3.12-stdlib amd64 3.12.3-1ubuntu0.15 [2,071 kB]
+Get:12 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 python3.12 amd64 3.12.3-1ubuntu0.15 [651 kB]
+Get:13 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libpython3-stdlib amd64 3.12.3-0ubuntu2.1 [10.1 kB]
+Get:14 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 python3 amd64 3.12.3-0ubuntu2.1 [23.0 kB]
+Get:15 http://archive.ubuntu.com/ubuntu noble/main amd64 libyaml-0-2 amd64 0.2.5-1build1 [51.5 kB]
+Get:16 http://archive.ubuntu.com/ubuntu noble/main amd64 libmagic-mgc amd64 1:5.45-3build1 [307 kB]
+Get:17 http://archive.ubuntu.com/ubuntu noble/main amd64 libmagic1t64 amd64 1:5.45-3build1 [87.2 kB]
+Get:18 http://archive.ubuntu.com/ubuntu noble/main amd64 file amd64 1:5.45-3build1 [22.0 kB]
+Get:19 http://archive.ubuntu.com/ubuntu noble/main amd64 libuv1t64 amd64 1.48.0-1.1build1 [97.3 kB]
+Get:20 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 bzip2 amd64 1.0.8-5.1build0.1 [34.5 kB]
+Get:21 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 curl amd64 8.5.0-2ubuntu10.11 [226 kB]
+Get:22 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libcurl4t64 amd64 8.5.0-2ubuntu10.11 [342 kB]
+Get:23 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libdpkg-perl all 1.22.6ubuntu6.6 [268 kB]
+Get:24 http://archive.ubuntu.com/ubuntu noble/main amd64 lto-disabled-list all 47 [12.4 kB]
+Get:25 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 dpkg-dev all 1.22.6ubuntu6.6 [1,074 kB]
+Get:26 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 gpgconf amd64 2.4.4-2ubuntu17.4 [104 kB]
+Get:27 http://archive.ubuntu.com/ubuntu noble/main amd64 libksba8 amd64 1.6.6-1build1 [122 kB]
+Get:28 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 dirmngr amd64 2.4.4-2ubuntu17.4 [323 kB]
+Get:29 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 gnupg-utils amd64 2.4.4-2ubuntu17.4 [109 kB]
+Get:30 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 gpg amd64 2.4.4-2ubuntu17.4 [565 kB]
+Get:31 http://archive.ubuntu.com/ubuntu noble/main amd64 pinentry-curses amd64 1.2.1-3ubuntu5 [35.2 kB]
+Get:32 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 gpg-agent amd64 2.4.4-2ubuntu17.4 [227 kB]
+Get:33 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 gpgsm amd64 2.4.4-2ubuntu17.4 [232 kB]
+Get:34 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 keyboxd amd64 2.4.4-2ubuntu17.4 [78.3 kB]
+Get:35 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 gnupg all 2.4.4-2ubuntu17.4 [359 kB]
+Get:36 http://archive.ubuntu.com/ubuntu noble/main amd64 libfile-dirlist-perl all 0.05-3 [7,286 B]
+Get:37 http://archive.ubuntu.com/ubuntu noble/main amd64 libfile-which-perl all 1.27-2 [12.5 kB]
+Get:38 http://archive.ubuntu.com/ubuntu noble/main amd64 libfile-homedir-perl all 1.006-2 [37.0 kB]
+Get:39 http://archive.ubuntu.com/ubuntu noble/main amd64 libfile-touch-perl all 0.12-2 [7,498 B]
+Get:40 http://archive.ubuntu.com/ubuntu noble/main amd64 libio-pty-perl amd64 1:1.20-1build2 [31.2 kB]
+Get:41 http://archive.ubuntu.com/ubuntu noble/main amd64 libipc-run-perl all 20231003.0-1 [92.1 kB]
+Get:42 http://archive.ubuntu.com/ubuntu noble/main amd64 libclass-method-modifiers-perl all 2.15-1 [16.1 kB]
+Get:43 http://archive.ubuntu.com/ubuntu noble/main amd64 libclass-xsaccessor-perl amd64 1.19-4build4 [33.1 kB]
+Get:44 http://archive.ubuntu.com/ubuntu noble/main amd64 libb-hooks-op-check-perl amd64 0.22-3build1 [9,518 B]
+Get:45 http://archive.ubuntu.com/ubuntu noble/main amd64 libdynaloader-functions-perl all 0.003-3 [12.1 kB]
+Get:46 http://archive.ubuntu.com/ubuntu noble/main amd64 libdevel-callchecker-perl amd64 0.008-2build3 [13.2 kB]
+Get:47 http://archive.ubuntu.com/ubuntu noble/main amd64 libparams-classify-perl amd64 0.015-2build5 [20.1 kB]
+Get:48 http://archive.ubuntu.com/ubuntu noble/main amd64 libmodule-runtime-perl all 0.016-2 [16.4 kB]
+Get:49 http://archive.ubuntu.com/ubuntu noble/main amd64 libimport-into-perl all 1.002005-2 [10.7 kB]
+Get:50 http://archive.ubuntu.com/ubuntu noble/main amd64 librole-tiny-perl all 2.002004-1 [16.3 kB]
+Get:51 http://archive.ubuntu.com/ubuntu noble/main amd64 libsub-quote-perl all 2.006008-1ubuntu1 [20.7 kB]
+Get:52 http://archive.ubuntu.com/ubuntu noble/main amd64 libmoo-perl all 2.005005-1 [47.4 kB]
+Get:53 http://archive.ubuntu.com/ubuntu noble/main amd64 libencode-locale-perl all 1.05-3 [11.6 kB]
+Get:54 http://archive.ubuntu.com/ubuntu noble/main amd64 libtimedate-perl all 2.3300-2 [34.0 kB]
+Get:55 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libhttp-date-perl all 6.06-1ubuntu0.24.04.1 [10.6 kB]
+Get:56 http://archive.ubuntu.com/ubuntu noble/main amd64 libfile-listing-perl all 6.16-1 [11.3 kB]
+Get:57 http://archive.ubuntu.com/ubuntu noble/main amd64 libhtml-tagset-perl all 3.20-6 [11.3 kB]
+Get:58 http://archive.ubuntu.com/ubuntu noble/main amd64 liburi-perl all 5.27-1 [88.0 kB]
+Get:59 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libhtml-parser-perl amd64 3.81-1ubuntu0.1 [86.0 kB]
+Get:60 http://archive.ubuntu.com/ubuntu noble/main amd64 libhtml-tree-perl all 5.07-3 [200 kB]
+Get:61 http://archive.ubuntu.com/ubuntu noble/main amd64 libclone-perl amd64 0.46-1build3 [10.7 kB]
+Get:62 http://archive.ubuntu.com/ubuntu noble/main amd64 libio-html-perl all 1.004-3 [15.9 kB]
+Get:63 http://archive.ubuntu.com/ubuntu noble/main amd64 liblwp-mediatypes-perl all 6.04-2 [20.1 kB]
+Get:64 http://archive.ubuntu.com/ubuntu noble/main amd64 libhttp-message-perl all 6.45-1ubuntu1 [78.2 kB]
+Get:65 http://archive.ubuntu.com/ubuntu noble/main amd64 libhttp-cookies-perl all 6.11-1 [18.2 kB]
+Get:66 http://archive.ubuntu.com/ubuntu noble/main amd64 libhttp-negotiate-perl all 6.01-2 [12.4 kB]
+Get:67 http://archive.ubuntu.com/ubuntu noble/main amd64 perl-openssl-defaults amd64 7build3 [6,626 B]
+Get:68 http://archive.ubuntu.com/ubuntu noble/main amd64 libnet-ssleay-perl amd64 1.94-1build4 [316 kB]
+Get:69 http://archive.ubuntu.com/ubuntu noble/main amd64 libio-socket-ssl-perl all 2.085-1 [195 kB]
+Get:70 http://archive.ubuntu.com/ubuntu noble/main amd64 libnet-http-perl all 6.23-1 [22.3 kB]
+Get:71 http://archive.ubuntu.com/ubuntu noble/main amd64 liblwp-protocol-https-perl all 6.13-1 [9,006 B]
+Get:72 http://archive.ubuntu.com/ubuntu noble/main amd64 libtry-tiny-perl all 0.31-2 [20.8 kB]
+Get:73 http://archive.ubuntu.com/ubuntu noble/main amd64 libwww-robotrules-perl all 6.02-1 [12.6 kB]
+Get:74 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libwww-perl all 6.76-1ubuntu0.1 [139 kB]
+Get:75 http://archive.ubuntu.com/ubuntu noble/main amd64 patchutils amd64 0.4.2-1build3 [77.0 kB]
+Get:76 http://archive.ubuntu.com/ubuntu noble/main amd64 wdiff amd64 1.2.2-6build1 [29.1 kB]
+Get:77 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 devscripts all 2.23.7ubuntu0.2 [1,048 kB]
+Get:78 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libcurl3t64-gnutls amd64 8.5.0-2ubuntu10.11 [334 kB]
+Get:79 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libcurl4-openssl-dev amd64 8.5.0-2ubuntu10.11 [446 kB]
+Get:80 http://archive.ubuntu.com/ubuntu noble/main amd64 liblua5.4-0 amd64 5.4.6-3build2 [166 kB]
+Get:81 http://archive.ubuntu.com/ubuntu noble/main amd64 libuv1-dev amd64 1.48.0-1.1build1 [136 kB]
+Get:82 http://archive.ubuntu.com/ubuntu noble/universe amd64 pandoc-data all 3.1.3-1 [92.4 kB]
+Get:83 http://archive.ubuntu.com/ubuntu noble/universe amd64 pandoc amd64 3.1.3+ds-2 [26.9 MB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 53.6 MB in 7s (7,387 kB/s)
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 19926 files and directories currently installed.)
+Preparing to unpack .../dpkg_1.22.6ubuntu6.6_amd64.deb ...
+Unpacking dpkg (1.22.6ubuntu6.6) over (1.22.6ubuntu6.5) ...
+Setting up dpkg (1.22.6ubuntu6.6) ...
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 19926 files and directories currently installed.)
+Preparing to unpack .../libperl5.38t64_5.38.2-3.2ubuntu0.3_amd64.deb ...
+Unpacking libperl5.38t64:amd64 (5.38.2-3.2ubuntu0.3) over (5.38.2-3.2ubuntu0.2) ...
+Preparing to unpack .../perl_5.38.2-3.2ubuntu0.3_amd64.deb ...
+Unpacking perl (5.38.2-3.2ubuntu0.3) over (5.38.2-3.2ubuntu0.2) ...
+Preparing to unpack .../perl-base_5.38.2-3.2ubuntu0.3_amd64.deb ...
+Unpacking perl-base (5.38.2-3.2ubuntu0.3) over (5.38.2-3.2ubuntu0.2) ...
+Setting up perl-base (5.38.2-3.2ubuntu0.3) ...
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 19926 files and directories currently installed.)
+Preparing to unpack .../perl-modules-5.38_5.38.2-3.2ubuntu0.3_all.deb ...
+Unpacking perl-modules-5.38 (5.38.2-3.2ubuntu0.3) over (5.38.2-3.2ubuntu0.2) ...
+Selecting previously unselected package libpython3.12-minimal:amd64.
+Preparing to unpack .../libpython3.12-minimal_3.12.3-1ubuntu0.15_amd64.deb ...
+Unpacking libpython3.12-minimal:amd64 (3.12.3-1ubuntu0.15) ...
+Selecting previously unselected package python3.12-minimal.
+Preparing to unpack .../python3.12-minimal_3.12.3-1ubuntu0.15_amd64.deb ...
+Unpacking python3.12-minimal (3.12.3-1ubuntu0.15) ...
+Setting up libpython3.12-minimal:amd64 (3.12.3-1ubuntu0.15) ...
+Setting up python3.12-minimal (3.12.3-1ubuntu0.15) ...
+Selecting previously unselected package python3-minimal.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 20237 files and directories currently installed.)
+Preparing to unpack .../0-python3-minimal_3.12.3-0ubuntu2.1_amd64.deb ...
+Unpacking python3-minimal (3.12.3-0ubuntu2.1) ...
+Selecting previously unselected package media-types.
+Preparing to unpack .../1-media-types_10.1.0_all.deb ...
+Unpacking media-types (10.1.0) ...
+Selecting previously unselected package libsqlite3-0:amd64.
+Preparing to unpack .../2-libsqlite3-0_3.45.1-1ubuntu2.7_amd64.deb ...
+Unpacking libsqlite3-0:amd64 (3.45.1-1ubuntu2.7) ...
+Selecting previously unselected package libpython3.12-stdlib:amd64.
+Preparing to unpack .../3-libpython3.12-stdlib_3.12.3-1ubuntu0.15_amd64.deb ...
+Unpacking libpython3.12-stdlib:amd64 (3.12.3-1ubuntu0.15) ...
+Selecting previously unselected package python3.12.
+Preparing to unpack .../4-python3.12_3.12.3-1ubuntu0.15_amd64.deb ...
+Unpacking python3.12 (3.12.3-1ubuntu0.15) ...
+Selecting previously unselected package libpython3-stdlib:amd64.
+Preparing to unpack .../5-libpython3-stdlib_3.12.3-0ubuntu2.1_amd64.deb ...
+Unpacking libpython3-stdlib:amd64 (3.12.3-0ubuntu2.1) ...
+Setting up python3-minimal (3.12.3-0ubuntu2.1) ...
+Selecting previously unselected package python3.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 20677 files and directories currently installed.)
+Preparing to unpack .../00-python3_3.12.3-0ubuntu2.1_amd64.deb ...
+Unpacking python3 (3.12.3-0ubuntu2.1) ...
+Selecting previously unselected package libyaml-0-2:amd64.
+Preparing to unpack .../01-libyaml-0-2_0.2.5-1build1_amd64.deb ...
+Unpacking libyaml-0-2:amd64 (0.2.5-1build1) ...
+Selecting previously unselected package libmagic-mgc.
+Preparing to unpack .../02-libmagic-mgc_1%3a5.45-3build1_amd64.deb ...
+Unpacking libmagic-mgc (1:5.45-3build1) ...
+Selecting previously unselected package libmagic1t64:amd64.
+Preparing to unpack .../03-libmagic1t64_1%3a5.45-3build1_amd64.deb ...
+Unpacking libmagic1t64:amd64 (1:5.45-3build1) ...
+Selecting previously unselected package file.
+Preparing to unpack .../04-file_1%3a5.45-3build1_amd64.deb ...
+Unpacking file (1:5.45-3build1) ...
+Selecting previously unselected package libuv1t64:amd64.
+Preparing to unpack .../05-libuv1t64_1.48.0-1.1build1_amd64.deb ...
+Unpacking libuv1t64:amd64 (1.48.0-1.1build1) ...
+Selecting previously unselected package bzip2.
+Preparing to unpack .../06-bzip2_1.0.8-5.1build0.1_amd64.deb ...
+Unpacking bzip2 (1.0.8-5.1build0.1) ...
+Preparing to unpack .../07-curl_8.5.0-2ubuntu10.11_amd64.deb ...
+Unpacking curl (8.5.0-2ubuntu10.11) over (8.5.0-2ubuntu10.9) ...
+Preparing to unpack .../08-libcurl4t64_8.5.0-2ubuntu10.11_amd64.deb ...
+Unpacking libcurl4t64:amd64 (8.5.0-2ubuntu10.11) over (8.5.0-2ubuntu10.9) ...
+Selecting previously unselected package libdpkg-perl.
+Preparing to unpack .../09-libdpkg-perl_1.22.6ubuntu6.6_all.deb ...
+Unpacking libdpkg-perl (1.22.6ubuntu6.6) ...
+Selecting previously unselected package lto-disabled-list.
+Preparing to unpack .../10-lto-disabled-list_47_all.deb ...
+Unpacking lto-disabled-list (47) ...
+Selecting previously unselected package dpkg-dev.
+Preparing to unpack .../11-dpkg-dev_1.22.6ubuntu6.6_all.deb ...
+Unpacking dpkg-dev (1.22.6ubuntu6.6) ...
+Selecting previously unselected package gpgconf.
+Preparing to unpack .../12-gpgconf_2.4.4-2ubuntu17.4_amd64.deb ...
+Unpacking gpgconf (2.4.4-2ubuntu17.4) ...
+Selecting previously unselected package libksba8:amd64.
+Preparing to unpack .../13-libksba8_1.6.6-1build1_amd64.deb ...
+Unpacking libksba8:amd64 (1.6.6-1build1) ...
+Selecting previously unselected package dirmngr.
+Preparing to unpack .../14-dirmngr_2.4.4-2ubuntu17.4_amd64.deb ...
+Unpacking dirmngr (2.4.4-2ubuntu17.4) ...
+Selecting previously unselected package gnupg-utils.
+Preparing to unpack .../15-gnupg-utils_2.4.4-2ubuntu17.4_amd64.deb ...
+Unpacking gnupg-utils (2.4.4-2ubuntu17.4) ...
+Selecting previously unselected package gpg.
+Preparing to unpack .../16-gpg_2.4.4-2ubuntu17.4_amd64.deb ...
+Unpacking gpg (2.4.4-2ubuntu17.4) ...
+Selecting previously unselected package pinentry-curses.
+Preparing to unpack .../17-pinentry-curses_1.2.1-3ubuntu5_amd64.deb ...
+Unpacking pinentry-curses (1.2.1-3ubuntu5) ...
+Selecting previously unselected package gpg-agent.
+Preparing to unpack .../18-gpg-agent_2.4.4-2ubuntu17.4_amd64.deb ...
+Unpacking gpg-agent (2.4.4-2ubuntu17.4) ...
+Selecting previously unselected package gpgsm.
+Preparing to unpack .../19-gpgsm_2.4.4-2ubuntu17.4_amd64.deb ...
+Unpacking gpgsm (2.4.4-2ubuntu17.4) ...
+Selecting previously unselected package keyboxd.
+Preparing to unpack .../20-keyboxd_2.4.4-2ubuntu17.4_amd64.deb ...
+Unpacking keyboxd (2.4.4-2ubuntu17.4) ...
+Selecting previously unselected package gnupg.
+Preparing to unpack .../21-gnupg_2.4.4-2ubuntu17.4_all.deb ...
+Unpacking gnupg (2.4.4-2ubuntu17.4) ...
+Selecting previously unselected package libfile-dirlist-perl.
+Preparing to unpack .../22-libfile-dirlist-perl_0.05-3_all.deb ...
+Unpacking libfile-dirlist-perl (0.05-3) ...
+Selecting previously unselected package libfile-which-perl.
+Preparing to unpack .../23-libfile-which-perl_1.27-2_all.deb ...
+Unpacking libfile-which-perl (1.27-2) ...
+Selecting previously unselected package libfile-homedir-perl.
+Preparing to unpack .../24-libfile-homedir-perl_1.006-2_all.deb ...
+Unpacking libfile-homedir-perl (1.006-2) ...
+Selecting previously unselected package libfile-touch-perl.
+Preparing to unpack .../25-libfile-touch-perl_0.12-2_all.deb ...
+Unpacking libfile-touch-perl (0.12-2) ...
+Selecting previously unselected package libio-pty-perl.
+Preparing to unpack .../26-libio-pty-perl_1%3a1.20-1build2_amd64.deb ...
+Unpacking libio-pty-perl (1:1.20-1build2) ...
+Selecting previously unselected package libipc-run-perl.
+Preparing to unpack .../27-libipc-run-perl_20231003.0-1_all.deb ...
+Unpacking libipc-run-perl (20231003.0-1) ...
+Selecting previously unselected package libclass-method-modifiers-perl.
+Preparing to unpack .../28-libclass-method-modifiers-perl_2.15-1_all.deb ...
+Unpacking libclass-method-modifiers-perl (2.15-1) ...
+Selecting previously unselected package libclass-xsaccessor-perl.
+Preparing to unpack .../29-libclass-xsaccessor-perl_1.19-4build4_amd64.deb ...
+Unpacking libclass-xsaccessor-perl (1.19-4build4) ...
+Selecting previously unselected package libb-hooks-op-check-perl:amd64.
+Preparing to unpack .../30-libb-hooks-op-check-perl_0.22-3build1_amd64.deb ...
+Unpacking libb-hooks-op-check-perl:amd64 (0.22-3build1) ...
+Selecting previously unselected package libdynaloader-functions-perl.
+Preparing to unpack .../31-libdynaloader-functions-perl_0.003-3_all.deb ...
+Unpacking libdynaloader-functions-perl (0.003-3) ...
+Selecting previously unselected package libdevel-callchecker-perl:amd64.
+Preparing to unpack .../32-libdevel-callchecker-perl_0.008-2build3_amd64.deb ...
+Unpacking libdevel-callchecker-perl:amd64 (0.008-2build3) ...
+Selecting previously unselected package libparams-classify-perl:amd64.
+Preparing to unpack .../33-libparams-classify-perl_0.015-2build5_amd64.deb ...
+Unpacking libparams-classify-perl:amd64 (0.015-2build5) ...
+Selecting previously unselected package libmodule-runtime-perl.
+Preparing to unpack .../34-libmodule-runtime-perl_0.016-2_all.deb ...
+Unpacking libmodule-runtime-perl (0.016-2) ...
+Selecting previously unselected package libimport-into-perl.
+Preparing to unpack .../35-libimport-into-perl_1.002005-2_all.deb ...
+Unpacking libimport-into-perl (1.002005-2) ...
+Selecting previously unselected package librole-tiny-perl.
+Preparing to unpack .../36-librole-tiny-perl_2.002004-1_all.deb ...
+Unpacking librole-tiny-perl (2.002004-1) ...
+Selecting previously unselected package libsub-quote-perl.
+Preparing to unpack .../37-libsub-quote-perl_2.006008-1ubuntu1_all.deb ...
+Unpacking libsub-quote-perl (2.006008-1ubuntu1) ...
+Selecting previously unselected package libmoo-perl.
+Preparing to unpack .../38-libmoo-perl_2.005005-1_all.deb ...
+Unpacking libmoo-perl (2.005005-1) ...
+Selecting previously unselected package libencode-locale-perl.
+Preparing to unpack .../39-libencode-locale-perl_1.05-3_all.deb ...
+Unpacking libencode-locale-perl (1.05-3) ...
+Selecting previously unselected package libtimedate-perl.
+Preparing to unpack .../40-libtimedate-perl_2.3300-2_all.deb ...
+Unpacking libtimedate-perl (2.3300-2) ...
+Selecting previously unselected package libhttp-date-perl.
+Preparing to unpack .../41-libhttp-date-perl_6.06-1ubuntu0.24.04.1_all.deb ...
+Unpacking libhttp-date-perl (6.06-1ubuntu0.24.04.1) ...
+Selecting previously unselected package libfile-listing-perl.
+Preparing to unpack .../42-libfile-listing-perl_6.16-1_all.deb ...
+Unpacking libfile-listing-perl (6.16-1) ...
+Selecting previously unselected package libhtml-tagset-perl.
+Preparing to unpack .../43-libhtml-tagset-perl_3.20-6_all.deb ...
+Unpacking libhtml-tagset-perl (3.20-6) ...
+Selecting previously unselected package liburi-perl.
+Preparing to unpack .../44-liburi-perl_5.27-1_all.deb ...
+Unpacking liburi-perl (5.27-1) ...
+Selecting previously unselected package libhtml-parser-perl:amd64.
+Preparing to unpack .../45-libhtml-parser-perl_3.81-1ubuntu0.1_amd64.deb ...
+Unpacking libhtml-parser-perl:amd64 (3.81-1ubuntu0.1) ...
+Selecting previously unselected package libhtml-tree-perl.
+Preparing to unpack .../46-libhtml-tree-perl_5.07-3_all.deb ...
+Unpacking libhtml-tree-perl (5.07-3) ...
+Selecting previously unselected package libclone-perl:amd64.
+Preparing to unpack .../47-libclone-perl_0.46-1build3_amd64.deb ...
+Unpacking libclone-perl:amd64 (0.46-1build3) ...
+Selecting previously unselected package libio-html-perl.
+Preparing to unpack .../48-libio-html-perl_1.004-3_all.deb ...
+Unpacking libio-html-perl (1.004-3) ...
+Selecting previously unselected package liblwp-mediatypes-perl.
+Preparing to unpack .../49-liblwp-mediatypes-perl_6.04-2_all.deb ...
+Unpacking liblwp-mediatypes-perl (6.04-2) ...
+Selecting previously unselected package libhttp-message-perl.
+Preparing to unpack .../50-libhttp-message-perl_6.45-1ubuntu1_all.deb ...
+Unpacking libhttp-message-perl (6.45-1ubuntu1) ...
+Selecting previously unselected package libhttp-cookies-perl.
+Preparing to unpack .../51-libhttp-cookies-perl_6.11-1_all.deb ...
+Unpacking libhttp-cookies-perl (6.11-1) ...
+Selecting previously unselected package libhttp-negotiate-perl.
+Preparing to unpack .../52-libhttp-negotiate-perl_6.01-2_all.deb ...
+Unpacking libhttp-negotiate-perl (6.01-2) ...
+Selecting previously unselected package perl-openssl-defaults:amd64.
+Preparing to unpack .../53-perl-openssl-defaults_7build3_amd64.deb ...
+Unpacking perl-openssl-defaults:amd64 (7build3) ...
+Selecting previously unselected package libnet-ssleay-perl:amd64.
+Preparing to unpack .../54-libnet-ssleay-perl_1.94-1build4_amd64.deb ...
+Unpacking libnet-ssleay-perl:amd64 (1.94-1build4) ...
+Selecting previously unselected package libio-socket-ssl-perl.
+Preparing to unpack .../55-libio-socket-ssl-perl_2.085-1_all.deb ...
+Unpacking libio-socket-ssl-perl (2.085-1) ...
+Selecting previously unselected package libnet-http-perl.
+Preparing to unpack .../56-libnet-http-perl_6.23-1_all.deb ...
+Unpacking libnet-http-perl (6.23-1) ...
+Selecting previously unselected package liblwp-protocol-https-perl.
+Preparing to unpack .../57-liblwp-protocol-https-perl_6.13-1_all.deb ...
+Unpacking liblwp-protocol-https-perl (6.13-1) ...
+Selecting previously unselected package libtry-tiny-perl.
+Preparing to unpack .../58-libtry-tiny-perl_0.31-2_all.deb ...
+Unpacking libtry-tiny-perl (0.31-2) ...
+Selecting previously unselected package libwww-robotrules-perl.
+Preparing to unpack .../59-libwww-robotrules-perl_6.02-1_all.deb ...
+Unpacking libwww-robotrules-perl (6.02-1) ...
+Selecting previously unselected package libwww-perl.
+Preparing to unpack .../60-libwww-perl_6.76-1ubuntu0.1_all.deb ...
+Unpacking libwww-perl (6.76-1ubuntu0.1) ...
+Selecting previously unselected package patchutils.
+Preparing to unpack .../61-patchutils_0.4.2-1build3_amd64.deb ...
+Unpacking patchutils (0.4.2-1build3) ...
+Selecting previously unselected package wdiff.
+Preparing to unpack .../62-wdiff_1.2.2-6build1_amd64.deb ...
+Unpacking wdiff (1.2.2-6build1) ...
+Selecting previously unselected package devscripts.
+Preparing to unpack .../63-devscripts_2.23.7ubuntu0.2_all.deb ...
+Unpacking devscripts (2.23.7ubuntu0.2) ...
+Preparing to unpack .../64-libcurl3t64-gnutls_8.5.0-2ubuntu10.11_amd64.deb ...
+Unpacking libcurl3t64-gnutls:amd64 (8.5.0-2ubuntu10.11) over (8.5.0-2ubuntu10.9) ...
+Selecting previously unselected package libcurl4-openssl-dev:amd64.
+Preparing to unpack .../65-libcurl4-openssl-dev_8.5.0-2ubuntu10.11_amd64.deb ...
+Unpacking libcurl4-openssl-dev:amd64 (8.5.0-2ubuntu10.11) ...
+Selecting previously unselected package liblua5.4-0:amd64.
+Preparing to unpack .../66-liblua5.4-0_5.4.6-3build2_amd64.deb ...
+Unpacking liblua5.4-0:amd64 (5.4.6-3build2) ...
+Selecting previously unselected package libuv1-dev:amd64.
+Preparing to unpack .../67-libuv1-dev_1.48.0-1.1build1_amd64.deb ...
+Unpacking libuv1-dev:amd64 (1.48.0-1.1build1) ...
+Selecting previously unselected package pandoc-data.
+Preparing to unpack .../68-pandoc-data_3.1.3-1_all.deb ...
+Unpacking pandoc-data (3.1.3-1) ...
+Selecting previously unselected package pandoc.
+Preparing to unpack .../69-pandoc_3.1.3+ds-2_amd64.deb ...
+Unpacking pandoc (3.1.3+ds-2) ...
+Setting up libksba8:amd64 (1.6.6-1build1) ...
+Setting up pinentry-curses (1.2.1-3ubuntu5) ...
+Setting up media-types (10.1.0) ...
+Setting up wdiff (1.2.2-6build1) ...
+Setting up lto-disabled-list (47) ...
+Setting up libcurl4t64:amd64 (8.5.0-2ubuntu10.11) ...
+Setting up libmagic-mgc (1:5.45-3build1) ...
+Setting up libyaml-0-2:amd64 (0.2.5-1build1) ...
+Setting up libsqlite3-0:amd64 (3.45.1-1ubuntu2.7) ...
+Setting up libuv1t64:amd64 (1.48.0-1.1build1) ...
+Setting up libmagic1t64:amd64 (1:5.45-3build1) ...
+Setting up libcurl3t64-gnutls:amd64 (8.5.0-2ubuntu10.11) ...
+Setting up perl-openssl-defaults:amd64 (7build3) ...
+Setting up file (1:5.45-3build1) ...
+Setting up bzip2 (1.0.8-5.1build0.1) ...
+Setting up libcurl4-openssl-dev:amd64 (8.5.0-2ubuntu10.11) ...
+Setting up perl-modules-5.38 (5.38.2-3.2ubuntu0.3) ...
+Setting up gpgconf (2.4.4-2ubuntu17.4) ...
+Setting up liblua5.4-0:amd64 (5.4.6-3build2) ...
+Setting up curl (8.5.0-2ubuntu10.11) ...
+Setting up libperl5.38t64:amd64 (5.38.2-3.2ubuntu0.3) ...
+Setting up pandoc-data (3.1.3-1) ...
+Setting up gpg (2.4.4-2ubuntu17.4) ...
+Setting up gnupg-utils (2.4.4-2ubuntu17.4) ...
+Setting up libuv1-dev:amd64 (1.48.0-1.1build1) ...
+Setting up gpg-agent (2.4.4-2ubuntu17.4) ...
+Setting up libpython3.12-stdlib:amd64 (3.12.3-1ubuntu0.15) ...
+Setting up python3.12 (3.12.3-1ubuntu0.15) ...
+Setting up gpgsm (2.4.4-2ubuntu17.4) ...
+Setting up dirmngr (2.4.4-2ubuntu17.4) ...
+Setting up perl (5.38.2-3.2ubuntu0.3) ...
+Setting up pandoc (3.1.3+ds-2) ...
+Setting up libio-html-perl (1.004-3) ...
+Setting up libb-hooks-op-check-perl:amd64 (0.22-3build1) ...
+Setting up keyboxd (2.4.4-2ubuntu17.4) ...
+Setting up libdpkg-perl (1.22.6ubuntu6.6) ...
+Setting up libtimedate-perl (2.3300-2) ...
+Setting up gnupg (2.4.4-2ubuntu17.4) ...
+Setting up libsub-quote-perl (2.006008-1ubuntu1) ...
+Setting up libclass-xsaccessor-perl (1.19-4build4) ...
+Setting up libfile-dirlist-perl (0.05-3) ...
+Setting up liburi-perl (5.27-1) ...
+Setting up libfile-touch-perl (0.12-2) ...
+Setting up libpython3-stdlib:amd64 (3.12.3-0ubuntu2.1) ...
+Setting up libnet-ssleay-perl:amd64 (1.94-1build4) ...
+Setting up libhttp-date-perl (6.06-1ubuntu0.24.04.1) ...
+Setting up libfile-which-perl (1.27-2) ...
+Setting up libfile-listing-perl (6.16-1) ...
+Setting up libdynaloader-functions-perl (0.003-3) ...
+Setting up libclass-method-modifiers-perl (2.15-1) ...
+Setting up libio-pty-perl (1:1.20-1build2) ...
+Setting up libclone-perl:amd64 (0.46-1build3) ...
+Setting up libhtml-tagset-perl (3.20-6) ...
+Setting up liblwp-mediatypes-perl (6.04-2) ...
+Setting up libtry-tiny-perl (0.31-2) ...
+Setting up libnet-http-perl (6.23-1) ...
+Setting up libencode-locale-perl (1.05-3) ...
+Setting up python3 (3.12.3-0ubuntu2.1) ...
+Setting up libdevel-callchecker-perl:amd64 (0.008-2build3) ...
+Setting up dpkg-dev (1.22.6ubuntu6.6) ...
+Setting up patchutils (0.4.2-1build3) ...
+Setting up libipc-run-perl (20231003.0-1) ...
+Setting up libwww-robotrules-perl (6.02-1) ...
+Setting up libhtml-parser-perl:amd64 (3.81-1ubuntu0.1) ...
+Setting up librole-tiny-perl (2.002004-1) ...
+Setting up libfile-homedir-perl (1.006-2) ...
+Setting up libio-socket-ssl-perl (2.085-1) ...
+Setting up libhttp-message-perl (6.45-1ubuntu1) ...
+Setting up libhttp-negotiate-perl (6.01-2) ...
+Setting up libhttp-cookies-perl (6.11-1) ...
+Setting up libhtml-tree-perl (5.07-3) ...
+Setting up libparams-classify-perl:amd64 (0.015-2build5) ...
+Setting up libmodule-runtime-perl (0.016-2) ...
+Setting up libimport-into-perl (1.002005-2) ...
+Setting up libmoo-perl (2.005005-1) ...
+Setting up libwww-perl (6.76-1ubuntu0.1) ...
+Setting up devscripts (2.23.7ubuntu0.2) ...
+Setting up liblwp-protocol-https-perl (6.13-1) ...
+Processing triggers for libc-bin (2.39-0ubuntu8.7) ...
+Installing declared dependencies: tinytest, later2, callr, curl, jsonlite
+also installing the dependencies ‘ps’, ‘otel’, ‘processx’, ‘R6’
+
+trying URL 'https://cloud.r-project.org/src/contrib/ps_1.9.3.tar.gz'
+trying URL 'https://cloud.r-project.org/src/contrib/otel_0.2.0.tar.gz'
+trying URL 'https://cloud.r-project.org/src/contrib/processx_3.9.0.tar.gz'
+trying URL 'https://cloud.r-project.org/src/contrib/R6_2.6.1.tar.gz'
+trying URL 'https://cloud.r-project.org/src/contrib/tinytest_1.4.3.tar.gz'
+trying URL 'https://cloud.r-project.org/src/contrib/callr_3.8.0.tar.gz'
+trying URL 'https://cloud.r-project.org/src/contrib/curl_7.1.0.tar.gz'
+trying URL 'https://cloud.r-project.org/src/contrib/jsonlite_2.0.0.tar.gz'
+Warning: unknown option ‘--no-build-vignettes’
+* installing *source* package ‘ps’ ...
+** this is package ‘ps’ version ‘1.9.3’
+** package ‘ps’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C compiler: ‘gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0’
+gcc -std=gnu2x -g -O2  -L/usr/local/lib -Wall px.c -o px
+In file included from /usr/include/features.h:502,
+                 from /usr/include/unistd.h:25,
+                 from px.c:6:
+In function ‘read’,
+    inlined from ‘echo_from_fd’ at px.c:83:9:
+/usr/include/x86_64-linux-gnu/bits/unistd.h:28:10: warning: ‘__read_alias’ specified size 18446744073709551614 exceeds maximum object size 9223372036854775807 [-Wstringop-overflow=]
+   28 |   return __glibc_fortify (read, __nbytes, sizeof (char),
+      |          ^~~~~~~~~~~~~~~
+/usr/include/x86_64-linux-gnu/bits/unistd-decl.h: In function ‘echo_from_fd’:
+/usr/include/x86_64-linux-gnu/bits/unistd-decl.h:29:16: note: in a call to function ‘__read_alias’ declared with attribute ‘access (write_only, 2, 3)’
+   29 | extern ssize_t __REDIRECT_FORTIFY (__read_alias, (int __fd, void *__buf,
+      |                ^~~~~~~~~~~~~~~~~~
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG   -I/usr/local/include    -fpic  -g -O2  -c init.c -o init.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG   -I/usr/local/include    -fpic  -g -O2  -c api-common.c -o api-common.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG   -I/usr/local/include    -fpic  -g -O2  -c common.c -o common.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG   -I/usr/local/include    -fpic  -g -O2  -c extra.c -o extra.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG   -I/usr/local/include    -fpic  -g -O2  -c dummy.c -o dummy.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG   -I/usr/local/include    -fpic  -g -O2  -c error-codes.c -o error-codes.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG   -I/usr/local/include    -fpic  -g -O2  -c cleancall.c -o cleancall.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG   -I/usr/local/include    -fpic  -g -O2  -c posix.c -o posix.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG   -I/usr/local/include    -fpic  -g -O2  -c api-posix.c -o api-posix.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG   -I/usr/local/include    -fpic  -g -O2  -c linux.c -o linux.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG   -I/usr/local/include    -fpic  -g -O2  -c api-linux.c -o api-linux.o
+gcc -std=gnu2x -shared -L/opt/R/4.6.0/lib/R/lib -L/usr/local/lib -o ps.so init.o api-common.o common.o extra.o dummy.o error-codes.o cleancall.o posix.o api-posix.o linux.o api-linux.o -L/opt/R/4.6.0/lib/R/lib -lR
+installing via 'install.libs.R' to /cache/R_libs/00LOCK-ps/00new/ps
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (ps)
+Warning: unknown option ‘--no-build-vignettes’
+* installing *source* package ‘otel’ ...
+** this is package ‘otel’ version ‘0.2.0’
+** package ‘otel’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (otel)
+Warning: unknown option ‘--no-build-vignettes’
+* installing *source* package ‘R6’ ...
+** this is package ‘R6’ version ‘2.6.1’
+** package ‘R6’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (R6)
+Warning: unknown option ‘--no-build-vignettes’
+* installing *source* package ‘tinytest’ ...
+** this is package ‘tinytest’ version ‘1.4.3’
+** package ‘tinytest’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (tinytest)
+Warning: unknown option ‘--no-build-vignettes’
+* installing *source* package ‘curl’ ...
+** this is package ‘curl’ version ‘7.1.0’
+** package ‘curl’ successfully unpacked and MD5 sums checked
+** using staged installation
+Found pkg-config cflags and libs!
+Using PKG_CFLAGS=-I/usr/include/x86_64-linux-gnu 
+Using PKG_LIBS=-lcurl 
+** libs
+using C compiler: ‘gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0’
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DSTRICT_R_HEADERS -DR_NO_REMAP  -I/usr/local/include   -fvisibility=hidden -fpic  -g -O2  -c callbacks.c -o callbacks.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DSTRICT_R_HEADERS -DR_NO_REMAP  -I/usr/local/include   -fvisibility=hidden -fpic  -g -O2  -c curl.c -o curl.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DSTRICT_R_HEADERS -DR_NO_REMAP  -I/usr/local/include   -fvisibility=hidden -fpic  -g -O2  -c download.c -o download.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DSTRICT_R_HEADERS -DR_NO_REMAP  -I/usr/local/include   -fvisibility=hidden -fpic  -g -O2  -c dryrun.c -o dryrun.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DSTRICT_R_HEADERS -DR_NO_REMAP  -I/usr/local/include   -fvisibility=hidden -fpic  -g -O2  -c escape.c -o escape.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DSTRICT_R_HEADERS -DR_NO_REMAP  -I/usr/local/include   -fvisibility=hidden -fpic  -g -O2  -c fetch.c -o fetch.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DSTRICT_R_HEADERS -DR_NO_REMAP  -I/usr/local/include   -fvisibility=hidden -fpic  -g -O2  -c findport.c -o findport.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DSTRICT_R_HEADERS -DR_NO_REMAP  -I/usr/local/include   -fvisibility=hidden -fpic  -g -O2  -c form.c -o form.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DSTRICT_R_HEADERS -DR_NO_REMAP  -I/usr/local/include   -fvisibility=hidden -fpic  -g -O2  -c getdate.c -o getdate.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DSTRICT_R_HEADERS -DR_NO_REMAP  -I/usr/local/include   -fvisibility=hidden -fpic  -g -O2  -c handle.c -o handle.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DSTRICT_R_HEADERS -DR_NO_REMAP  -I/usr/local/include   -fvisibility=hidden -fpic  -g -O2  -c ieproxy.c -o ieproxy.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DSTRICT_R_HEADERS -DR_NO_REMAP  -I/usr/local/include   -fvisibility=hidden -fpic  -g -O2  -c init.c -o init.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DSTRICT_R_HEADERS -DR_NO_REMAP  -I/usr/local/include   -fvisibility=hidden -fpic  -g -O2  -c interrupt.c -o interrupt.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DSTRICT_R_HEADERS -DR_NO_REMAP  -I/usr/local/include   -fvisibility=hidden -fpic  -g -O2  -c multi.c -o multi.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DSTRICT_R_HEADERS -DR_NO_REMAP  -I/usr/local/include   -fvisibility=hidden -fpic  -g -O2  -c nslookup.c -o nslookup.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DSTRICT_R_HEADERS -DR_NO_REMAP  -I/usr/local/include   -fvisibility=hidden -fpic  -g -O2  -c options.c -o options.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DSTRICT_R_HEADERS -DR_NO_REMAP  -I/usr/local/include   -fvisibility=hidden -fpic  -g -O2  -c reflist.c -o reflist.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DSTRICT_R_HEADERS -DR_NO_REMAP  -I/usr/local/include   -fvisibility=hidden -fpic  -g -O2  -c split.c -o split.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DSTRICT_R_HEADERS -DR_NO_REMAP  -I/usr/local/include   -fvisibility=hidden -fpic  -g -O2  -c ssl.c -o ssl.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DSTRICT_R_HEADERS -DR_NO_REMAP  -I/usr/local/include   -fvisibility=hidden -fpic  -g -O2  -c typechecking.c -o typechecking.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DSTRICT_R_HEADERS -DR_NO_REMAP  -I/usr/local/include   -fvisibility=hidden -fpic  -g -O2  -c urlparser.c -o urlparser.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DSTRICT_R_HEADERS -DR_NO_REMAP  -I/usr/local/include   -fvisibility=hidden -fpic  -g -O2  -c utils.c -o utils.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DSTRICT_R_HEADERS -DR_NO_REMAP  -I/usr/local/include   -fvisibility=hidden -fpic  -g -O2  -c version.c -o version.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DSTRICT_R_HEADERS -DR_NO_REMAP  -I/usr/local/include   -fvisibility=hidden -fpic  -g -O2  -c winidn.c -o winidn.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DSTRICT_R_HEADERS -DR_NO_REMAP  -I/usr/local/include   -fvisibility=hidden -fpic  -g -O2  -c writer.c -o writer.o
+gcc -std=gnu2x -shared -L/opt/R/4.6.0/lib/R/lib -L/usr/local/lib -o curl.so callbacks.o curl.o download.o dryrun.o escape.o fetch.o findport.o form.o getdate.o handle.o ieproxy.o init.o interrupt.o multi.o nslookup.o options.o reflist.o split.o ssl.o typechecking.o urlparser.o utils.o version.o winidn.o writer.o -lcurl -L/opt/R/4.6.0/lib/R/lib -lR
+installing to /cache/R_libs/00LOCK-curl/00new/curl/libs
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (curl)
+Warning: unknown option ‘--no-build-vignettes’
+* installing *source* package ‘jsonlite’ ...
+** this is package ‘jsonlite’ version ‘2.0.0’
+** package ‘jsonlite’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C compiler: ‘gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0’
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -Iyajl/api  -I/usr/local/include   -fvisibility=hidden  -fpic  -g -O2  -c base64.c -o base64.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -Iyajl/api  -I/usr/local/include   -fvisibility=hidden  -fpic  -g -O2  -c collapse_array.c -o collapse_array.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -Iyajl/api  -I/usr/local/include   -fvisibility=hidden  -fpic  -g -O2  -c collapse_object.c -o collapse_object.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -Iyajl/api  -I/usr/local/include   -fvisibility=hidden  -fpic  -g -O2  -c collapse_pretty.c -o collapse_pretty.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -Iyajl/api  -I/usr/local/include   -fvisibility=hidden  -fpic  -g -O2  -c escape_chars.c -o escape_chars.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -Iyajl/api  -I/usr/local/include   -fvisibility=hidden  -fpic  -g -O2  -c integer64_to_na.c -o integer64_to_na.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -Iyajl/api  -I/usr/local/include   -fvisibility=hidden  -fpic  -g -O2  -c is_datelist.c -o is_datelist.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -Iyajl/api  -I/usr/local/include   -fvisibility=hidden  -fpic  -g -O2  -c is_recordlist.c -o is_recordlist.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -Iyajl/api  -I/usr/local/include   -fvisibility=hidden  -fpic  -g -O2  -c is_scalarlist.c -o is_scalarlist.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -Iyajl/api  -I/usr/local/include   -fvisibility=hidden  -fpic  -g -O2  -c modp_numtoa.c -o modp_numtoa.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -Iyajl/api  -I/usr/local/include   -fvisibility=hidden  -fpic  -g -O2  -c null_to_na.c -o null_to_na.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -Iyajl/api  -I/usr/local/include   -fvisibility=hidden  -fpic  -g -O2  -c num_to_char.c -o num_to_char.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -Iyajl/api  -I/usr/local/include   -fvisibility=hidden  -fpic  -g -O2  -c parse.c -o parse.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -Iyajl/api  -I/usr/local/include   -fvisibility=hidden  -fpic  -g -O2  -c prettify.c -o prettify.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -Iyajl/api  -I/usr/local/include   -fvisibility=hidden  -fpic  -g -O2  -c push_parser.c -o push_parser.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -Iyajl/api  -I/usr/local/include   -fvisibility=hidden  -fpic  -g -O2  -c r-base64.c -o r-base64.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -Iyajl/api  -I/usr/local/include   -fvisibility=hidden  -fpic  -g -O2  -c register.c -o register.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -Iyajl/api  -I/usr/local/include   -fvisibility=hidden  -fpic  -g -O2  -c row_collapse.c -o row_collapse.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -Iyajl/api  -I/usr/local/include   -fvisibility=hidden  -fpic  -g -O2  -c transpose_list.c -o transpose_list.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -Iyajl/api  -I/usr/local/include   -fvisibility=hidden  -fpic  -g -O2  -c validate.c -o validate.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -Iyajl/api  -I/usr/local/include   -fvisibility=hidden  -fpic  -g -O2  -c yajl/yajl.c -o yajl/yajl.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -Iyajl/api  -I/usr/local/include   -fvisibility=hidden  -fpic  -g -O2  -c yajl/yajl_alloc.c -o yajl/yajl_alloc.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -Iyajl/api  -I/usr/local/include   -fvisibility=hidden  -fpic  -g -O2  -c yajl/yajl_buf.c -o yajl/yajl_buf.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -Iyajl/api  -I/usr/local/include   -fvisibility=hidden  -fpic  -g -O2  -c yajl/yajl_encode.c -o yajl/yajl_encode.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -Iyajl/api  -I/usr/local/include   -fvisibility=hidden  -fpic  -g -O2  -c yajl/yajl_gen.c -o yajl/yajl_gen.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -Iyajl/api  -I/usr/local/include   -fvisibility=hidden  -fpic  -g -O2  -c yajl/yajl_lex.c -o yajl/yajl_lex.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -Iyajl/api  -I/usr/local/include   -fvisibility=hidden  -fpic  -g -O2  -c yajl/yajl_parser.c -o yajl/yajl_parser.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -Iyajl/api  -I/usr/local/include   -fvisibility=hidden  -fpic  -g -O2  -c yajl/yajl_tree.c -o yajl/yajl_tree.o
+ar rcs yajl/libstatyajl.a yajl/yajl.o yajl/yajl_alloc.o yajl/yajl_buf.o yajl/yajl_encode.o yajl/yajl_gen.o yajl/yajl_lex.o yajl/yajl_parser.o yajl/yajl_tree.o
+gcc -std=gnu2x -shared -L/opt/R/4.6.0/lib/R/lib -L/usr/local/lib -o jsonlite.so base64.o collapse_array.o collapse_object.o collapse_pretty.o escape_chars.o integer64_to_na.o is_datelist.o is_recordlist.o is_scalarlist.o modp_numtoa.o null_to_na.o num_to_char.o parse.o prettify.o push_parser.o r-base64.o register.o row_collapse.o transpose_list.o validate.o -Lyajl -lstatyajl -L/opt/R/4.6.0/lib/R/lib -lR
+installing to /cache/R_libs/00LOCK-jsonlite/00new/jsonlite/libs
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+in method for ‘asJSON’ with signature ‘"AsIs"’: no definition for class “AsIs”
+in method for ‘asJSON’ with signature ‘"ITime"’: no definition for class “ITime”
+in method for ‘asJSON’ with signature ‘"hms"’: no definition for class “hms”
+in method for ‘asJSON’ with signature ‘"json"’: no definition for class “json”
+in method for ‘asJSON’ with signature ‘"integer64"’: no definition for class “integer64”
+in method for ‘asJSON’ with signature ‘"pairlist"’: no definition for class “pairlist”
+in method for ‘asJSON’ with signature ‘"blob"’: no definition for class “blob”
+in method for ‘asJSON’ with signature ‘"scalar"’: no definition for class “scalar”
+in method for ‘asJSON’ with signature ‘"sf"’: no definition for class “sf”
+in method for ‘asJSON’ with signature ‘"sfc"’: no definition for class “sfc”
+in method for ‘asJSON’ with signature ‘"vctrs_vctr"’: no definition for class “vctrs_vctr”
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (jsonlite)
+Warning: unknown option ‘--no-build-vignettes’
+* installing *source* package ‘processx’ ...
+** this is package ‘processx’ version ‘3.9.0’
+** package ‘processx’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C compiler: ‘gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0’
+gcc -std=gnu2x -g -O2  -L/usr/local/lib -Wall tools/px.c -o tools/px
+In file included from /usr/include/features.h:502,
+                 from /usr/include/unistd.h:25,
+                 from tools/px.c:11:
+In function ‘read’,
+    inlined from ‘echo_from_fd’ at tools/px.c:100:9:
+/usr/include/x86_64-linux-gnu/bits/unistd.h:28:10: warning: ‘__read_alias’ specified size 18446744073709551614 exceeds maximum object size 9223372036854775807 [-Wstringop-overflow=]
+   28 |   return __glibc_fortify (read, __nbytes, sizeof (char),
+      |          ^~~~~~~~~~~~~~~
+/usr/include/x86_64-linux-gnu/bits/unistd-decl.h: In function ‘echo_from_fd’:
+/usr/include/x86_64-linux-gnu/bits/unistd-decl.h:29:16: note: in a call to function ‘__read_alias’ declared with attribute ‘access (write_only, 2, 3)’
+   29 | extern ssize_t __REDIRECT_FORTIFY (__read_alias, (int __fd, void *__buf,
+      |                ^~~~~~~~~~~~~~~~~~
+gcc -std=gnu2x -g -O2  -L/usr/local/lib -I../inst/include -Wall tools/sock.c -o tools/sock
+gcc -std=gnu2x -g -O2  -L/usr/local/lib supervisor/supervisor.c \
+      supervisor/utils.c -o supervisor/supervisor
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG   -I/usr/local/include    -fpic  -g -O2  -c base64.c -o base64.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG   -I/usr/local/include    -fpic  -g -O2  -c client.c -o client.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG   -I/usr/local/include    -fpic  -g -O2  -c errors.c -o errors.o
+gcc -std=gnu2x -shared -L"/opt/R/4.6.0/lib/R/lib" -L/usr/local/lib -o client.so base64.o client.o errors.o  \
+	 -L"/opt/R/4.6.0/lib/R/lib" -lR
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG   -I/usr/local/include    -fpic  -g -O2  -c init.c -o init.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG   -I/usr/local/include    -fpic  -g -O2  -c poll.c -o poll.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG   -I/usr/local/include    -fpic  -g -O2  -c processx-connection.c -o processx-connection.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG   -I/usr/local/include    -fpic  -g -O2  -c processx-vector.c -o processx-vector.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG   -I/usr/local/include    -fpic  -g -O2  -c create-time.c -o create-time.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG   -I/usr/local/include    -fpic  -g -O2  -c unix/childlist.c -o unix/childlist.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG   -I/usr/local/include    -fpic  -g -O2  -c unix/connection.c -o unix/connection.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG   -I/usr/local/include    -fpic  -g -O2  -c unix/processx.c -o unix/processx.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG   -I/usr/local/include    -fpic  -g -O2  -c unix/sigchld.c -o unix/sigchld.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG   -I/usr/local/include    -fpic  -g -O2  -c unix/utils.c -o unix/utils.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG   -I/usr/local/include    -fpic  -g -O2  -c unix/named_pipe.c -o unix/named_pipe.o
+gcc -std=gnu2x -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG   -I/usr/local/include    -fpic  -g -O2  -c cleancall.c -o cleancall.o
+gcc -std=gnu2x -shared -L/opt/R/4.6.0/lib/R/lib -L/usr/local/lib -o processx.so init.o poll.o errors.o processx-connection.o processx-vector.o create-time.o base64.o unix/childlist.o unix/connection.o unix/processx.o unix/sigchld.o unix/utils.o unix/named_pipe.o cleancall.o -L/opt/R/4.6.0/lib/R/lib -lR
+installing via 'install.libs.R' to /cache/R_libs/00LOCK-processx/00new/processx
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (processx)
+Warning: unknown option ‘--no-build-vignettes’
+* installing *source* package ‘callr’ ...
+** this is package ‘callr’ version ‘3.8.0’
+** package ‘callr’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (callr)
+
+The downloaded source packages are in
+	‘/tmp/RtmpK1iE7u/downloaded_packages’
+Warning message:
+package ‘later2’ is not available for this version of R
+
+A version of this package for your version of R might be available elsewhere,
+see the ideas at
+https://cran.r-project.org/doc/manuals/r-patched/R-admin.html#Installing-packages 
+* installing *source* package ‘cpp4r’ ...
+** this is package ‘cpp4r’ version ‘1.1.0’
+** using staged installation
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (cpp4r)
+* installing *source* package ‘later2’ ...
+** this is package ‘later2’ version ‘0.1’
+** using staged installation
+Running configure script
+-latomic linker flag not needed.
+** libs
+using C compiler: ‘gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0’
+using C++ compiler: ‘g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0’
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -DSTRICT_R_HEADERS  -I'/cache/R_libs/cpp4r/include' -I/usr/local/include    -fpic  -g -O2   -c callback_registry.cpp -o callback_registry.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -DSTRICT_R_HEADERS  -I'/cache/R_libs/cpp4r/include' -I/usr/local/include    -fpic  -g -O2   -c cpp4r.cpp -o cpp4r.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -DSTRICT_R_HEADERS  -I'/cache/R_libs/cpp4r/include' -I/usr/local/include    -fpic  -g -O2   -c debug.cpp -o debug.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -DSTRICT_R_HEADERS  -I'/cache/R_libs/cpp4r/include' -I/usr/local/include    -fpic  -g -O2   -c fd.cpp -o fd.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -DSTRICT_R_HEADERS  -I'/cache/R_libs/cpp4r/include' -I/usr/local/include    -fpic  -g -O2   -c later2.cpp -o later2.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -DSTRICT_R_HEADERS  -I'/cache/R_libs/cpp4r/include' -I/usr/local/include    -fpic  -g -O2   -c later_posix.cpp -o later_posix.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -DSTRICT_R_HEADERS  -I'/cache/R_libs/cpp4r/include' -I/usr/local/include    -fpic  -g -O2   -c later_win32.cpp -o later_win32.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -DSTRICT_R_HEADERS  -I'/cache/R_libs/cpp4r/include' -I/usr/local/include    -fpic  -g -O2   -c timer_posix.cpp -o timer_posix.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -DSTRICT_R_HEADERS  -I'/cache/R_libs/cpp4r/include' -I/usr/local/include    -fpic  -g -O2   -c timestamp_unix.cpp -o timestamp_unix.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -DSTRICT_R_HEADERS  -I'/cache/R_libs/cpp4r/include' -I/usr/local/include    -fpic  -g -O2   -c timestamp_win32.cpp -o timestamp_win32.o
+gcc -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -DSTRICT_R_HEADERS  -I'/cache/R_libs/cpp4r/include' -I/usr/local/include    -fpic  -g -O2  -c tinycthread.c -o tinycthread.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -DSTRICT_R_HEADERS  -I'/cache/R_libs/cpp4r/include' -I/usr/local/include    -fpic  -g -O2   -c wref.cpp -o wref.o
+g++ -shared -L/opt/R/4.6.0/lib/R/lib -L/usr/local/lib -o later2.so callback_registry.o cpp4r.o debug.o fd.o later2.o later_posix.o later_win32.o timer_posix.o timestamp_unix.o timestamp_win32.o tinycthread.o wref.o -pthread -L/opt/R/4.6.0/lib/R/lib -lR
+installing to /cache/R_libs/00LOCK-later2/00new/later2/libs
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (later2)
+* installing *source* package ‘httpserver’ ...
+** this is package ‘httpserver’ version ‘0.1’
+** using staged installation
+** Using libuv found by pkg-config in /usr
+** PKG_CFLAGS=
+** PKG_LIBS=-luv -lpthread -ldl -lrt 
+** libs
+using C compiler: ‘gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0’
+using C++ compiler: ‘g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0’
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c callback.cpp -o callback.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c callbackqueue.cpp -o callbackqueue.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c cpp4r.cpp -o cpp4r.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c filedatasource-unix.cpp -o filedatasource-unix.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c filedatasource-win.cpp -o filedatasource-win.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c fs.cpp -o fs.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c gzipdatasource.cpp -o gzipdatasource.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c http.cpp -o http.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c httprequest.cpp -o httprequest.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c httpresponse.cpp -o httpresponse.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c httpserver.cpp -o httpserver.o
+gcc -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2  -c md5.c -o md5.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c mime.cpp -o mime.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c socket.cpp -o socket.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c staticpath.cpp -o staticpath.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c thread.cpp -o thread.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c timegm.cpp -o timegm.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c utils.cpp -o utils.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c uvutil.cpp -o uvutil.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c webapplication.cpp -o webapplication.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c websockets-base.cpp -o websockets-base.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c websockets-hixie76.cpp -o websockets-hixie76.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c websockets-hybi03.cpp -o websockets-hybi03.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c websockets-ietf.cpp -o websockets-ietf.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c websockets.cpp -o websockets.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c winutils.cpp -o winutils.o
+gcc -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2  -c http-parser/http_parser.c -o http-parser/http_parser.o
+gcc -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2  -c sha1/sha1.c -o sha1/sha1.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c base64/base64.cpp -o base64/base64.o
+g++ -shared -L/opt/R/4.6.0/lib/R/lib -L/usr/local/lib -o httpserver.so callback.o callbackqueue.o cpp4r.o filedatasource-unix.o filedatasource-win.o fs.o gzipdatasource.o http.o httprequest.o httpresponse.o httpserver.o md5.o mime.o socket.o staticpath.o thread.o timegm.o utils.o uvutil.o webapplication.o websockets-base.o websockets-hixie76.o websockets-hybi03.o websockets-ietf.o websockets.o winutils.o -luv -lpthread -ldl -lrt ./http-parser/http_parser.o ./sha1/sha1.o ./base64/base64.o -pthread -L/opt/R/4.6.0/lib/R/lib -lR
+installing to /cache/R_libs/00LOCK-httpserver/00new/httpserver/libs
+** R
+** demo
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (httpserver)
+* using log directory ‘/check/httpserver.Rcheck’
+* using R version 4.6.0 (2026-04-24)
+* using platform: x86_64-pc-linux-gnu
+* R was compiled by
+    gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+    GNU Fortran (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+* running under: Ubuntu 24.04.4 LTS
+* using session charset: UTF-8
+* current time: 2026-07-25 10:26:45 UTC
+* using options ‘--no-manual --as-cran’
+* checking for file ‘httpserver/DESCRIPTION’ ... OK
+* checking extension type ... Package
+* this is package ‘httpserver’ version ‘0.1’
+* package encoding: UTF-8
+* checking CRAN incoming feasibility ...Warning: unable to access index for repository https://bioconductor.org/packages/3.23/bioc/src/contrib:
+  cannot open URL 'https://bioconductor.org/packages/3.23/bioc/src/contrib/PACKAGES'
+Warning: unable to access index for repository https://bioconductor.org/packages/3.23/data/annotation/src/contrib:
+  cannot open URL 'https://bioconductor.org/packages/3.23/data/annotation/src/contrib/PACKAGES'
+Warning: unable to access index for repository https://bioconductor.org/packages/3.23/data/experiment/src/contrib:
+  cannot open URL 'https://bioconductor.org/packages/3.23/data/experiment/src/contrib/PACKAGES'
+ [5s/279s] WARNING
+Maintainer: ‘Mauricio Vargas Sepulveda <m.vargas.sepulveda@gmail.com>’
+
+New submission
+
+Strong dependencies not in the CRAN or BioC software repositories:
+  later2
+* checking package namespace information ... OK
+* checking package dependencies ... OK
+* checking if this is a source package ... OK
+* checking if there is a namespace ... OK
+* checking for executable files ... OK
+* checking for hidden files and directories ... OK
+* checking for portable file names ... OK
+* checking for sufficient/correct file permissions ... OK
+* checking serialization versions ... OK
+* checking whether package ‘httpserver’ can be installed ... [66s/65s] OK
+* used C compiler: ‘gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0’
+* used C++ compiler: ‘g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0’
+* checking package directory ... OK
+* checking for future file timestamps ... OK
+* checking DESCRIPTION meta-information ... OK
+* checking top-level files ... OK
+* checking for left-over files ... OK
+* checking index information ... OK
+* checking package subdirectories ... OK
+* checking code files for non-ASCII characters ... OK
+* checking R files for syntax errors ... OK
+* checking whether the package can be loaded ... [1s/0s] OK
+* checking whether the package can be loaded with stated dependencies ... [0s/0s] OK
+* checking whether the package can be unloaded cleanly ... [1s/0s] OK
+* checking whether the namespace can be loaded with stated dependencies ... [1s/0s] OK
+* checking whether the namespace can be unloaded cleanly ... [1s/0s] OK
+* checking loading without being on the library search path ... [1s/0s] OK
+* checking use of S3 registration ... OK
+* checking dependencies in R code ... OK
+* checking S3 generic/method consistency ... OK
+* checking replacement functions ... OK
+* checking foreign function calls ... OK
+* checking R code for possible problems ... [14s/5s] OK
+* checking Rd files ... [1s/0s] OK
+* checking Rd metadata ... OK
+* checking Rd line widths ... OK
+* checking Rd cross-references ... OK
+* checking for missing documentation entries ... OK
+* checking for code/documentation mismatches ... OK
+* checking Rd \usage sections ... OK
+* checking Rd contents ... OK
+* checking for unstated dependencies in examples ... OK
+* checking line endings in shell scripts ... OK
+* checking line endings in C/C++/Fortran sources/headers ... OK
+* checking line endings in Makefiles ... OK
+* checking compilation flags in Makevars ... OK
+* checking for GNU extensions in Makefiles ... INFO
+GNU make is a SystemRequirements.
+* checking for portable use of $(BLAS_LIBS) and $(LAPACK_LIBS) ... OK
+* checking use of PKG_*FLAGS in Makefiles ... OK
+* checking use of SHLIB_OPENMP_*FLAGS in Makefiles ... OK
+* checking include directives in Makefiles ... OK
+* checking pragmas in C/C++ headers and code ... OK
+* checking compilation flags used ... OK
+* checking compiled code ... OK
+* checking examples ... [1s/1s] OK
+* checking for unstated dependencies in ‘demo’ ... OK
+* checking for unstated dependencies in ‘tests’ ... OK
+* checking tests ...
+  Running ‘tinytest.R’ [6s/7s]
+ [6s/7s] OK
+* checking for non-standard things in the check directory ... OK
+* checking for detritus in the temp directory ... OK
+* DONE
+
+Status: 1 WARNING
+See
+  ‘/check/httpserver.Rcheck/00check.log’
+for details.
+
+=== 00install.out ===
+* installing *source* package ‘httpserver’ ...
+** this is package ‘httpserver’ version ‘0.1’
+** using staged installation
+** Using libuv found by pkg-config in /usr
+** PKG_CFLAGS=
+** PKG_LIBS=-luv -lpthread -ldl -lrt 
+** libs
+using C compiler: ‘gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0’
+using C++ compiler: ‘g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0’
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c callback.cpp -o callback.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c callbackqueue.cpp -o callbackqueue.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c cpp4r.cpp -o cpp4r.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c filedatasource-unix.cpp -o filedatasource-unix.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c filedatasource-win.cpp -o filedatasource-win.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c fs.cpp -o fs.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c gzipdatasource.cpp -o gzipdatasource.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c http.cpp -o http.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c httprequest.cpp -o httprequest.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c httpresponse.cpp -o httpresponse.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c httpserver.cpp -o httpserver.o
+gcc -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2  -c md5.c -o md5.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c mime.cpp -o mime.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c socket.cpp -o socket.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c staticpath.cpp -o staticpath.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c thread.cpp -o thread.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c timegm.cpp -o timegm.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c utils.cpp -o utils.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c uvutil.cpp -o uvutil.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c webapplication.cpp -o webapplication.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c websockets-base.cpp -o websockets-base.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c websockets-hixie76.cpp -o websockets-hixie76.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c websockets-hybi03.cpp -o websockets-hybi03.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c websockets-ietf.cpp -o websockets-ietf.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c websockets.cpp -o websockets.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c winutils.cpp -o winutils.o
+gcc -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2  -c http-parser/http_parser.c -o http-parser/http_parser.o
+gcc -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2  -c sha1/sha1.c -o sha1/sha1.o
+g++ -I"/opt/R/4.6.0/lib/R/include" -DNDEBUG -pthread -I'/cache/R_libs/cpp4r/include' -I'/cache/R_libs/later2/include' -I/usr/local/include   -fvisibility=hidden -DSTRICT_R_HEADERS -fpic  -g -O2   -c base64/base64.cpp -o base64/base64.o
+g++ -shared -L/opt/R/4.6.0/lib/R/lib -L/usr/local/lib -o httpserver.so callback.o callbackqueue.o cpp4r.o filedatasource-unix.o filedatasource-win.o fs.o gzipdatasource.o http.o httprequest.o httpresponse.o httpserver.o md5.o mime.o socket.o staticpath.o thread.o timegm.o utils.o uvutil.o webapplication.o websockets-base.o websockets-hixie76.o websockets-hybi03.o websockets-ietf.o websockets.o winutils.o -luv -lpthread -ldl -lrt ./http-parser/http_parser.o ./sha1/sha1.o ./base64/base64.o -pthread -L/opt/R/4.6.0/lib/R/lib -lR
+installing to /check/httpserver.Rcheck/00LOCK-httpserver/00new/httpserver/libs
+** R
+** demo
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (httpserver)
+=== 00check.log ===
+* using log directory ‘/check/httpserver.Rcheck’
+* using R version 4.6.0 (2026-04-24)
+* using platform: x86_64-pc-linux-gnu
+* R was compiled by
+    gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+    GNU Fortran (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+* running under: Ubuntu 24.04.4 LTS
+* using session charset: UTF-8
+* current time: 2026-07-25 10:26:45 UTC
+* using options ‘--no-manual --as-cran’
+* checking for file ‘httpserver/DESCRIPTION’ ... OK
+* checking extension type ... Package
+* this is package ‘httpserver’ version ‘0.1’
+* package encoding: UTF-8
+* checking CRAN incoming feasibility ... [5s/279s] WARNING
+Maintainer: ‘Mauricio Vargas Sepulveda <m.vargas.sepulveda@gmail.com>’
+
+New submission
+
+Strong dependencies not in the CRAN or BioC software repositories:
+  later2
+* checking package namespace information ... OK
+* checking package dependencies ... OK
+* checking if this is a source package ... OK
+* checking if there is a namespace ... OK
+* checking for executable files ... OK
+* checking for hidden files and directories ... OK
+* checking for portable file names ... OK
+* checking for sufficient/correct file permissions ... OK
+* checking serialization versions ... OK
+* checking whether package ‘httpserver’ can be installed ... [66s/65s] OK
+* used C compiler: ‘gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0’
+* used C++ compiler: ‘g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0’
+* checking package directory ... OK
+* checking for future file timestamps ... OK
+* checking DESCRIPTION meta-information ... OK
+* checking top-level files ... OK
+* checking for left-over files ... OK
+* checking index information ... OK
+* checking package subdirectories ... OK
+* checking code files for non-ASCII characters ... OK
+* checking R files for syntax errors ... OK
+* checking whether the package can be loaded ... [1s/0s] OK
+* checking whether the package can be loaded with stated dependencies ... [0s/0s] OK
+* checking whether the package can be unloaded cleanly ... [1s/0s] OK
+* checking whether the namespace can be loaded with stated dependencies ... [1s/0s] OK
+* checking whether the namespace can be unloaded cleanly ... [1s/0s] OK
+* checking loading without being on the library search path ... [1s/0s] OK
+* checking use of S3 registration ... OK
+* checking dependencies in R code ... OK
+* checking S3 generic/method consistency ... OK
+* checking replacement functions ... OK
+* checking foreign function calls ... OK
+* checking R code for possible problems ... [14s/5s] OK
+* checking Rd files ... [1s/0s] OK
+* checking Rd metadata ... OK
+* checking Rd line widths ... OK
+* checking Rd cross-references ... OK
+* checking for missing documentation entries ... OK
+* checking for code/documentation mismatches ... OK
+* checking Rd \usage sections ... OK
+* checking Rd contents ... OK
+* checking for unstated dependencies in examples ... OK
+* checking line endings in shell scripts ... OK
+* checking line endings in C/C++/Fortran sources/headers ... OK
+* checking line endings in Makefiles ... OK
+* checking compilation flags in Makevars ... OK
+* checking for GNU extensions in Makefiles ... INFO
+GNU make is a SystemRequirements.
+* checking for portable use of $(BLAS_LIBS) and $(LAPACK_LIBS) ... OK
+* checking use of PKG_*FLAGS in Makefiles ... OK
+* checking use of SHLIB_OPENMP_*FLAGS in Makefiles ... OK
+* checking include directives in Makefiles ... OK
+* checking pragmas in C/C++ headers and code ... OK
+* checking compilation flags used ... OK
+* checking compiled code ... OK
+* checking examples ... [1s/1s] OK
+* checking for unstated dependencies in ‘demo’ ... OK
+* checking for unstated dependencies in ‘tests’ ... OK
+* checking tests ... [6s/7s] OK
+  Running ‘tinytest.R’ [6s/7s]
+* checking for non-standard things in the check directory ... OK
+* checking for detritus in the temp directory ... OK
+* DONE
+Status: 1 WARNING

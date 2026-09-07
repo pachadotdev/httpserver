@@ -3,8 +3,14 @@
 \name{WebSocket}
 \alias{WebSocket}
 \title{WebSocket class}
+\usage{
+WebSocket(handle, req)
+}
+
 \arguments{
 \item{handle}{An C++ WebSocket handle.}
+
+\item{req}{The Rook request environment that opened the connection.}
 }
 
 \description{
