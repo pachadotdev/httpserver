@@ -285,14 +285,3 @@ deregisterServer <- function(server) {
     "Unable to deregister server: server not found in list of running servers."
   )
 }
-
-
-#' Stop a running daemonized server in Unix environments (deprecated)
-#'
-#' This function will be removed in a future release of httpuv. Instead, use
-#' [stopServer()].
-#'
-#' @inheritParams stopServer
-#'
-#' @export
-stopDaemonizedServer <- stopServer

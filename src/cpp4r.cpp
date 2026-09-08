@@ -4,24 +4,6 @@
 
 #include "cpp4r/declarations.hpp"
 #include <R_ext/Visibility.h>
-#include <cstring>
-
-namespace {
-// R_CallMethodDef requires a DL_FUNC (void (*)()), which necessarily
-// differs from the real signature of each registered function. A direct
-// cast between incompatible function pointer types triggers
-// -Wcast-function-type, and CRAN's checks disallow suppressing that with
-// compiler pragmas. Reinterpret the pointer by copying its bytes instead:
-// this never casts between function pointer types (memcpy's arguments are
-// ordinary object pointers to the local function-pointer variables), so it
-// is warning-free and portable across the platforms R supports.
-template <typename Fn> DL_FUNC cpp4r_to_dl_func(Fn fn) {
-  static_assert(sizeof(DL_FUNC) == sizeof(Fn), "function pointer size mismatch");
-  DL_FUNC out;
-  std::memcpy(&out, &fn, sizeof(out));
-  return out;
-}
-} // namespace
 
 // httpserver.cpp
 void sendWSMessage(SEXP conn, bool binary, SEXP message);
@@ -171,26 +153,26 @@ extern "C" SEXP _httpserver_log_level(SEXP level) {
 
 extern "C" {
 static const R_CallMethodDef CallEntries[] = {
-    {"_httpserver_sendWSMessage", cpp4r_to_dl_func(&_httpserver_sendWSMessage), 3},
-    {"_httpserver_closeWS", cpp4r_to_dl_func(&_httpserver_closeWS), 3},
-    {"_httpserver_makeTcpServer", cpp4r_to_dl_func(&_httpserver_makeTcpServer), 11},
-    {"_httpserver_makePipeServer", cpp4r_to_dl_func(&_httpserver_makePipeServer), 11},
-    {"_httpserver_stopServer_", cpp4r_to_dl_func(&_httpserver_stopServer_), 1},
-    {"_httpserver_getStaticPaths_", cpp4r_to_dl_func(&_httpserver_getStaticPaths_), 1},
-    {"_httpserver_setStaticPaths_", cpp4r_to_dl_func(&_httpserver_setStaticPaths_), 2},
-    {"_httpserver_removeStaticPaths_", cpp4r_to_dl_func(&_httpserver_removeStaticPaths_), 2},
-    {"_httpserver_getStaticPathOptions_", cpp4r_to_dl_func(&_httpserver_getStaticPathOptions_), 1},
-    {"_httpserver_setStaticPathOptions_", cpp4r_to_dl_func(&_httpserver_setStaticPathOptions_), 2},
-    {"_httpserver_base64encode", cpp4r_to_dl_func(&_httpserver_base64encode), 1},
-    {"_httpserver_encodeURI", cpp4r_to_dl_func(&_httpserver_encodeURI), 1},
-    {"_httpserver_encodeURIComponent", cpp4r_to_dl_func(&_httpserver_encodeURIComponent), 1},
-    {"_httpserver_decodeURI", cpp4r_to_dl_func(&_httpserver_decodeURI), 1},
-    {"_httpserver_decodeURIComponent", cpp4r_to_dl_func(&_httpserver_decodeURIComponent), 1},
-    {"_httpserver_ipFamily", cpp4r_to_dl_func(&_httpserver_ipFamily), 1},
-    {"_httpserver_invokeCppCallback", cpp4r_to_dl_func(&_httpserver_invokeCppCallback), 2},
-    {"_httpserver_getRNGState", cpp4r_to_dl_func(&_httpserver_getRNGState), 0},
-    {"_httpserver_wsconn_address", cpp4r_to_dl_func(&_httpserver_wsconn_address), 1},
-    {"_httpserver_log_level", cpp4r_to_dl_func(&_httpserver_log_level), 1},
+    {"_httpserver_sendWSMessage", (DL_FUNC) &_httpserver_sendWSMessage, 3},
+    {"_httpserver_closeWS", (DL_FUNC) &_httpserver_closeWS, 3},
+    {"_httpserver_makeTcpServer", (DL_FUNC) &_httpserver_makeTcpServer, 11},
+    {"_httpserver_makePipeServer", (DL_FUNC) &_httpserver_makePipeServer, 11},
+    {"_httpserver_stopServer_", (DL_FUNC) &_httpserver_stopServer_, 1},
+    {"_httpserver_getStaticPaths_", (DL_FUNC) &_httpserver_getStaticPaths_, 1},
+    {"_httpserver_setStaticPaths_", (DL_FUNC) &_httpserver_setStaticPaths_, 2},
+    {"_httpserver_removeStaticPaths_", (DL_FUNC) &_httpserver_removeStaticPaths_, 2},
+    {"_httpserver_getStaticPathOptions_", (DL_FUNC) &_httpserver_getStaticPathOptions_, 1},
+    {"_httpserver_setStaticPathOptions_", (DL_FUNC) &_httpserver_setStaticPathOptions_, 2},
+    {"_httpserver_base64encode", (DL_FUNC) &_httpserver_base64encode, 1},
+    {"_httpserver_encodeURI", (DL_FUNC) &_httpserver_encodeURI, 1},
+    {"_httpserver_encodeURIComponent", (DL_FUNC) &_httpserver_encodeURIComponent, 1},
+    {"_httpserver_decodeURI", (DL_FUNC) &_httpserver_decodeURI, 1},
+    {"_httpserver_decodeURIComponent", (DL_FUNC) &_httpserver_decodeURIComponent, 1},
+    {"_httpserver_ipFamily", (DL_FUNC) &_httpserver_ipFamily, 1},
+    {"_httpserver_invokeCppCallback", (DL_FUNC) &_httpserver_invokeCppCallback, 2},
+    {"_httpserver_getRNGState", (DL_FUNC) &_httpserver_getRNGState, 0},
+    {"_httpserver_wsconn_address", (DL_FUNC) &_httpserver_wsconn_address, 1},
+    {"_httpserver_log_level", (DL_FUNC) &_httpserver_log_level, 1},
     {NULL, NULL, 0}
 };
 }

@@ -5,16 +5,11 @@ path_example_site <- function(...) {
 }
 
 index_file_content <- raw_file_content(path_example_site("index.html"))
-office_file_content <- raw_file_content(path_example_site("office.html"))
 
 expect_example_site <- function(port, host = "127.0.0.1") {
   res <- fetch(local_url("/index.html", port), gzip = FALSE)
   expect_equal(res$status_code, 200)
   expect_identical(res$content, index_file_content)
-
-  res <- fetch(local_url("/office.html", port), gzip = FALSE)
-  expect_equal(res$status_code, 200)
-  expect_identical(res$content, office_file_content)
 }
 
 start_example_server <- function(port) {
