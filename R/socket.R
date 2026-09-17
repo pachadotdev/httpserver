@@ -326,7 +326,7 @@ AppWrapper <- function(app) {
 #'
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # A WebSocket echo server that listens on port 8080
 #' startServer(
 #'   "0.0.0.0", 8080,
@@ -536,7 +536,7 @@ WebSocket <- function(handle, req) {
 #' @aliases startPipeServer
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # A very basic application
 #' s <- startServer(
 #'   "0.0.0.0", 5000,
@@ -628,7 +628,7 @@ startPipeServer <- function(name, mask, app, quiet = FALSE) {
 #'   If NA, performs a non-blocking run without waiting.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' while (TRUE) {
 #'   service()
 #' }
@@ -687,7 +687,7 @@ service <- function(timeoutMs = ifelse(interactive(), 100, 1000)) {
 #'   [stopServer()]
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # A very basic application
 #' runServer(
 #'   "0.0.0.0", 5000,
