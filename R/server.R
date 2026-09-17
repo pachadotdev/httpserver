@@ -231,6 +231,8 @@ PipeServer <- function(name, mask, app, quiet = FALSE) {
 #' @param server A server object that was previously returned from
 #'   [startServer()] or [startPipeServer()].
 #'
+#' @return No return value, called for its side effect of stopping the server.
+#'
 #' @seealso [stopAllServers()] to stop all servers.
 #'
 #' @export
@@ -246,6 +248,9 @@ stopServer <- function(server) {
 #'
 #' This will stop all applications which were created by
 #' [startServer()] or [startPipeServer()].
+#'
+#' @return No return value, called for its side effect of stopping all running
+#'   servers.
 #'
 #' @seealso [stopServer()] to stop a specific server.
 #'
@@ -263,6 +268,9 @@ stopAllServers <- function() {
 #' List all running httpserver servers
 #'
 #' This returns a list of all running httpserver server applications.
+#'
+#' @return A list of currently running server objects. The list is empty when
+#'   no servers are running.
 #'
 #' @export
 listServers <- function() {

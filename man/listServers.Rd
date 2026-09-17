@@ -7,6 +7,11 @@
 listServers()
 }
 
+\value{
+A list of currently running server objects. The list is empty when
+  no servers are running.
+}
+
 \description{
 This returns a list of all running httpserver server applications.
 }

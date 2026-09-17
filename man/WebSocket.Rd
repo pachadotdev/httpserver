@@ -13,6 +13,12 @@ WebSocket(handle, req)
 \item{req}{The Rook request environment that opened the connection.}
 }
 
+\value{
+An environment of class `WebSocket` containing the connection
+  handle, request information, callback registries, and methods for sending
+  messages or closing the connection.
+}
+
 \description{
 A `WebSocket` object represents a single WebSocket connection. The
 object can be used to send messages and close the connection, and to receive
@@ -31,7 +37,7 @@ passing an `onWSOpen` function to [startServer()].
 }
 
 \examples{
-\dontrun{
+\donttest{
 # A WebSocket echo server that listens on port 8080
 startServer(
   "0.0.0.0", 8080,

@@ -116,7 +116,7 @@ Creates an HTTP/WebSocket server on the specified host and port.
 }
 
 \examples{
-\dontrun{
+\donttest{
 # A very basic application
 s <- startServer(
   "0.0.0.0", 5000,

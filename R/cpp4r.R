@@ -126,6 +126,9 @@ invokeCppCallback <- function(data, callback_xptr) {
 #'  should be called at the end of the R function to ensure that the new value
 #'  \code{.Random.seed} is preserved.
 #' 
+#' @return No return value, called for its side effect of synchronizing R's
+#'   internal random-number-generator state with \code{.Random.seed}.
+#'
 #' @keywords internal
 #' 
 #' @export

@@ -23,6 +23,11 @@ runServer(host, port, app, interruptIntervalMs = NULL)
 \item{interruptIntervalMs}{Deprecated (last used in httpuv 1.3.5).}
 }
 
+\value{
+Normally does not return; after interruption, returns the logical
+  value `TRUE` from [service()]. The server is stopped as an exit side effect.
+}
+
 \description{
 This is a convenience function that provides a simple way to call
 [startServer()], [service()], and
@@ -41,7 +46,7 @@ functions instead of `runServer`.
 }
 
 \examples{
-\dontrun{
+\donttest{
 # A very basic application
 runServer(
   "0.0.0.0", 5000,

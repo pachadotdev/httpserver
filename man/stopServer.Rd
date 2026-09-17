@@ -12,6 +12,10 @@ stopServer(server)
   [startServer()] or [startPipeServer()].}
 }
 
+\value{
+No return value, called for its side effect of stopping the server.
+}
+
 \description{
 Given a server object that was returned from a previous invocation of
 [startServer()] or [startPipeServer()], this closes all

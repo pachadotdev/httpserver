@@ -56,6 +56,11 @@ excludeStaticPath()
   default), then no validation check will be performed.}
 }
 
+\value{
+An object of class `staticPath`, consisting of the normalized local
+  path and a `staticPathOptions` object describing how it is served.
+}
+
 \description{
 The `staticPath` function creates a `staticPath` object. Note that
 if any of the arguments (other than `path`) are `NULL`, then that

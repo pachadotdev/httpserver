@@ -55,6 +55,11 @@ staticPathOptions(
   unused).}
 }
 
+\value{
+An object of class `staticPathOptions`, containing the normalized
+  options used when serving static paths.
+}
+
 \description{
 Create options for static paths
 }

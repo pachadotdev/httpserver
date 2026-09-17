@@ -324,6 +324,10 @@ AppWrapper <- function(app) {
 #' WebSocket objects should never be created directly. They are obtained by
 #' passing an `onWSOpen` function to [startServer()].
 #'
+#' @return An environment of class `WebSocket` containing the connection
+#'   handle, request information, callback registries, and methods for sending
+#'   messages or closing the connection.
+#'
 #' @export
 #' @examples
 #' \donttest{
@@ -622,6 +626,9 @@ startPipeServer <- function(name, mask, app, quiet = FALSE) {
 #' application schedules any [later::later()] callbacks, they will be
 #' invoked.
 #'
+#' @return The logical value `TRUE`, invisibly, after processing requests for
+#'   the requested interval.
+#'
 #' @param timeoutMs Approximate number of milliseconds to run before returning.
 #'   It will return this duration has elapsed. If 0 or Inf, then the function
 #'   will continually process requests without returning unless an error occurs.
@@ -683,6 +690,9 @@ service <- function(timeoutMs = ifelse(interactive(), 100, 1000)) {
 #'   [startServer()].
 #' @param interruptIntervalMs Deprecated (last used in httpuv 1.3.5).
 #'
+#' @return Normally does not return; after interruption, returns the logical
+#'   value `TRUE` from [service()]. The server is stopped as an exit side effect.
+#'
 #' @seealso [startServer()], [service()],
 #'   [stopServer()]
 #'
@@ -721,6 +731,9 @@ runServer <- function(host, port, app, interruptIntervalMs = NULL) {
 #' called again. Note that this may cause in-process uploads or downloads to be
 #' interrupted in mid-request.
 #'
+#' @return No return value, called for its side effect of pausing the request
+#'   processing loop.
+#'
 #' @export
 interrupt <- function() {
   .globals$paused <- TRUE
@@ -732,6 +745,9 @@ interrupt <- function() {
 #' vector.
 #'
 #' @param x A raw vector.
+#'
+#' @return A single-element character vector containing the Base64 encoding of
+#'   `x`.
 #'
 #' @examples
 #' set.seed(100)

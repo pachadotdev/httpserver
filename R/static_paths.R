@@ -15,6 +15,9 @@
 #' @param path The local path.
 #' @inheritParams staticPathOptions
 #'
+#' @return An object of class `staticPath`, consisting of the normalized local
+#'   path and a `staticPathOptions` object describing how it is served.
+#'
 #' @seealso [staticPathOptions()].
 #'
 #' @export
@@ -75,6 +78,11 @@ excludeStaticPath <- function() {
 #' that an object is a `staticPath` object.
 #'
 #' @param path The object to convert.
+#'
+#' @return A `staticPath` object. Character paths are converted to objects of
+#'   class `staticPath`; existing `staticPath` objects are returned unchanged.
+#'   Objects of unsupported classes cause an error.
+#'
 #' @keywords internal
 #' @export
 as.staticPath <- function(path) {
@@ -152,6 +160,9 @@ format.staticPath <- function(x, ...) {
 #'   default), then no validation check will be performed.
 #' @param exclude Should this path be excluded from static serving? (This is
 #'   only to be used internally, for [excludeStaticPath()].)
+#'
+#' @return An object of class `staticPathOptions`, containing the normalized
+#'   options used when serving static paths.
 #'
 #' @export
 staticPathOptions <- function(

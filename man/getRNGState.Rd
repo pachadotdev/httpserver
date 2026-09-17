@@ -7,6 +7,11 @@
 getRNGState()
 }
 
+\value{
+No return value, called for its side effect of synchronizing R's
+  internal random-number-generator state with \code{.Random.seed}.
+}
+
 \description{
 This function is needed in unusual cases where a C++ function calls
  an R function which sets the value of \code{.Random.seed}. This function

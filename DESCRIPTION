@@ -29,10 +29,11 @@ Authors@R: c(
     person("Trantor Standard Systems", role = "cph", comment = "base64 implementation"),
     person("Igor", "Sysoev", role = "cph", comment = "http-parser")
   )
-Description: Provides low-level socket and protocol support for handling HTTP and WebSocket requests directly from within R.
+Description: Provides low-level socket and protocol support for handling HTTP and WebSocket requests.
     It is primarily intended as a building block for other packages, rather than making it particularly easy to create
-    complete web applications using 'httpserver' alone. 'httpserver' is built on top of the 'libuv' and 'http-parser' C libraries, both of
-    which were developed by "Joyent Inc." Derived from the 'httpuv' package with a focus on minimal dependencies.
+    complete web applications using 'httpserver' alone. 'httpserver' is built on top of the 'libuv' and 'http-parser' C
+    libraries, both of which were developed by "Joyent Inc." Derived from the 'httpuv' package with a focus on minimal
+    dependencies.
 License: Apache License 2.0
 URL: https://github.com/pachadotdev/httpserver
 BugReports: https://github.com/pachadotdev/httpserver/issues

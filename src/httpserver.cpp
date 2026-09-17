@@ -723,8 +723,6 @@ std::string doDecodeURI(std::string value, bool component) {
  should be called at the end of the R function to ensure that the new value
  \code{.Random.seed} is preserved.
 
-@keywords internal
-
 @export
 */
 [[cpp4r::register]] void getRNGState() { GetRNGstate(); }

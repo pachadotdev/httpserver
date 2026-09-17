@@ -14,6 +14,11 @@ service(timeoutMs = ifelse(interactive(), 100, 1000))
   If NA, performs a non-blocking run without waiting.}
 }
 
+\value{
+The logical value `TRUE`, invisibly, after processing requests for
+  the requested interval.
+}
+
 \description{
 Process HTTP requests and WebSocket messages. If there is nothing on R's call
 stack -- if R is sitting idle at the command prompt -- it is not necessary to
@@ -34,7 +39,7 @@ invoked.
 }
 
 \examples{
-\dontrun{
+\donttest{
 while (TRUE) {
   service()
 }

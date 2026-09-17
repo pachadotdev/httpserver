@@ -32,7 +32,7 @@ are considered unsafe by web browsers.
 }
 
 \examples{
-\dontrun{
+\donttest{
 s <- startServer("127.0.0.1", randomPort(), list())
 browseURL(paste0("http://127.0.0.1:", s$getPort()))
 

@@ -7,6 +7,11 @@
 interrupt()
 }
 
+\value{
+No return value, called for its side effect of pausing the request
+  processing loop.
+}
+
 \description{
 Interrupts the currently running httpuv runloop, meaning
 [runServer()] or [service()] will return control back to

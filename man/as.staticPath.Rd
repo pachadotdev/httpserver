@@ -17,6 +17,12 @@ as.staticPath(path)
 \item{path}{The object to convert.}
 }
 
+\value{
+A `staticPath` object. Character paths are converted to objects of
+  class `staticPath`; existing `staticPath` objects are returned unchanged.
+  Objects of unsupported classes cause an error.
+}
+
 \description{
 This function is used to convert an object to a `staticPath` object.
 It is primarily used internally, but can also be used by users to ensure

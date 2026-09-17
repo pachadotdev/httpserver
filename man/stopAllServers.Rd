@@ -7,6 +7,11 @@
 stopAllServers()
 }
 
+\value{
+No return value, called for its side effect of stopping all running
+  servers.
+}
+
 \description{
 This will stop all applications which were created by
 [startServer()] or [startPipeServer()].
