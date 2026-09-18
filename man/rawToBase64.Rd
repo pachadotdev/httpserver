@@ -12,13 +12,11 @@ rawToBase64(x)
 }
 
 \value{
-A single-element character vector containing the Base64 encoding of
-  `x`.
+A single-element character vector containing the Base64 encoding of \code{x}.
 }
 
 \description{
-Converts a raw vector to its Base64 encoding as a single-element character
-vector.
+Converts a raw vector to its Base64 encoding as a single-element character vector.
 }
 
 \examples{

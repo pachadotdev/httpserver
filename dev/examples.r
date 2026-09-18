@@ -10,7 +10,7 @@ s$stop()
 
 # A WebSocket echo server that listens on port 8080
 s <- startServer(
-  "0.0.0.0", 8080,
+  "0.0.0.0", randomPort(),
   list(
     onHeaders = function(req) {
       # Print connection headers
@@ -34,7 +34,7 @@ s$stop()
 
 # A very basic application
 s <- startServer(
-  "0.0.0.0", 5000,
+  "0.0.0.0", randomPort(),
   list(
     call = function(req) {
       list(
@@ -51,8 +51,9 @@ s <- startServer(
 s$stop()
 
 # An application that serves static assets at the URL paths /assets and /lib
+website_dir <- system.file("example-static-site", package = "httpserver")
 s <- startServer(
-  "0.0.0.0", 5000,
+  "0.0.0.0", randomPort(),
   list(
     call = function(req) {
       list(
@@ -64,9 +65,9 @@ s <- startServer(
       )
     },
     staticPaths = list(
-      "/assets" = "content/assets/",
+      "/assets" = website_dir,
       "/lib" = staticPath(
-        "content/lib",
+        website_dir,
         indexhtml = FALSE
       ),
       # This subdirectory of /lib should always be handled by the R code path
@@ -83,8 +84,9 @@ s$stop()
 service(1)
 
 # A very basic application
-s <- runServer(
-  "0.0.0.0", 5000,
+later2::later(interrupt, delay = 1)
+runServer(
+  "0.0.0.0", randomPort(),
   list(
     call = function(req) {
       list(
@@ -98,15 +100,12 @@ s <- runServer(
   )
 )
 
-s$stop()
-
 set.seed(100)
 result <- rawToBase64(as.raw(runif(19, min = 0, max = 256)))
 stopifnot(identical(result, "TkGNDnd7z16LK5/hR2bDqzRbXA=="))
 
 # staticServer.r
 
-if (interactive()) {
- website_dir <- system.file("example-static-site", package = "httpserver")
- runStaticServer(dir = website_dir)
-}
+website_dir <- system.file("example-static-site", package = "httpserver")
+s <- runStaticServer(dir = website_dir, background = TRUE, browse = FALSE)
+s$stop()

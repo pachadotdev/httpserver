@@ -51,3 +51,4 @@ LinkingTo: cpp4r, later2
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 SystemRequirements: GNU make, zlib
+Config/tinyroxygen/markdown: TRUE

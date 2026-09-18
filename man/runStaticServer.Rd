@@ -17,51 +17,34 @@ runStaticServer(
 \arguments{
 \item{dir}{The directory to serve. Defaults to the current working directory.}
 
-\item{...}{Additional arguments passed to [staticPath()], such as
-  `indexhtml`, `fallthrough`, `html_charset`, `headers`, and `validation`.}
+\item{...}{Additional arguments passed to \code{\link[=staticPath]{staticPath()}}, such as \code{indexhtml}, \code{fallthrough}, \code{html_charset}, \code{headers}, and \code{validation}.}
 
-\item{background}{Whether to run the server in the background. By default,
-  the server runs in the foreground and blocks the R console. You can stop
-  the server by interrupting it with `Ctrl + C`.
+\item{background}{Whether to run the server in the background. By default, the server runs in the foreground and blocks the R console. You can stop the server by interrupting it with \code{Ctrl + C}.
 
-  When `background = TRUE`, the server will run in the background and will
-  process requests when the R console is idle. To stop a background server,
-  call [stopAllServers()] or call [stopServer()] on the server object
-  returned (invisibly) by this function.}
+When \code{background = TRUE}, the server will run in the background and will process requests when the R console is idle. To stop a background server, call \code{\link[=stopAllServers]{stopAllServers()}} or call \code{\link[=stopServer]{stopServer()}} on the server object returned (invisibly) by this function.}
 
-\item{browse}{Whether to automatically open the served directory in a web
-  browser. Defaults to `TRUE` when running interactively.}
+\item{browse}{Whether to automatically open the served directory in a web browser. Defaults to \code{TRUE} when running interactively.}
 
-\item{host}{A string that is a valid IPv4 address that is owned by this
-  server, or `"0.0.0.0"` to listen on all IP addresses.}
+\item{host}{A string that is a valid IPv4 address that is owned by this server, or \code{"0.0.0.0"} to listen on all IP addresses.}
 
-\item{port}{A number or integer that indicates the server port that should be
-  listened on. Note that on most Unix-like systems including Linux and macOS,
-  port numbers smaller than 1024 require root privileges.}
+\item{port}{A number or integer that indicates the server port that should be listened on. Note that on most Unix-like systems including Linux and macOS, port numbers smaller than 1024 require root privileges.}
 }
 
 \value{
-Starts a server on the specified host and port. By default the
-  server runs in the foreground and is accessible at `http://127.0.0.1:7446`.
-  When `background = TRUE`, the `server` object is returned invisibly.
+Starts a server on the specified host and port. By default the server runs in the foreground and is accessible at \code{http://127.0.0.1:7446}. When \code{background = TRUE}, the \code{server} object is returned invisibly.
 }
 
 \description{
-`runStaticServer()` provides a convenient interface to start a server to host
-a single static directory, either in the foreground or the background.
+\code{runStaticServer()} provides a convenient interface to start a server to host a single static directory, either in the foreground or the background.
 }
 
 \seealso{
-[runServer()] provides a similar interface for running a dynamic
-  app server. Both `runStaticServer()` and [runServer()] are built on top of
-  [startServer()], [service()] and [stopServer()]. Learn more about httpuv
-  servers in [startServer()].
+\code{\link[=runServer]{runServer()}} provides a similar interface for running a dynamic app server. Both \code{runStaticServer()} and \code{\link[=runServer]{runServer()}} are built on top of \code{\link[=startServer]{startServer()}}, \code{\link[=service]{service()}} and \code{\link[=stopServer]{stopServer()}}. Learn more about httpuv servers in \code{\link[=startServer]{startServer()}}.
 }
 
 \examples{
-if (interactive()) {
- website_dir <- system.file("example-static-site", package = "httpserver")
- runStaticServer(dir = website_dir)
-}
+website_dir <- system.file("example-static-site", package = "httpserver")
+s <- runStaticServer(dir = website_dir, background = TRUE, browse = FALSE)
+s$stop()
 }
 

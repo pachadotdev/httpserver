@@ -8,8 +8,7 @@ listServers()
 }
 
 \value{
-A list of currently running server objects. The list is empty when
-  no servers are running.
+A list of currently running server objects. The list is empty when no servers are running.
 }
 
 \description{

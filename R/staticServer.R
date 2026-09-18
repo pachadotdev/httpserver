@@ -4,10 +4,9 @@
 #' a single static directory, either in the foreground or the background.
 #'
 #' @examples
-#' if (interactive()) {
-#'  website_dir <- system.file("example-static-site", package = "httpserver")
-#'  runStaticServer(dir = website_dir)
-#' }
+#' website_dir <- system.file("example-static-site", package = "httpserver")
+#' s <- runStaticServer(dir = website_dir, background = TRUE, browse = FALSE)
+#' s$stop()
 #'
 #' @param dir The directory to serve. Defaults to the current working directory.
 #' @inheritParams startServer

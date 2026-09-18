@@ -8,15 +8,10 @@ interrupt()
 }
 
 \value{
-No return value, called for its side effect of pausing the request
-  processing loop.
+No return value, called for its side effect of pausing the request processing loop.
 }
 
 \description{
-Interrupts the currently running httpuv runloop, meaning
-[runServer()] or [service()] will return control back to
-the caller and no further tasks will be processed until those methods are
-called again. Note that this may cause in-process uploads or downloads to be
-interrupted in mid-request.
+Interrupts the currently running httpuv runloop, meaning \code{\link[=runServer]{runServer()}} or \code{\link[=service]{service()}} will return control back to the caller and no further tasks will be processed until those methods are called again. Note that this may cause in-process uploads or downloads to be interrupted in mid-request.
 }
 

@@ -12,7 +12,7 @@ ipFamily(ip)
 }
 
 \value{
-For IPv4 addresses, \code{4}; for IPv6 addresses, \code{6}. If the address is neither, \code{-1}.
+For IPv4 addresses, \\code\{4\}; for IPv6 addresses, \\code\{6\}. If the address is neither, \\code\{-1\}.
 }
 
 \description{

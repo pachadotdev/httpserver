@@ -8,47 +8,35 @@ runServer(host, port, app, interruptIntervalMs = NULL)
 }
 
 \arguments{
-\item{host}{A string that is a valid IPv4 or IPv6 address that is owned by
-  this server, which the application will listen on. `"0.0.0.0"`
-  represents all IPv4 addresses and `"::/0"` represents all IPv6
-  addresses.}
+\item{host}{A string that is a valid IPv4 or IPv6 address that is owned by this server, which the application will listen on. \code{"0.0.0.0"} represents all IPv4 addresses and \code{"::/0"} represents all IPv6 addresses.}
 
-\item{port}{A number or integer that indicates the server port that should be
-  listened on. Note that on most Unix-like systems including Linux and macOS,
-  port numbers smaller than 1024 require root privileges.}
+\item{port}{A number or integer that indicates the server port that should be listened on. Note that on most Unix-like systems including Linux and macOS, port numbers smaller than 1024 require root privileges.}
 
-\item{app}{A collection of functions that define your application. See
-  [startServer()].}
+\item{app}{A collection of functions that define your application. See \code{\link[=startServer]{startServer()}}.}
 
 \item{interruptIntervalMs}{Deprecated (last used in httpuv 1.3.5).}
 }
 
 \value{
-Normally does not return; after interruption, returns the logical
-  value `TRUE` from [service()]. The server is stopped as an exit side effect.
+Normally does not return; after interruption, returns the logical value \code{TRUE} from \code{\link[=service]{service()}}. The server is stopped as an exit side effect.
 }
 
 \description{
-This is a convenience function that provides a simple way to call
-[startServer()], [service()], and
-[stopServer()] in the correct sequence. It does not return unless
-interrupted or an error occurs.
+This is a convenience function that provides a simple way to call \code{\link[=startServer]{startServer()}}, \code{\link[=service]{service()}}, and \code{\link[=stopServer]{stopServer()}} in the correct sequence. It does not return unless interrupted or an error occurs.
 }
 
 \details{
-If you have multiple hosts and/or ports to listen on, call the individual
-functions instead of `runServer`.
+If you have multiple hosts and/or ports to listen on, call the individual functions instead of \code{runServer}.
 }
 
 \seealso{
-[startServer()], [service()],
-  [stopServer()]
+\code{\link[=startServer]{startServer()}}, \code{\link[=service]{service()}}, \code{\link[=stopServer]{stopServer()}}
 }
 
 \examples{
 # A very basic application. runServer() blocks until interrupted, so
 # schedule an interrupt() call to let this example return.
-later::later(interrupt, delay = 1)
+later2::later(interrupt, delay = 1)
 runServer(
   "0.0.0.0", 5000,
   list(

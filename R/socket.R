@@ -452,15 +452,15 @@ WebSocket <- function(handle, req) {
 #'   connections on an thread running in the background. This background thread
 #'   handles the I/O, and when it receives a HTTP request, it will schedule a
 #'   call to the user-defined R functions in `app` to handle the request.
-#'   This scheduling is done with [later::later()]. When the R call
+#'   This scheduling is done with [later2::later()]. When the R call
 #'   stack is empty -- in other words, when an interactive R session is sitting
 #'   idle at the command prompt -- R will automatically run the scheduled calls.
 #'   However, if the call stack is not empty -- if R is evaluating other R code
 #'   -- then the callbacks will not execute until either the call stack is
-#'   empty, or the [later::run_now()] function is called. This
+#'   empty, or the [later2::run_now()] function is called. This
 #'   function tells R to execute any callbacks that have been scheduled by
-#'   [later::later()]. The [service()] function is
-#'   essentially a wrapper for [later::run_now()].
+#'   [later2::later()]. The [service()] function is
+#'   essentially a wrapper for [later2::run_now()].
 #'
 #'   In older versions of httpuv (1.3.5 and below), it did not use a background
 #'   thread for I/O, and when this function was called, it did not accept
@@ -559,8 +559,13 @@ WebSocket <- function(handle, req) {
 #' s$stop()
 #'
 #' # An application that serves static assets at the URL paths /assets and /lib
+#' content_dir <- tempfile("httpserver-content-")
+#' dir.create(file.path(content_dir, "assets"), recursive = TRUE)
+#' dir.create(file.path(content_dir, "lib"), recursive = TRUE)
+#' on.exit(unlink(content_dir, recursive = TRUE), add = TRUE)
+#'
 #' s <- startServer(
-#'   "0.0.0.0", 5000,
+#'   "0.0.0.0", randomPort(),
 #'   list(
 #'     call = function(req) {
 #'       list(
@@ -572,9 +577,9 @@ WebSocket <- function(handle, req) {
 #'       )
 #'     },
 #'     staticPaths = list(
-#'       "/assets" = "content/assets/",
+#'       "/assets" = file.path(content_dir, "assets"),
 #'       "/lib" = staticPath(
-#'         "content/lib",
+#'         file.path(content_dir, "lib"),
 #'         indexhtml = FALSE
 #'       ),
 #'       # This subdirectory of /lib should always be handled by the R code path
@@ -614,14 +619,14 @@ startPipeServer <- function(name, mask, app, quiet = FALSE) {
 #' call this function, because requests will be handled automatically. However,
 #' if R is executing code, then requests will not be handled until either the
 #' call stack is empty, or this function is called (or alternatively,
-#' [later::run_now()] is called).
+#' [later2::run_now()] is called).
 #'
 #' In previous versions of httpuv (1.3.5 and below), even if a server created by
 #' [startServer()] exists, no requests were serviced unless and until
 #' `service` was called.
 #'
-#' This function simply calls [later::run_now()], so if your
-#' application schedules any [later::later()] callbacks, they will be
+#' This function simply calls [later2::run_now()], so if your
+#' application schedules any [later2::later()] callbacks, they will be
 #' invoked.
 #'
 #' @return The logical value `TRUE`, invisibly, after processing requests for
@@ -693,7 +698,7 @@ service <- function(timeoutMs = ifelse(interactive(), 100, 1000)) {
 #' @examples
 #' # A very basic application. runServer() blocks until interrupted, so
 #' # schedule an interrupt() call to let this example return.
-#' later::later(interrupt, delay = 1)
+#' later2::later(interrupt, delay = 1)
 #' runServer(
 #'   "0.0.0.0", 5000,
 #'   list(

@@ -23,61 +23,34 @@ excludeStaticPath()
 \arguments{
 \item{path}{The local path.}
 
-\item{x}{A `staticPath` object.}
+\item{x}{A \code{staticPath} object.}
 
-\item{...}{Further arguments passed to or from other methods (currently
-  unused).}
+\item{...}{Further arguments passed to or from other methods (currently unused).}
 
-\item{indexhtml}{If an index.html file is present, should it be served up
-  when the client requests the static path or any subdirectory?}
+\item{indexhtml}{If an index.html file is present, should it be served up when the client requests the static path or any subdirectory?}
 
-\item{fallthrough}{With the default value, `FALSE`, if a request is made
-  for a file that doesn't exist, then httpserver will immediately send a 404
-  response from the background I/O thread, without needing to call back into
-  the main R thread. This offers the best performance. If the value is
-  `TRUE`, then instead of sending a 404 response, httpserver will call the
-  application's `call` function, and allow it to handle the request.}
+\item{fallthrough}{With the default value, \code{FALSE}, if a request is made for a file that doesn't exist, then httpserver will immediately send a 404 response from the background I/O thread, without needing to call back into the main R thread. This offers the best performance. If the value is \code{TRUE}, then instead of sending a 404 response, httpserver will call the application's \code{call} function, and allow it to handle the request.}
 
-\item{html_charset}{When HTML files are served, the value that will be
-  provided for `charset` in the Content-Type header. For example, with
-  the default value, `"utf-8"`, the header is `Content-Type:
-  text/html; charset=utf-8`. If `""` is used, then no `charset`
-  will be added in the Content-Type header.}
+\item{html_charset}{When HTML files are served, the value that will be provided for \code{charset} in the Content-Type header. For example, with the default value, \code{"utf-8"}, the header is \code{Content-Type: text/html; charset=utf-8}. If \code{""} is used, then no \code{charset} will be added in the Content-Type header.}
 
-\item{headers}{Additional headers and values that will be included in the
-  response.}
+\item{headers}{Additional headers and values that will be included in the response.}
 
-\item{validation}{An optional validation pattern. Presently, the only type of
-  validation supported is an exact string match of a header. For example, if
-  `validation` is `'"abc" = "xyz"'`, then HTTP requests must have a
-  header named `abc` (case-insensitive) with the value `xyz`
-  (case-sensitive). If a request does not have a matching header, than
-  httpserver will give a 403 Forbidden response. If the `character(0)` (the
-  default), then no validation check will be performed.}
+\item{validation}{An optional validation pattern. Presently, the only type of validation supported is an exact string match of a header. For example, if \code{validation} is \code{'"abc" = "xyz"'}, then HTTP requests must have a header named \code{abc} (case-insensitive) with the value \code{xyz} (case-sensitive). If a request does not have a matching header, than httpserver will give a 403 Forbidden response. If the \code{character(0)} (the default), then no validation check will be performed.}
 }
 
 \value{
-An object of class `staticPath`, consisting of the normalized local
-  path and a `staticPathOptions` object describing how it is served.
+An object of class \code{staticPath}, consisting of the normalized local path and a \code{staticPathOptions} object describing how it is served.
 }
 
 \description{
-The `staticPath` function creates a `staticPath` object. Note that
-if any of the arguments (other than `path`) are `NULL`, then that
-means that for this particular static path, it should inherit the behavior
-from the staticPathOptions set for the application as a whole.
+The \code{staticPath} function creates a \code{staticPath} object. Note that if any of the arguments (other than \code{path}) are \code{NULL}, then that means that for this particular static path, it should inherit the behavior from the staticPathOptions set for the application as a whole.
 }
 
 \details{
-The `excludeStaticPath` function tells the application to ignore a
-particular path for static serving. This is useful when you want to include a
-path for static serving (like `"/"`) but then exclude a subdirectory of
-it (like `"/dynamic"`) so that the subdirectory will always be passed to
-the R code for handling requests. `excludeStaticPath` can be used not
-only for directories; it can also exclude specific files.
+The \code{excludeStaticPath} function tells the application to ignore a particular path for static serving. This is useful when you want to include a path for static serving (like \code{"/"}) but then exclude a subdirectory of it (like \code{"/dynamic"}) so that the subdirectory will always be passed to the R code for handling requests. \code{excludeStaticPath} can be used not only for directories; it can also exclude specific files.
 }
 
 \seealso{
-[staticPathOptions()].
+\code{\link[=staticPathOptions]{staticPathOptions()}}.
 }
 

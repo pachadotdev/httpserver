@@ -8,16 +8,14 @@ stopAllServers()
 }
 
 \value{
-No return value, called for its side effect of stopping all running
-  servers.
+No return value, called for its side effect of stopping all running servers.
 }
 
 \description{
-This will stop all applications which were created by
-[startServer()] or [startPipeServer()].
+This will stop all applications which were created by \code{\link[=startServer]{startServer()}} or \code{\link[=startPipeServer]{startPipeServer()}}.
 }
 
 \seealso{
-[stopServer()] to stop a specific server.
+\code{\link[=stopServer]{stopServer()}} to stop a specific server.
 }
 

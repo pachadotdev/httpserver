@@ -18,28 +18,16 @@ decodeURIComponent(value)
 }
 
 \value{
-Encoded or decoded character vector of the same length as the
- input value. \code{decodeURI} and \code{decodeURIComponent} will return
- strings that are UTF-8 encoded.
+Encoded or decoded character vector of the same length as the input value. \\code\{decodeURI\} and \\code\{decodeURIComponent\} will return strings that are UTF-8 encoded.
 }
 
 \description{
-Encodes/decodes strings using URI encoding/decoding in the same way that web
- browsers do. The precise behaviors of these functions can be found at developer.mozilla.org:
- \href{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURI}{encodeURI},
- \href{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent}{encodeURIComponent},
- \href{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURI}{decodeURI},
- \href{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent}{decodeURIComponent}
+Encodes/decodes strings using URI encoding/decoding in the same way that web browsers do. The precise behaviors of these functions can be found at developer.mozilla.org: \\href\{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURI\}\{encodeURI\}, \\href\{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent\}\{encodeURIComponent\}, \\href\{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURI\}\{decodeURI\}, \\href\{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent\}\{decodeURIComponent\}
 
- Intended as a faster replacement for [utils::URLencode()] and [utils::URLdecode()].
- encodeURI differs from encodeURIComponent in that the former will not encode
- reserved characters: \code{;,/?:@@&=+$}
+Intended as a faster replacement for \code{\link[utils:URLencode]{utils::URLencode()}} and \code{\link[utils:URLdecode]{utils::URLdecode()}}. encodeURI differs from encodeURIComponent in that the former will not encode reserved characters: \\code\{;,/?:@@&=+$\}
 
- decodeURI differs from decodeURIComponent in that it will refuse to decode
- encoded sequences that decode to a reserved character. (If in doubt, use
- decodeURIComponent.)
+decodeURI differs from decodeURIComponent in that it will refuse to decode encoded sequences that decode to a reserved character. (If in doubt, use decodeURIComponent.)
 
- For \code{encodeURI} and \code{encodeURIComponent}, input strings will be
- converted to UTF-8 before URL-encoding.
+For \\code\{encodeURI\} and \\code\{encodeURIComponent\}, input strings will be converted to UTF-8 before URL-encoding.
 }
 

@@ -14,26 +14,17 @@ WebSocket(handle, req)
 }
 
 \value{
-An environment of class `WebSocket` containing the connection
-  handle, request information, callback registries, and methods for sending
-  messages or closing the connection.
+An environment of class \code{WebSocket} containing the connection handle, request information, callback registries, and methods for sending messages or closing the connection.
 }
 
 \description{
-A `WebSocket` object represents a single WebSocket connection. The
-object can be used to send messages and close the connection, and to receive
-notifications when messages are received or the connection is closed.
+A \code{WebSocket} object represents a single WebSocket connection. The object can be used to send messages and close the connection, and to receive notifications when messages are received or the connection is closed.
 }
 
 \details{
-Note that this WebSocket class is different from the one provided by the
-package named websocket. This class is meant to be used on the server side,
-whereas the one in the websocket package is to be used as a client. The
-WebSocket class in httpserver has an older API than the one in the websocket
-package.
+Note that this WebSocket class is different from the one provided by the package named websocket. This class is meant to be used on the server side, whereas the one in the websocket package is to be used as a client. The WebSocket class in httpserver has an older API than the one in the websocket package.
 
-WebSocket objects should never be created directly. They are obtained by
-passing an `onWSOpen` function to [startServer()].
+WebSocket objects should never be created directly. They are obtained by passing an \code{onWSOpen} function to \code{\link[=startServer]{startServer()}}.
 }
 
 \examples{

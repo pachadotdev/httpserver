@@ -18,15 +18,11 @@ as.staticPath(path)
 }
 
 \value{
-A `staticPath` object. Character paths are converted to objects of
-  class `staticPath`; existing `staticPath` objects are returned unchanged.
-  Objects of unsupported classes cause an error.
+A \code{staticPath} object. Character paths are converted to objects of class \code{staticPath}; existing \code{staticPath} objects are returned unchanged. Objects of unsupported classes cause an error.
 }
 
 \description{
-This function is used to convert an object to a `staticPath` object.
-It is primarily used internally, but can also be used by users to ensure
-that an object is a `staticPath` object.
+This function is used to convert an object to a \code{staticPath} object. It is primarily used internally, but can also be used by users to ensure that an object is a \code{staticPath} object.
 }
 
 \keyword{internal}
