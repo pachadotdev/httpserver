@@ -1,6 +1,6 @@
 UNAME := $(shell uname)
 
-PKG_LIBS = @libs@ ./http-parser/http_parser.o ./sha1/sha1.o -pthread
+PKG_LIBS = @libs@ ./http-parser/http_parser.o ./sha1/sha1.o ./md5/md5.o -pthread
 
 ifeq ($(UNAME), Darwin)
 PKG_LIBS += -lz -framework CoreServices
@@ -38,7 +38,7 @@ CONFIGURE_FLAGS="--quiet"
 # PKG_CPPFLAGS += -D_GLIBCXX_ASSERTIONS
 
 
-$(SHLIB): @deps@ http-parser/http_parser.o sha1/sha1.o
+$(SHLIB): @deps@ http-parser/http_parser.o sha1/sha1.o md5/md5.o
 
 # We needed to rename lt~obsolete.m4 because the name causes problems with R
 # CMD check. Here we rename it back.

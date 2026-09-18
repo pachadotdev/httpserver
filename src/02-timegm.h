@@ -1,6 +1,7 @@
-#include "timegm.h"
-#include <stdlib.h>
-#include <time.h>
+#ifndef HTTPSERVER_02_TIMEGM_H
+#define HTTPSERVER_02_TIMEGM_H
+
+time_t timegm2(struct tm const *t);
 
 // From https://stackoverflow.com/a/58037981/412655
 int days_since_1970(int y, int m, int d) {
@@ -28,3 +29,5 @@ time_t timegm2(struct tm const *t) {
   return 60 * (60 * (24L * days_since_epoch + t->tm_hour) + t->tm_min) +
          t->tm_sec;
 }
+
+#endif

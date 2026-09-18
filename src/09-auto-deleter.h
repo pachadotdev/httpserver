@@ -1,0 +1,47 @@
+#ifndef HTTPSERVER_09_AUTO_DELETER_H
+#define HTTPSERVER_09_AUTO_DELETER_H
+
+extern CallbackQueue *background_queue;
+
+// A deleter function, which, if called on the main thread, will delete the
+// object immediately. If called on the background thread, it will schedule
+// deletion to happen on the main thread. This is useful in cases where we
+// don't know ahead of time which thread will be triggering the deletion.
+template <typename T> void auto_deleter_main(void *obj) {
+  // Unlike auto_deleter_background, this function takes a void* argument.
+  // This is because later() can only pass a void* to the callback.
+  if (is_main_thread()) {
+    try {
+      delete reinterpret_cast<T *>(obj);
+    } catch (...) {
+    }
+
+  } else if (is_background_thread()) {
+    later2::later(auto_deleter_main<T>, obj, 0);
+
+  } else {
+    debug_log("Can't detect correct thread for auto_deleter_main.", LOG_ERROR);
+  }
+}
+
+// A deleter function, which, if called on the background thread, will delete
+// the object immediately. If called on the main thread, it will schedule
+// deletion to happen on the background thread. This is useful in cases where
+// we don't know ahead of time which thread will be triggering the deletion.
+template <typename T> void auto_deleter_background(T *obj) {
+  if (is_main_thread()) {
+    background_queue->push(std::bind(auto_deleter_background<T>, obj));
+
+  } else if (is_background_thread()) {
+    try {
+      delete obj;
+    } catch (...) {
+    }
+
+  } else {
+    debug_log("Can't detect correct thread for auto_deleter_background.",
+              LOG_ERROR);
+  }
+}
+
+#endif

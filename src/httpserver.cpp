@@ -1,48 +1,92 @@
 #define _FILE_OFFSET_BITS 64
 
-#include "httpserver.h"
-
-#include <Rinternals.h>
+#include <algorithm>
+#include <assert.h>
+#include <cassert>
+#include <cctype>
+#include <cstdint>
+#include <cstring>
+#include <ctime>
 #include <errno.h>
 #include <functional>
 #include <iomanip>
+#include <initializer_list>
+#include <iostream>
 #include <map>
 #include <memory>
+#include <queue>
 #include <signal.h>
+#include <sstream>
+#include <stdarg.h>
+#include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <stdexcept>
+#include <string>
+#include <string.h>
+#include <strings.h>
+#include <sys/types.h>
+#include <time.h>
+#include <type_traits>
+#include <utility>
 #include <uv.h>
+#include <vector>
+#include <zlib.h>
 
+#ifndef _WIN32
+#include <sys/stat.h>
+#include <unistd.h>
+#else
+#include <Windows.h>
+#include <windows.h>
+#endif
+
+#include "base64/base64.hpp"
 #include "cpp4r.hpp"
-#include "R.h"
-#include "Rmath.h"
+#include "http-parser/http_parser.h"
+#include "md5/md5.h"
+#include "sha1/sha1.h"
+#include <later2_api.h>
+#include <R.h>
+#include <Rinternals.h>
+#include <Rmath.h>
 
 using namespace cpp4r;
 
+#include "00-httpserver.h"
 #include "01-thread.h"
 #include "02-timegm.h"
-#include "03-utils.h"
-#include "04-callback.h"
-#include "05-callbackqueue.h"
-#include "06-auto-deleter.h"
-#include "07-uvutil.h"
-#include "08-winutils.h"
-#include "09-fs.h"
-#include "10-filedatasource-unix.h"
-#include "11-filedatasource-win.h"
-#include "12-gzipdatasource.h"
-#include "13-staticpath.h"
-#include "14-base64.h"
-#include "15-websockets-base.h"
-#include "16-websockets-ietf.h"
-#include "17-websockets-hybi03.h"
-#include "18-websockets-hixie76.h"
-#include "19-websockets.h"
-#include "20-httpresponse.h"
-#include "21-socket.h"
-#include "22-httprequest.h"
-#include "23-http.h"
-#include "24-mime.h"
-#include "25-webapplication.h"
+#include "03-optional.h"
+#include "04-constants.h"
+#include "05-utils.h"
+#include "06-callback.h"
+#include "07-tqueue.h"
+#include "08-callbackqueue.h"
+#include "09-auto-deleter.h"
+#include "10-uvutil.h"
+#include "11-winutils.h"
+#include "12-fs.h"
+#include "13-filedatasource.h"
+#include "14-filedatasource-unix.h"
+#include "15-filedatasource-win.h"
+#include "16-gzipdatasource.h"
+#include "17-staticpath.h"
+#include "18-base64.h"
+#include "19-websockets-base.h"
+#include "20-websockets-ietf.h"
+#include "21-websockets-hybi03.h"
+#include "22-websockets-hixie76.h"
+#include "23-websockets.h"
+#include "24-webapplication.h"
+#include "25-http.h"
+#include "26-httpresponse.h"
+#include "27-socket.h"
+#include "28-httprequest.h"
+#include "29-httpresponse.h"
+#include "30-socket.h"
+#include "31-http.h"
+#include "32-mime.h"
+#include "33-webapplication.h"
 
 void throwError(int err, const std::string &prefix = std::string(),
                 const std::string &suffix = std::string()) {
