@@ -1,8 +1,9 @@
 #define _FILE_OFFSET_BITS 64
 
 #include "httpserver.h"
-#include "auto_deleter.h"
 #include "base64/base64.hpp"
+
+#include "auto_deleter.h"
 #include "callbackqueue.h"
 #include "http.h"
 #include "socket.h"
@@ -10,6 +11,7 @@
 #include "utils.h"
 #include "uvutil.h"
 #include "webapplication.h"
+
 #include <Rinternals.h>
 #include <errno.h>
 #include <functional>
