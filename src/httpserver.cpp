@@ -44,7 +44,9 @@
 #include "base64/base64.hpp"
 #include "cpp4r.hpp"
 #include "http-parser/http_parser.h"
+extern "C" {
 #include "md5/md5.h"
+}
 #include "sha1/sha1.h"
 #include <later2_api.h>
 #include <R.h>
@@ -75,18 +77,19 @@ using namespace cpp4r;
 #include "19-websockets-base.h"
 #include "20-websockets-ietf.h"
 #include "21-websockets-hybi03.h"
-#include "22-websockets-hixie76.h"
-#include "23-websockets.h"
-#include "24-webapplication.h"
-#include "25-http.h"
-#include "26-httpresponse.h"
-#include "27-socket.h"
-#include "28-httprequest.h"
-#include "29-httpresponse.h"
-#include "30-socket.h"
-#include "31-http.h"
-#include "32-mime.h"
-#include "33-webapplication.h"
+#include "22-websockets.h"
+#include "23-websockets-hixie76.h"
+#include "24-websockets.h"
+#include "25-webapplication.h"
+#include "26-http.h"
+#include "27-httpresponse.h"
+#include "28-socket.h"
+#include "29-httprequest.h"
+#include "30-httpresponse.h"
+#include "31-socket.h"
+#include "32-http.h"
+#include "33-mime.h"
+#include "34-webapplication.h"
 
 void throwError(int err, const std::string &prefix = std::string(),
                 const std::string &suffix = std::string()) {
