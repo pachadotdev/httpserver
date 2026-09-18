@@ -3,9 +3,11 @@
 #' `runStaticServer()` provides a convenient interface to start a server to host
 #' a single static directory, either in the foreground or the background.
 #'
-#' @examplesIf interactive()
-#' website_dir <- system.file("example-static-site", package = "httpserver")
-#' runStaticServer(dir = website_dir)
+#' @examples
+#' if (interactive()) {
+#'  website_dir <- system.file("example-static-site", package = "httpserver")
+#'  runStaticServer(dir = website_dir)
+#' }
 #'
 #' @param dir The directory to serve. Defaults to the current working directory.
 #' @inheritParams startServer

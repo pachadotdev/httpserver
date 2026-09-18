@@ -13,12 +13,9 @@
 #' @return A port that is available to listen on.
 #'
 #' @examples
-#' \donttest{
 #' s <- startServer("127.0.0.1", randomPort(), list())
-#' browseURL(paste0("http://127.0.0.1:", s$getPort()))
-#'
+#' paste0("http://127.0.0.1:", s$getPort())
 #' s$stop()
-#' }
 #'
 #' @export
 randomPort <- function(min = 1024L, max = 49151L, host = "127.0.0.1", n = 20) {

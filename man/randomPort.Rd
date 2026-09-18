@@ -32,11 +32,8 @@ are considered unsafe by web browsers.
 }
 
 \examples{
-\donttest{
 s <- startServer("127.0.0.1", randomPort(), list())
-browseURL(paste0("http://127.0.0.1:", s$getPort()))
-
+paste0("http://127.0.0.1:", s$getPort())
 s$stop()
-}
 }
 

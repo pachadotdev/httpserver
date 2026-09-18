@@ -37,9 +37,8 @@ passing an `onWSOpen` function to [startServer()].
 }
 
 \examples{
-\donttest{
 # A WebSocket echo server that listens on port 8080
-startServer(
+s <- startServer(
   "0.0.0.0", 8080,
   list(
     onHeaders = function(req) {
@@ -59,6 +58,7 @@ startServer(
     }
   )
 )
-}
+
+s$stop()
 }
 

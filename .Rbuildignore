@@ -25,10 +25,9 @@
 ^CRAN-SUBMISSION$
 ^_pkgdown\.yml$
 ^docs$
-^pkgdown$
-scripts
 ^Makefile$
 ^scripts$
+^dev$
 ^src/libuv/\.clang-tidy$
 ^check-docker$
 ^LICENSE\.txt$

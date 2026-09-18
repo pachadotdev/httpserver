@@ -58,3 +58,10 @@ a single static directory, either in the foreground or the background.
   servers in [startServer()].
 }
 
+\examples{
+if (interactive()) {
+ website_dir <- system.file("example-static-site", package = "httpserver")
+ runStaticServer(dir = website_dir)
+}
+}
+

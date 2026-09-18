@@ -116,8 +116,6 @@ Creates an HTTP/WebSocket server on the specified host and port.
 }
 
 \examples{
-\donttest{
-# A very basic application
 s <- startServer(
   "0.0.0.0", 5000,
   list(
@@ -134,7 +132,6 @@ s <- startServer(
 )
 
 s$stop()
-
 
 # An application that serves static assets at the URL paths /assets and /lib
 s <- startServer(
@@ -165,6 +162,5 @@ s <- startServer(
 )
 
 s$stop()
-}
 }
 

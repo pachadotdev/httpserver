@@ -46,8 +46,9 @@ functions instead of `runServer`.
 }
 
 \examples{
-\donttest{
-# A very basic application
+# A very basic application. runServer() blocks until interrupted, so
+# schedule an interrupt() call to let this example return.
+later::later(interrupt, delay = 1)
 runServer(
   "0.0.0.0", 5000,
   list(
@@ -62,6 +63,5 @@ runServer(
     }
   )
 )
-}
 }
 

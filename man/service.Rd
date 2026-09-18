@@ -39,10 +39,6 @@ invoked.
 }
 
 \examples{
-\donttest{
-while (TRUE) {
-  service()
-}
-}
+service(1)
 }
 

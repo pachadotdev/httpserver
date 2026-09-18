@@ -330,9 +330,8 @@ AppWrapper <- function(app) {
 #'
 #' @export
 #' @examples
-#' \donttest{
 #' # A WebSocket echo server that listens on port 8080
-#' startServer(
+#' s <- startServer(
 #'   "0.0.0.0", 8080,
 #'   list(
 #'     onHeaders = function(req) {
@@ -352,7 +351,9 @@ AppWrapper <- function(app) {
 #'     }
 #'   )
 #' )
-#' }
+#'
+#' s$stop()
+#'
 #' @param handle An C++ WebSocket handle.
 #' @param req The Rook request environment that opened the connection.
 #'
@@ -540,8 +541,6 @@ WebSocket <- function(handle, req) {
 #' @aliases startPipeServer
 #'
 #' @examples
-#' \donttest{
-#' # A very basic application
 #' s <- startServer(
 #'   "0.0.0.0", 5000,
 #'   list(
@@ -558,7 +557,6 @@ WebSocket <- function(handle, req) {
 #' )
 #'
 #' s$stop()
-#'
 #'
 #' # An application that serves static assets at the URL paths /assets and /lib
 #' s <- startServer(
@@ -589,7 +587,7 @@ WebSocket <- function(handle, req) {
 #' )
 #'
 #' s$stop()
-#' }
+#'
 #' @export
 startServer <- function(host, port, app, quiet = FALSE) {
   WebServer(host, port, app, quiet)
@@ -635,11 +633,7 @@ startPipeServer <- function(name, mask, app, quiet = FALSE) {
 #'   If NA, performs a non-blocking run without waiting.
 #'
 #' @examples
-#' \donttest{
-#' while (TRUE) {
-#'   service()
-#' }
-#' }
+#' service(1)
 #'
 #' @export
 service <- function(timeoutMs = ifelse(interactive(), 100, 1000)) {
@@ -697,8 +691,9 @@ service <- function(timeoutMs = ifelse(interactive(), 100, 1000)) {
 #'   [stopServer()]
 #'
 #' @examples
-#' \donttest{
-#' # A very basic application
+#' # A very basic application. runServer() blocks until interrupted, so
+#' # schedule an interrupt() call to let this example return.
+#' later::later(interrupt, delay = 1)
 #' runServer(
 #'   "0.0.0.0", 5000,
 #'   list(
@@ -713,7 +708,7 @@ service <- function(timeoutMs = ifelse(interactive(), 100, 1000)) {
 #'     }
 #'   )
 #' )
-#' }
+#'
 #' @export
 runServer <- function(host, port, app, interruptIntervalMs = NULL) {
   server <- startServer(host, port, app)
