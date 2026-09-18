@@ -1,8 +1,23 @@
-#include "callbackqueue.h"
-#include "thread.h"
+#ifndef HTTPSERVER_05_CALLBACKQUEUE_H
+#define HTTPSERVER_05_CALLBACKQUEUE_H
+
+#include "01-thread.h"
 #include "tqueue.h"
 #include <functional>
 #include <uv.h>
+
+class CallbackQueue {
+public:
+  CallbackQueue(uv_loop_t *loop);
+  void push(std::function<void(void)> cb);
+  // Needs to be a friend to call .flush()
+  friend void flush_callback_queue(uv_async_t *handle);
+
+private:
+  void flush();
+  uv_async_t flush_handle;
+  tqueue<std::function<void(void)>> q;
+};
 
 // This non-class function is a plain C wrapper for CallbackQueue::flush(), and
 // is needed as a callback to pass to uv_async_send.
@@ -44,3 +59,5 @@ void CallbackQueue::flush() {
     cb();
   }
 }
+
+#endif

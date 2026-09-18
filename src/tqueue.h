@@ -3,7 +3,7 @@
 
 // A thread-safe queue, using threading constructs from libuv.
 
-#include "thread.h"
+#include "01-thread.h"
 #include <queue>
 
 template <typename T> class tqueue {

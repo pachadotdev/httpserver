@@ -1,7 +1,7 @@
 #include "httprequest.h"
-#include "auto_deleter.h"
-#include "callback.h"
-#include "thread.h"
+#include "06-auto-deleter.h"
+#include "04-callback.h"
+#include "01-thread.h"
 #include "utils.h"
 #include <functional>
 #include <later2_api.h>

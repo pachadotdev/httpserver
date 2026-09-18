@@ -1,8 +1,8 @@
 #ifndef HTTP_HPP
 #define HTTP_HPP
 
-#include "auto_deleter.h"
-#include "callbackqueue.h"
+#include "06-auto-deleter.h"
+#include "05-callbackqueue.h"
 #include "utils.h"
 #include "webapplication.h"
 #include "websockets.h"

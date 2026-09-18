@@ -1,8 +1,8 @@
-#ifndef AUTO_DELETER_HPP
-#define AUTO_DELETER_HPP
+#ifndef HTTPSERVER_06_AUTO_DELETER_H
+#define HTTPSERVER_06_AUTO_DELETER_H
 
-#include "callbackqueue.h"
-#include "thread.h"
+#include "05-callbackqueue.h"
+#include "01-thread.h"
 #include "utils.h"
 #include <functional>
 #include <later2_api.h>

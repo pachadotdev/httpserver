@@ -2,7 +2,7 @@
 #include "constants.h"
 #include "gzipdatasource.h"
 #include "httprequest.h"
-#include "thread.h"
+#include "01-thread.h"
 #include "utils.h"
 #include <uv.h>
 
