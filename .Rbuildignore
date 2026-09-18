@@ -22,3 +22,6 @@
 ^src/libuv/\.clang-tidy$
 ^check-docker$
 ^LICENSE\.txt$
+^src/http-parser/\.mailmap$
+^src/libuv/\.mailmap$
+^src/libuv/\.readthedocs\.yaml$
