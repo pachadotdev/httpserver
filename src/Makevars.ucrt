@@ -1,4 +1,4 @@
-PKG_LIBS = ./http-parser/http_parser.o ./sha1/sha1.o ./base64/base64.o
+PKG_LIBS = ./http-parser/http_parser.o ./sha1/sha1.o
 
 SYS_LIBS = $(shell pkg-config --libs zlib libuv)
 ifeq ($(SYS_LIBS),)
@@ -21,7 +21,7 @@ LIBUV_CFLAGS = -Iinclude -Isrc -Isrc/win -DWIN32_LEAN_AND_MEAN -D_WIN32_WINNT=0x
 # PKG_CPPFLAGS += -DDEBUG_THREAD -UNDEBUG
 
 
-$(SHLIB): http-parser/http_parser.o sha1/sha1.o base64/base64.o
+$(SHLIB): http-parser/http_parser.o sha1/sha1.o
 
 clean:
 	$(MAKE) --directory=libuv distclean

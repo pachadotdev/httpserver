@@ -1,6 +1,6 @@
 library(rprojroot)
 
-dest_file <- rprojroot::find_package_root_file("src", "mime.cpp")
+dest_file <- rprojroot::find_package_root_file("src", "23-mime.h")
 
 mimemap <- mime::mimemap
 

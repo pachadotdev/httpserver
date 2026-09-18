@@ -26,6 +26,31 @@
 
 using namespace cpp4r;
 
+#include "01-thread.h"
+#include "02-timegm.h"
+#include "03-utils.h"
+#include "04-callback.h"
+#include "05-callbackqueue.h"
+#include "06-uvutil.h"
+#include "07-winutils.h"
+#include "08-fs.h"
+#include "09-filedatasource-unix.h"
+#include "10-filedatasource-win.h"
+#include "11-gzipdatasource.h"
+#include "12-staticpath.h"
+#include "13-base64.h"
+#include "14-websockets-base.h"
+#include "15-websockets-ietf.h"
+#include "16-websockets-hybi03.h"
+#include "17-websockets-hixie76.h"
+#include "18-websockets.h"
+#include "19-httpresponse.h"
+#include "20-socket.h"
+#include "21-httprequest.h"
+#include "22-http.h"
+#include "23-mime.h"
+#include "24-webapplication.h"
+
 void throwError(int err, const std::string &prefix = std::string(),
                 const std::string &suffix = std::string()) {
   ASSERT_MAIN_THREAD()
