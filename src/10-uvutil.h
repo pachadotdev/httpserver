@@ -1,15 +1,15 @@
 #ifndef HTTPSERVER_10_UVUTIL_H
 #define HTTPSERVER_10_UVUTIL_H
 
-inline uv_handle_t *toHandle(uv_timer_t *timer) { return (uv_handle_t *)timer; }
-inline uv_handle_t *toHandle(uv_tcp_t *tcp) { return (uv_handle_t *)tcp; }
-inline uv_handle_t *toHandle(uv_stream_t *stream) {
+inline uv_handle_t *to_handle(uv_timer_t *timer) { return (uv_handle_t *)timer; }
+inline uv_handle_t *to_handle(uv_tcp_t *tcp) { return (uv_handle_t *)tcp; }
+inline uv_handle_t *to_handle(uv_stream_t *stream) {
   return (uv_handle_t *)stream;
 }
 
-inline uv_stream_t *toStream(uv_tcp_t *tcp) { return (uv_stream_t *)tcp; }
+inline uv_stream_t *to_stream(uv_tcp_t *tcp) { return (uv_stream_t *)tcp; }
 
-void freeAfterClose(uv_handle_t *handle);
+void free_after_close(uv_handle_t *handle);
 
 class WriteOp;
 
@@ -19,8 +19,8 @@ class DataSource {
 public:
   virtual ~DataSource() {}
   virtual uint64_t size() const = 0;
-  virtual uv_buf_t getData(size_t bytesDesired) = 0;
-  virtual void freeData(uv_buf_t buffer) = 0;
+  virtual uv_buf_t get_data(size_t bytes_desired) = 0;
+  virtual void free_data(uv_buf_t buffer) = 0;
   virtual void close() = 0;
 };
 
@@ -34,20 +34,20 @@ public:
       const std::vector<uint8_t> &buffer = std::vector<uint8_t>())
       : _buffer(buffer), _pos(0) {}
 
-  explicit InMemoryDataSource(const raws &rawVector)
-      : _buffer(rawVector.size()), _pos(0) {
+  explicit InMemoryDataSource(const raws &raw_vector)
+      : _buffer(raw_vector.size()), _pos(0) {
     ASSERT_MAIN_THREAD()
-    std::copy(rawVector.begin(), rawVector.end(), _buffer.begin());
+    std::copy(raw_vector.begin(), raw_vector.end(), _buffer.begin());
   }
 
   virtual ~InMemoryDataSource() { close(); }
 
   uint64_t size() const;
-  uv_buf_t getData(size_t bytesDesired);
-  void freeData(uv_buf_t buffer);
+  uv_buf_t get_data(size_t bytes_desired);
+  void free_data(uv_buf_t buffer);
   void close();
 
-  void add(const std::vector<uint8_t> &moreData);
+  void add(const std::vector<uint8_t> &more_data);
 };
 
 // Class for writing a DataSource to a uv_stream_t. Takes care
@@ -55,20 +55,20 @@ public:
 // to write too much data to a slow uv_stream_t).
 class ExtendedWrite {
   bool _chunked;
-  int _activeWrites;
+  int _active_writes;
   bool _errored;
   bool _completed;
-  uv_stream_t *_pHandle;
-  std::shared_ptr<DataSource> _pDataSource;
+  uv_stream_t *_p_handle;
+  std::shared_ptr<DataSource> _p_data_source;
 
 public:
-  ExtendedWrite(uv_stream_t *pHandle, std::shared_ptr<DataSource> pDataSource,
+  ExtendedWrite(uv_stream_t *p_handle, std::shared_ptr<DataSource> p_data_source,
                 bool chunked)
-      : _chunked(chunked), _activeWrites(0), _errored(false), _completed(false),
-        _pHandle(pHandle), _pDataSource(pDataSource) {}
+      : _chunked(chunked), _active_writes(0), _errored(false), _completed(false),
+        _p_handle(p_handle), _p_data_source(p_data_source) {}
   virtual ~ExtendedWrite() {}
 
-  virtual void onWriteComplete(int status) = 0;
+  virtual void on_write_complete(int status) = 0;
 
   void begin();
   friend class WriteOp;
@@ -77,7 +77,7 @@ protected:
   void next();
 };
 
-inline int ip_family(const std::string &ip) {
+inline int ip_family_impl(const std::string &ip) {
   // A buffer big enough for an IPv6 address
   unsigned char addr[16];
 
@@ -90,11 +90,11 @@ inline int ip_family(const std::string &ip) {
   return -1;
 }
 
-void freeAfterClose(uv_handle_t *handle) { free(handle); }
+void free_after_close(uv_handle_t *handle) { free(handle); }
 
 class WriteOp {
 private:
-  ExtendedWrite *pParent;
+  ExtendedWrite *p_parent;
 
   // Bytes to write before writing the buffer
   std::vector<char> prefix;
@@ -110,7 +110,7 @@ public:
 
   WriteOp(ExtendedWrite *parent, std::string prefix, uv_buf_t data,
           std::string suffix)
-      : pParent(parent), prefix(prefix.begin(), prefix.end()), buffer(data),
+      : p_parent(parent), prefix(prefix.begin(), prefix.end()), buffer(data),
         suffix(suffix.begin(), suffix.end()) {
     memset(&handle, 0, sizeof(uv_write_t));
     handle.data = this;
@@ -133,13 +133,13 @@ public:
 
   void end() {
     ASSERT_BACKGROUND_THREAD()
-    pParent->_pDataSource->freeData(buffer);
-    pParent->_activeWrites--;
+    p_parent->_p_data_source->free_data(buffer);
+    p_parent->_active_writes--;
 
     if (handle.handle->write_queue_size == 0) {
       // Write queue is empty, so we're ready to check for
       // more data and send if it available.
-      pParent->next();
+      p_parent->next();
     }
 
     delete this;
@@ -147,11 +147,11 @@ public:
 };
 
 uint64_t InMemoryDataSource::size() const { return _buffer.size(); }
-uv_buf_t InMemoryDataSource::getData(size_t bytesDesired) {
+uv_buf_t InMemoryDataSource::get_data(size_t bytes_desired) {
   ASSERT_BACKGROUND_THREAD()
   size_t bytes = _buffer.size() - _pos;
-  if (bytesDesired < bytes)
-    bytes = bytesDesired;
+  if (bytes_desired < bytes)
+    bytes = bytes_desired;
 
   uv_buf_t mem;
   mem.base = bytes > 0 ? reinterpret_cast<char *>(&_buffer[_pos]) : 0;
@@ -160,23 +160,23 @@ uv_buf_t InMemoryDataSource::getData(size_t bytesDesired) {
   _pos += bytes;
   return mem;
 }
-void InMemoryDataSource::freeData(uv_buf_t buffer) {}
+void InMemoryDataSource::free_data(uv_buf_t buffer) {}
 void InMemoryDataSource::close() {
   ASSERT_BACKGROUND_THREAD()
   _buffer.clear();
 }
 
-void InMemoryDataSource::add(const std::vector<uint8_t> &moreData) {
+void InMemoryDataSource::add(const std::vector<uint8_t> &more_data) {
   ASSERT_BACKGROUND_THREAD()
-  if (_buffer.capacity() < _buffer.size() + moreData.size())
-    _buffer.reserve(_buffer.size() + moreData.size());
-  _buffer.insert(_buffer.end(), moreData.begin(), moreData.end());
+  if (_buffer.capacity() < _buffer.size() + more_data.size())
+    _buffer.reserve(_buffer.size() + more_data.size());
+  _buffer.insert(_buffer.end(), more_data.begin(), more_data.end());
 }
 
 static void writecb(uv_write_t *handle, int status) {
   ASSERT_BACKGROUND_THREAD()
-  WriteOp *pWriteOp = (WriteOp *)handle->data;
-  pWriteOp->end();
+  WriteOp *p_write_op = (WriteOp *)handle->data;
+  p_write_op->end();
 }
 
 void ExtendedWrite::begin() {
@@ -190,21 +190,21 @@ const std::string TRAILER = "0\r\n\r\n";
 void ExtendedWrite::next() {
   ASSERT_BACKGROUND_THREAD()
   if (_errored || _completed) {
-    if (_activeWrites == 0) {
-      _pDataSource->close();
-      onWriteComplete(_errored ? 1 : 0);
+    if (_active_writes == 0) {
+      _p_data_source->close();
+      on_write_complete(_errored ? 1 : 0);
     }
     return;
   }
 
   uv_buf_t buf;
   try {
-    buf = _pDataSource->getData(65536);
+    buf = _p_data_source->get_data(65536);
   } catch (std::exception &e) {
     _errored = true;
-    if (_activeWrites == 0) {
-      _pDataSource->close();
-      onWriteComplete(1);
+    if (_active_writes == 0) {
+      _p_data_source->close();
+      on_write_complete(1);
     }
     return;
   }
@@ -245,15 +245,15 @@ void ExtendedWrite::next() {
     // It's not safe to proceed with uv_write() in this situation. uv_write
     // will not tolerate being called with 0 buffers, and clang-ASAN will
     // complain if any buf.base is NULL (even if buf.len is 0).
-    _pDataSource->freeData(buf);
+    _p_data_source->free_data(buf);
     next();
     return;
   }
 
-  WriteOp *pWriteOp = new WriteOp(this, prefix, buf, suffix);
-  _activeWrites++;
-  auto op_bufs = pWriteOp->bufs();
-  uv_write(&pWriteOp->handle, _pHandle, &op_bufs[0], op_bufs.size(), &writecb);
+  WriteOp *p_write_op = new WriteOp(this, prefix, buf, suffix);
+  _active_writes++;
+  auto op_bufs = p_write_op->bufs();
+  uv_write(&p_write_op->handle, _p_handle, &op_bufs[0], op_bufs.size(), &writecb);
 }
 
 #endif

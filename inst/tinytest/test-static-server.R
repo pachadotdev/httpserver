@@ -1,4 +1,4 @@
-# These tests are time-sensitive, which makes CRAN unhappy.
+# these tests are time-sensitive, which makes cran unhappy.
 
 path_example_site <- function(...) {
   system.file("example-static-site", ..., package = "httpserver")
@@ -18,7 +18,7 @@ start_example_server <- function(port) {
   r <- callr::r_bg(
     function(port) {
       ex <- system.file("example-static-site", package = "httpserver")
-      httpuv::runStaticServer(
+      httpuv::run_static_server(
         ex,
         port = port,
         background = FALSE,
@@ -28,12 +28,12 @@ start_example_server <- function(port) {
     list(port = port)
   )
 
-  # Poll until the port is actually bound by the background process, rather
-  # than relying on stderr output. Checking for *any* stderr output is racy:
-  # in some environments (e.g. Docker containers with incomplete locale
+  # poll until the port is actually bound by the background process, rather
+  # than relying on stderr output. checking for *any* stderr output is racy:
+  # in some environments (e.g. docker containers with incomplete locale
   # data), the background process can emit a warning almost immediately,
   # which would make us think the server is ready before it's actually
-  # listening, leading to "Couldn't connect to server" errors.
+  # listening, leading to "couldn't connect to server" errors.
   # `skip()` is a testthat function and isn't available under tinytest, so we
   # signal a skip by returning NULL and letting the caller do `return(NULL)`
   # (the same pattern already used elsewhere in this file).
@@ -41,13 +41,13 @@ start_example_server <- function(port) {
   while (isTRUE(httpserver:::is_port_available(actual_port))) {
     if (!r$is_alive()) {
       message(
-        "Server process exited before starting up:\n",
+        "server process exited before starting up:\n",
         paste(r$read_error_lines(), collapse = "\n")
       )
       return(NULL)
     }
     if (Sys.time() > max) {
-      message("Server didn't start up in 2 seconds")
+      message("server didn't start up in 2 seconds")
       r$kill()
       return(NULL)
     }
@@ -58,12 +58,12 @@ start_example_server <- function(port) {
 }
 
 local({
-  # runStaticServer() in foreground with custom port ----
+  # run_static_server() in foreground with custom port ----
 
-  if (Sys.getenv("TINYHTTPSERVER_FULL_TESTING") != "yes") { return(NULL) }
+  if (Sys.getenv("tinyhttpserver_full_testing") != "yes") { return(NULL) }
   if (!requireNamespace("curl")) { return(NULL) }
 
-  port <- randomPort()
+  port <- random_port()
 
   r <- start_example_server(port)
   if (is.null(r)) { return(NULL) }
@@ -78,9 +78,9 @@ local({
 })
 
 local({
-  # runStaticServer() in foreground with default port ----
+  # run_static_server() in foreground with default port ----
 
-  if (Sys.getenv("TINYHTTPSERVER_FULL_TESTING") != "yes") { return(NULL) }
+  if (Sys.getenv("tinyhttpserver_full_testing") != "yes") { return(NULL) }
   if (!requireNamespace("curl")) { return(NULL) }
   if (isFALSE(httpserver:::is_port_available(7446))) { return(NULL) }
 
@@ -97,45 +97,45 @@ local({
 })
 
 local({
-  # runStaticServer() throws an error for invalid ports ----
+  # run_static_server() throws an error for invalid ports ----
 
-  if (Sys.getenv("TINYHTTPSERVER_FULL_TESTING") != "yes") { return(NULL) }
+  if (Sys.getenv("tinyhttpserver_full_testing") != "yes") { return(NULL) }
   if (!requireNamespace("curl")) { return(NULL) }
 
   on.exit({
-    stopAllServers()
+    stop_all_servers()
   }) # in case of a test failure
 
   expect_error(
-    runStaticServer(path_example_site(), port = 0, background = TRUE)
+    run_static_server(path_example_site(), port = 0, background = TRUE)
   )
   expect_error(
-    runStaticServer(path_example_site(), port = 700:720, background = TRUE)
+    run_static_server(path_example_site(), port = 700:720, background = TRUE)
   )
   expect_error(
-    runStaticServer(path_example_site(), port = 74469, background = TRUE)
+    run_static_server(path_example_site(), port = 74469, background = TRUE)
   )
   expect_error(
-    runStaticServer(path_example_site(), port = "1234", background = TRUE)
+    run_static_server(path_example_site(), port = "1234", background = TRUE)
   )
 })
 
 local({
-  # runStaticServer() throws an error if the requested port is used ----
+  # run_static_server() throws an error if the requested port is used ----
 
-  if (Sys.getenv("TINYHTTPSERVER_FULL_TESTING") != "yes") { return(NULL) }
+  if (Sys.getenv("tinyhttpserver_full_testing") != "yes") { return(NULL) }
   if (!requireNamespace("curl")) { return(NULL) }
 
   on.exit({
-    stopAllServers()
+    stop_all_servers()
   }) # in case of a test failure
 
-  s1 <- runStaticServer(path_example_site(), background = TRUE, browse = FALSE)
+  s1 <- run_static_server(path_example_site(), background = TRUE, browse = FALSE)
 
   expect_error(
-    runStaticServer(
+    run_static_server(
       path_example_site(),
-      port = s1$getPort(),
+      port = s1$get_port(),
       background = TRUE,
       browse = FALSE
     )
@@ -143,16 +143,16 @@ local({
 })
 
 local({
-  # runStaticServer() in background uses default port ----
+  # run_static_server() in background uses default port ----
 
-  if (Sys.getenv("TINYHTTPSERVER_FULL_TESTING") != "yes") { return(NULL) }
+  if (Sys.getenv("tinyhttpserver_full_testing") != "yes") { return(NULL) }
   if (!requireNamespace("curl")) { return(NULL) }
   if (isFALSE(httpserver:::is_port_available(7446))) { return(NULL) }
 
-  s <- runStaticServer(path_example_site(), background = TRUE, browse = FALSE)
+  s <- run_static_server(path_example_site(), background = TRUE, browse = FALSE)
   on.exit(
     {
-      stopServer(s)
+      stop_server(s)
     },
     add = TRUE
   )
@@ -161,14 +161,14 @@ local({
 })
 
 local({
-  # runStaticServer() in background uses default port or random port ----
+  # run_static_server() in background uses default port or random port ----
 
-  if (Sys.getenv("TINYHTTPSERVER_FULL_TESTING") != "yes") { return(NULL) }
+  if (Sys.getenv("tinyhttpserver_full_testing") != "yes") { return(NULL) }
   if (!requireNamespace("curl")) { return(NULL) }
 
   if (isFALSE(httpserver:::is_port_available(7446))) { return(NULL) }
 
-  s1 <- runStaticServer(path_example_site(), background = TRUE, browse = FALSE)
+  s1 <- run_static_server(path_example_site(), background = TRUE, browse = FALSE)
   on.exit(
     {
       s1$stop()
@@ -176,7 +176,7 @@ local({
     add = TRUE
   )
 
-  s2 <- runStaticServer(path_example_site(), background = TRUE, browse = FALSE)
+  s2 <- run_static_server(path_example_site(), background = TRUE, browse = FALSE)
   on.exit(
     {
       s2$stop()
@@ -185,16 +185,16 @@ local({
   )
 
   expect_example_site(7446)
-  expect_example_site(s2$getPort())
+  expect_example_site(s2$get_port())
 })
 
 local({
-  # runStaticServer() in background errors if requested port is in use ----
+  # run_static_server() in background errors if requested port is in use ----
 
-  if (Sys.getenv("TINYHTTPSERVER_FULL_TESTING") != "yes") { return(NULL) }
+  if (Sys.getenv("tinyhttpserver_full_testing") != "yes") { return(NULL) }
   if (!requireNamespace("curl")) { return(NULL) }
 
-  s1 <- runStaticServer(path_example_site(), background = TRUE, browse = FALSE)
+  s1 <- run_static_server(path_example_site(), background = TRUE, browse = FALSE)
   on.exit(
     {
       s1$stop()
@@ -202,10 +202,10 @@ local({
     add = TRUE
   )
 
-  used_port <- s1$getPort()
+  used_port <- s1$get_port()
 
   expect_error({
-    s2 <- runStaticServer(
+    s2 <- run_static_server(
       path_example_site(),
       port = used_port,
       background = TRUE,
@@ -216,9 +216,9 @@ local({
 })
 
 local({
-  # runStaticServer() prints informative console messages ----
+  # run_static_server() prints informative console messages ----
 
-  if (Sys.getenv("TINYHTTPSERVER_FULL_TESTING") != "yes") { return(NULL) }
+  if (Sys.getenv("tinyhttpserver_full_testing") != "yes") { return(NULL) }
   if (!requireNamespace("curl")) { return(NULL) }
 
   # tinytest has no expect_snapshot(). message() writes to the "message"
@@ -227,7 +227,7 @@ local({
   # vary between runs/machines (site path and port).
   msgs <- capture.output(
     {
-      s <- runStaticServer(
+      s <- run_static_server(
         path_example_site(),
         background = TRUE,
         browse = FALSE
@@ -237,14 +237,14 @@ local({
     type = "message"
   )
 
-  msgs <- sub(path_example_site(), "/Users/user/path/to/site", msgs, fixed = TRUE)
-  msgs <- sub(":\\d+$", ":PORT", msgs)
+  msgs <- sub(path_example_site(), "/users/user/path/to/site", msgs, fixed = TRUE)
+  msgs <- sub(":\\d+$", ":port", msgs)
 
   expect_equal(
     msgs,
     c(
-      "Serving: '/Users/user/path/to/site'",
-      "View at: http://127.0.0.1:PORT"
+      "serving: '/users/user/path/to/site'",
+      "view at: http://127.0.0.1:port"
     )
   )
 })

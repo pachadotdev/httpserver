@@ -1,13 +1,13 @@
 #ifndef HTTPSERVER_31_SOCKET_H
 #define HTTPSERVER_31_SOCKET_H
 
-void on_Socket_close(uv_handle_t *pHandle);
+void on_socket_close(uv_handle_t *p_handle);
 
-void Socket::addConnection(std::shared_ptr<HttpRequest> request) {
+void Socket::add_connection(std::shared_ptr<HttpRequest> request) {
   connections.push_back(request);
 }
 
-void Socket::removeConnection(std::shared_ptr<HttpRequest> request) {
+void Socket::remove_connection(std::shared_ptr<HttpRequest> request) {
   connections.erase(
       std::remove(connections.begin(), connections.end(), request),
       connections.end());
@@ -19,9 +19,9 @@ Socket::~Socket() {
 }
 
 // A deleter callback for the shared_ptr<Socket>.
-void delete_ppsocket(uv_handle_t *pHandle) {
-  std::shared_ptr<Socket> *ppSocket = (std::shared_ptr<Socket> *)pHandle->data;
-  delete ppSocket;
+void delete_ppsocket(uv_handle_t *p_handle) {
+  std::shared_ptr<Socket> *pp_socket = (std::shared_ptr<Socket> *)p_handle->data;
+  delete pp_socket;
 }
 
 // This tells all the HttpRequests to close and deletes the
@@ -40,11 +40,11 @@ void Socket::close() {
     (*it)->close();
   }
 
-  uv_handle_t *pHandle = toHandle(&handle.stream);
+  uv_handle_t *p_handle = to_handle(&handle.stream);
 
   // Delete the shared_ptr<Socket> only after uv_close() does its work. This
   // will decrease the refcount and should trigger deletion of the Socket.
-  uv_close(pHandle, delete_ppsocket);
+  uv_close(p_handle, delete_ppsocket);
 }
 
 #endif

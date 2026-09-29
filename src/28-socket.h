@@ -7,16 +7,16 @@ class WebApplication;
 class Socket {
 public:
   VariantHandle handle;
-  std::shared_ptr<WebApplication> pWebApplication;
+  std::shared_ptr<WebApplication> p_web_application;
   CallbackQueue *background_queue;
   std::vector<std::shared_ptr<HttpRequest>> connections;
 
-  Socket(std::shared_ptr<WebApplication> pWebApplication,
+  Socket(std::shared_ptr<WebApplication> p_web_application,
          CallbackQueue *background_queue)
-      : pWebApplication(pWebApplication), background_queue(background_queue) {}
+      : p_web_application(p_web_application), background_queue(background_queue) {}
 
-  void addConnection(std::shared_ptr<HttpRequest> request);
-  void removeConnection(std::shared_ptr<HttpRequest> request);
+  void add_connection(std::shared_ptr<HttpRequest> request);
+  void remove_connection(std::shared_ptr<HttpRequest> request);
   void close();
 
   virtual ~Socket();

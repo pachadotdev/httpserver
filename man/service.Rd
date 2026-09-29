@@ -2,27 +2,27 @@
 % Please edit documentation in socket.R
 \name{service}
 \alias{service}
-\title{Process requests}
+\title{process requests}
 \usage{
-service(timeoutMs = ifelse(interactive(), 100, 1000))
+service(timeout_ms = ifelse(interactive(), 100, 1000))
 }
 
 \arguments{
-\item{timeoutMs}{Approximate number of milliseconds to run before returning. It will return this duration has elapsed. If 0 or Inf, then the function will continually process requests without returning unless an error occurs. If NA, performs a non-blocking run without waiting.}
+\item{timeout_ms}{approximate number of milliseconds to run before returning. it will return this duration has elapsed. if 0 or inf, then the function will continually process requests without returning unless an error occurs. if na, performs a non-blocking run without waiting.}
 }
 
 \value{
-The logical value \code{TRUE}, invisibly, after processing requests for the requested interval.
+the logical value \code{TRUE}, invisibly, after processing requests for the requested interval.
 }
 
 \description{
-Process HTTP requests and WebSocket messages. If there is nothing on R's call stack -- if R is sitting idle at the command prompt -- it is not necessary to call this function, because requests will be handled automatically. However, if R is executing code, then requests will not be handled until either the call stack is empty, or this function is called (or alternatively, \code{\link[later2:run_now]{later2::run_now()}} is called).
+process http requests and web_socket messages. if there is nothing on r's call stack -- if r is sitting idle at the command prompt -- it is not necessary to call this function, because requests will be handled automatically. however, if r is executing code, then requests will not be handled until either the call stack is empty, or this function is called (or alternatively, \code{\link[later2:run_now]{later2::run_now()}} is called).
 }
 
 \details{
-In previous versions of httpuv (1.3.5 and below), even if a server created by \code{\link[=startServer]{startServer()}} exists, no requests were serviced unless and until \code{service} was called.
+in previous versions of httpuv (1.3.5 and below), even if a server created by \code{\link[=start_server]{start_server()}} exists, no requests were serviced unless and until \code{service} was called.
 
-This function simply calls \code{\link[later2:run_now]{later2::run_now()}}, so if your application schedules any \code{\link[later2:later]{later2::later()}} callbacks, they will be invoked.
+this function simply calls \code{\link[later2:run_now]{later2::run_now()}}, so if your application schedules any \code{\link[later2:later]{later2::later()}} callbacks, they will be invoked.
 }
 
 \examples{

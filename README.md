@@ -91,7 +91,7 @@ s <- startServer("0.0.0.0", 8080,
     staticPaths = list(
       "/assets" = "content/assets/",
       # Don't use index.html for /lib
-      "/lib" = staticPath("content/lib", indexhtml = FALSE)
+      "/lib" = staticPath("content/lib", index_html = FALSE)
     )
   )
 )

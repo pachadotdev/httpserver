@@ -91,7 +91,7 @@ using namespace cpp4r;
 #include "33-mime.h"
 #include "34-webapplication.h"
 
-void throwError(int err, const std::string &prefix = std::string(),
+void throw_error(int err, const std::string &prefix = std::string(),
                 const std::string &suffix = std::string()) {
   ASSERT_MAIN_THREAD()
   std::string msg = prefix + uv_strerror(err) + suffix;
@@ -99,7 +99,7 @@ void throwError(int err, const std::string &prefix = std::string(),
 }
 
 // For keeping track of all running server apps.
-std::vector<uv_stream_t *> pServers;
+std::vector<uv_stream_t *> p_servers;
 
 class UVLoop {
 public:
@@ -176,10 +176,10 @@ void block_sigpipe() {
 
 void io_thread(void *data) {
   register_background_thread();
-  std::shared_ptr<Barrier> *pBlocker =
+  std::shared_ptr<Barrier> *p_blocker =
       reinterpret_cast<std::shared_ptr<Barrier> *>(data);
-  std::shared_ptr<Barrier> blocker = std::shared_ptr<Barrier>(*pBlocker);
-  delete pBlocker;
+  std::shared_ptr<Barrier> blocker = std::shared_ptr<Barrier>(*p_blocker);
+  delete p_blocker;
 
   io_thread_running.set(true);
 
@@ -229,9 +229,9 @@ void ensure_io_thread() {
 
   // We want to pass a copy of the shared_ptr to the new pthread. To do that, we
   // need to create a new shared_ptr and get the regular pointer to it.
-  std::shared_ptr<Barrier> *pBlocker = new std::shared_ptr<Barrier>(blocker);
+  std::shared_ptr<Barrier> *p_blocker = new std::shared_ptr<Barrier>(blocker);
 
-  int ret = uv_thread_create(&io_thread_id, io_thread, pBlocker);
+  int ret = uv_thread_create(&io_thread_id, io_thread, p_blocker);
   // Wait for io_loop to be initialized before continuing
   blocker->wait();
 
@@ -244,7 +244,7 @@ void ensure_io_thread() {
 // Outgoing websocket messages
 // ============================================================================
 
-[[cpp4r::register]] void sendWSMessage(SEXP conn, bool binary, SEXP message) {
+[[cpp4r::register]] void send_ws_message(SEXP conn, bool binary, SEXP message) {
   ASSERT_MAIN_THREAD()
   external_pointer<
       std::shared_ptr<WebSocketConnection>,
@@ -273,7 +273,7 @@ void ensure_io_thread() {
     UNPROTECT(1);
   }
 
-  std::function<void(void)> cb(std::bind(&WebSocketConnection::sendWSMessage,
+  std::function<void(void)> cb(std::bind(&WebSocketConnection::send_ws_message,
                                          wsc, mode, safe_vec_addr(*str),
                                          str->size()));
 
@@ -283,9 +283,9 @@ void ensure_io_thread() {
   background_queue->push(std::bind(deleter_background<std::vector<char>>, str));
 }
 
-[[cpp4r::register]] void closeWS(SEXP conn, uint16_t code, std::string reason) {
+[[cpp4r::register]] void close_ws(SEXP conn, uint16_t code, std::string reason) {
   ASSERT_MAIN_THREAD()
-  debug_log("closeWS", LOG_DEBUG);
+  debug_log("close_ws", LOG_DEBUG);
   external_pointer<
       std::shared_ptr<WebSocketConnection>,
       auto_deleter_background<std::shared_ptr<WebSocketConnection>>>
@@ -293,30 +293,30 @@ void ensure_io_thread() {
   std::shared_ptr<WebSocketConnection> wsc = *conn_xptr;
 
   // Schedule on background thread:
-  // wsc->closeWS(code, reason);
+  // wsc->close_ws(code, reason);
   background_queue->push(
-      std::bind(&WebSocketConnection::closeWS, wsc, code, reason));
+      std::bind(&WebSocketConnection::close_ws, wsc, code, reason));
 }
 
 // ============================================================================
 // Create/stop servers
 // ============================================================================
 
-[[cpp4r::register]] SEXP makeTcpServer(const std::string &host, int port,
-                                       sexp onHeaders, function onBodyData,
-                                       function onRequest, function onWSOpen,
-                                       function onWSMessage, function onWSClose,
-                                       list staticPaths, list staticPathOptions,
+[[cpp4r::register]] SEXP make_tcp_server(const std::string &host, int port,
+                                       sexp on_headers, function on_body_data,
+                                       function on_request, function on_wsopen,
+                                       function on_wsmessage, function on_wsclose,
+                                       list static_paths, list static_path_options,
                                        bool quiet) {
 
   register_main_thread();
 
-  // Deleted when owning pServer is deleted. If pServer creation fails,
+  // Deleted when owning p_server is deleted. If p_server creation fails,
   // this should be deleted when it goes out of scope.
-  std::shared_ptr<RWebApplication> pHandler(
-      new RWebApplication(onHeaders, onBodyData, onRequest, onWSOpen,
-                          onWSMessage, onWSClose, staticPaths,
-                          staticPathOptions),
+  std::shared_ptr<RWebApplication> p_handler(
+      new RWebApplication(on_headers, on_body_data, on_request, on_wsopen,
+                          on_wsmessage, on_wsclose, static_paths,
+                          static_path_options),
       auto_deleter_main<RWebApplication>);
 
   ensure_io_thread();
@@ -329,100 +329,100 @@ void ensure_io_thread() {
   // -Warray-bounds false positive (seen with gcc16) on this class.
   std::shared_ptr<Barrier> blocker = std::shared_ptr<Barrier>(new Barrier(2));
 
-  uv_stream_t *pServer;
+  uv_stream_t *p_server;
 
   // Run on background thread:
-  // createTcpServerSync(
+  // create_tcp_server_sync(
   //   io_loop.get(), host.c_str(), port,
-  //   std::static_pointer_cast<WebApplication>(pHandler),
-  //   background_queue, &pServer, blocker
+  //   std::static_pointer_cast<WebApplication>(p_handler),
+  //   background_queue, &p_server, blocker
   // );
   background_queue->push(
-      std::bind(createTcpServerSync, io_loop.get(), host.c_str(), port,
-                std::static_pointer_cast<WebApplication>(pHandler), quiet,
-                background_queue, &pServer, blocker));
+      std::bind(create_tcp_server_sync, io_loop.get(), host.c_str(), port,
+                std::static_pointer_cast<WebApplication>(p_handler), quiet,
+                background_queue, &p_server, blocker));
 
   // Wait for server to be created before continuing
   blocker->wait();
 
-  if (!pServer) {
+  if (!p_server) {
     return R_NilValue;
   }
 
-  pServers.push_back(pServer);
+  p_servers.push_back(p_server);
 
-  return as_sexp(externalize_str<uv_stream_t>(pServer));
+  return as_sexp(externalize_str<uv_stream_t>(p_server));
 }
 
-[[cpp4r::register]] SEXP makePipeServer(const std::string &name, int mask,
-                                        sexp onHeaders, function onBodyData,
-                                        function onRequest, function onWSOpen,
-                                        function onWSMessage,
-                                        function onWSClose, list staticPaths,
-                                        list staticPathOptions, bool quiet) {
+[[cpp4r::register]] SEXP make_pipe_server(const std::string &name, int mask,
+                                        sexp on_headers, function on_body_data,
+                                        function on_request, function on_wsopen,
+                                        function on_wsmessage,
+                                        function on_wsclose, list static_paths,
+                                        list static_path_options, bool quiet) {
 
   register_main_thread();
 
-  // Deleted when owning pServer is deleted. If pServer creation fails,
+  // Deleted when owning p_server is deleted. If p_server creation fails,
   // this should be deleted when it goes out of scope.
-  std::shared_ptr<RWebApplication> pHandler(
-      new RWebApplication(onHeaders, onBodyData, onRequest, onWSOpen,
-                          onWSMessage, onWSClose, staticPaths,
-                          staticPathOptions),
+  std::shared_ptr<RWebApplication> p_handler(
+      new RWebApplication(on_headers, on_body_data, on_request, on_wsopen,
+                          on_wsmessage, on_wsclose, static_paths,
+                          static_path_options),
       auto_deleter_main<RWebApplication>);
 
   ensure_io_thread();
 
   std::shared_ptr<Barrier> blocker = std::make_shared<Barrier>(2);
 
-  uv_stream_t *pServer;
+  uv_stream_t *p_server;
 
   // Run on background thread:
-  // createPipeServerSync(
+  // create_pipe_server_sync(
   //   io_loop.get(), name.c_str(), mask,
-  //   std::static_pointer_cast<WebApplication>(pHandler),
-  //   background_queue, &pServer, blocker
+  //   std::static_pointer_cast<WebApplication>(p_handler),
+  //   background_queue, &p_server, blocker
   // );
   background_queue->push(
-      std::bind(createPipeServerSync, io_loop.get(), name.c_str(), mask,
-                std::static_pointer_cast<WebApplication>(pHandler), quiet,
-                background_queue, &pServer, blocker));
+      std::bind(create_pipe_server_sync, io_loop.get(), name.c_str(), mask,
+                std::static_pointer_cast<WebApplication>(p_handler), quiet,
+                background_queue, &p_server, blocker));
 
   // Wait for server to be created before continuing
   blocker->wait();
 
-  if (!pServer) {
+  if (!p_server) {
     return R_NilValue;
   }
 
-  pServers.push_back(pServer);
+  p_servers.push_back(p_server);
 
-  return as_sexp(externalize_str<uv_stream_t>(pServer));
+  return as_sexp(externalize_str<uv_stream_t>(p_server));
 }
 
-void stopServer_(uv_stream_t *pServer) {
+void stop_server_(uv_stream_t *p_server) {
   ASSERT_MAIN_THREAD()
 
   // Remove it from the list of running servers.
-  // Note: we're removing it from the pServers list without waiting for the
-  // background thread to call freeServer().
+  // Note: we're removing it from the p_servers list without waiting for the
+  // background thread to call free_server().
   std::vector<uv_stream_t *>::iterator pos =
-      std::find(pServers.begin(), pServers.end(), pServer);
-  if (pos != pServers.end()) {
-    pServers.erase(pos);
+      std::find(p_servers.begin(), p_servers.end(), p_server);
+  if (pos != p_servers.end()) {
+    p_servers.erase(pos);
   } else {
-    stop("pServer handle not found in list of running servers.");
+    stop("p_server handle not found in list of running servers.");
   }
 
   // Run on background thread:
-  // freeServer(pServer);
-  background_queue->push(std::bind(freeServer, pServer));
+  // free_server(p_server);
+  background_queue->push(std::bind(free_server, p_server));
 }
 
-[[cpp4r::register]] void stopServer_(std::string handle) {
+[[cpp4r::register]] void stop_server_(std::string handle) {
   ASSERT_MAIN_THREAD()
-  uv_stream_t *pServer = internalize_str<uv_stream_t>(handle);
-  stopServer_(pServer);
+  uv_stream_t *p_server = internalize_str<uv_stream_t>(handle);
+  stop_server_(p_server);
 }
 
 void stop_loop_timer_cb(uv_timer_t *handle) { uv_stop(handle->loop); }
@@ -431,53 +431,53 @@ void stop_loop_timer_cb(uv_timer_t *handle) { uv_stop(handle->loop); }
 // Static file serving
 // ============================================================================
 
-std::shared_ptr<WebApplication> get_pWebApplication(uv_stream_t *pServer) {
+std::shared_ptr<WebApplication> get_p_web_application(uv_stream_t *p_server) {
   // Copy the Socket shared_ptr
-  std::shared_ptr<Socket> pSocket(*(std::shared_ptr<Socket> *)pServer->data);
-  return pSocket->pWebApplication;
+  std::shared_ptr<Socket> p_socket(*(std::shared_ptr<Socket> *)p_server->data);
+  return p_socket->p_web_application;
 }
 
-std::shared_ptr<WebApplication> get_pWebApplication(std::string handle) {
-  uv_stream_t *pServer = internalize_str<uv_stream_t>(handle);
-  return get_pWebApplication(pServer);
+std::shared_ptr<WebApplication> get_p_web_application(std::string handle) {
+  uv_stream_t *p_server = internalize_str<uv_stream_t>(handle);
+  return get_p_web_application(p_server);
 }
 
-[[cpp4r::register]] list getStaticPaths_(std::string handle) {
+[[cpp4r::register]] list get_static_paths_(std::string handle) {
   ASSERT_MAIN_THREAD()
-  return get_pWebApplication(handle)->getStaticPathManager().pathsAsRObject();
+  return get_p_web_application(handle)->get_static_path_manager().paths_as_robject();
 }
 
-[[cpp4r::register]] list setStaticPaths_(std::string handle, list sp) {
+[[cpp4r::register]] list set_static_paths_(std::string handle, list sp) {
   ASSERT_MAIN_THREAD()
-  get_pWebApplication(handle)->getStaticPathManager().set(sp);
-  return getStaticPaths_(handle);
+  get_p_web_application(handle)->get_static_path_manager().set(sp);
+  return get_static_paths_(handle);
 }
 
-[[cpp4r::register]] list removeStaticPaths_(std::string handle, strings paths) {
+[[cpp4r::register]] list remove_static_paths_(std::string handle, strings paths) {
   ASSERT_MAIN_THREAD()
-  get_pWebApplication(handle)->getStaticPathManager().remove(paths);
-  return getStaticPaths_(handle);
+  get_p_web_application(handle)->get_static_path_manager().remove(paths);
+  return get_static_paths_(handle);
 }
 
-[[cpp4r::register]] list getStaticPathOptions_(std::string handle) {
+[[cpp4r::register]] list get_static_path_options_(std::string handle) {
   ASSERT_MAIN_THREAD()
-  return get_pWebApplication(handle)
-      ->getStaticPathManager()
-      .getOptions()
-      .asRObject();
+  return get_p_web_application(handle)
+      ->get_static_path_manager()
+      .get_options()
+      .as_robject();
 }
 
-[[cpp4r::register]] list setStaticPathOptions_(std::string handle, list opts) {
+[[cpp4r::register]] list set_static_path_options_(std::string handle, list opts) {
   ASSERT_MAIN_THREAD()
-  get_pWebApplication(handle)->getStaticPathManager().setOptions(opts);
-  return getStaticPathOptions_(handle);
+  get_p_web_application(handle)->get_static_path_manager().set_options(opts);
+  return get_static_path_options_(handle);
 }
 
 // ============================================================================
 // Miscellaneous utility functions
 // ============================================================================
 
-[[cpp4r::register]] std::string base64encode(const raws &x) {
+[[cpp4r::register]] std::string base64_encode(const raws &x) {
   std::vector<unsigned char> buf(x.begin(), x.end());
   return b64encode(buf.begin(), buf.end());
 }
@@ -487,7 +487,7 @@ static std::string allowed =
     "?:@&=+$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-_.!~"
     "*'()";
 
-bool isReservedUrlChar(char c) {
+bool is_reserved_url_char(char c) {
   switch (c) {
   case ';':
   case ',':
@@ -505,15 +505,15 @@ bool isReservedUrlChar(char c) {
   }
 }
 
-bool needsEscape(char c, bool encodeReserved) {
+bool needs_escape(char c, bool encode_reserved) {
   if (c >= 'a' && c <= 'z')
     return false;
   if (c >= 'A' && c <= 'Z')
     return false;
   if (c >= '0' && c <= '9')
     return false;
-  if (isReservedUrlChar(c))
-    return encodeReserved;
+  if (is_reserved_url_char(c))
+    return encode_reserved;
   switch (c) {
   case '-':
   case '_':
@@ -529,13 +529,13 @@ bool needsEscape(char c, bool encodeReserved) {
   return true;
 }
 
-std::string doEncodeURI(std::string value, bool encodeReserved) {
+std::string do_encode_uri(std::string value, bool encode_reserved) {
   std::ostringstream os;
   os << std::hex << std::uppercase;
   for (std::string::const_iterator it = value.begin(); it != value.end();
        it++) {
 
-    if (!needsEscape(*it, encodeReserved)) {
+    if (!needs_escape(*it, encode_reserved)) {
       os << *it;
     } else {
       os << '%' << std::setw(2) << std::setfill('0')
@@ -550,31 +550,31 @@ std::string doEncodeURI(std::string value, bool encodeReserved) {
 
 @description Encodes/decodes strings using URI encoding/decoding in the same way that web
  browsers do. The precise behaviors of these functions can be found at developer.mozilla.org:
- \href{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURI}{encodeURI},
- \href{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent}{encodeURIComponent},
- \href{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURI}{decodeURI},
- \href{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent}{decodeURIComponent}
+ \href{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encode_uri}{encode_uri},
+ \href{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encode_uri_component}{encode_uri_component},
+ \href{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decode_uri}{decode_uri},
+ \href{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decode_uricomponent}{decode_uricomponent}
 
  Intended as a faster replacement for [utils::URLencode()] and [utils::URLdecode()].
- encodeURI differs from encodeURIComponent in that the former will not encode
+ encode_uri differs from encode_uri_component in that the former will not encode
  reserved characters: \code{;,/?:@@&=+$}
 
- decodeURI differs from decodeURIComponent in that it will refuse to decode
+ decode_uri differs from decode_uricomponent in that it will refuse to decode
  encoded sequences that decode to a reserved character. (If in doubt, use
- decodeURIComponent.)
+ decode_uricomponent.)
 
- For \code{encodeURI} and \code{encodeURIComponent}, input strings will be
+ For \code{encode_uri} and \code{encode_uri_component}, input strings will be
  converted to UTF-8 before URL-encoding.
 
 @param value Character vector to be encoded or decoded.
 
 @return Encoded or decoded character vector of the same length as the
- input value. \code{decodeURI} and \code{decodeURIComponent} will return
+ input value. \code{decode_uri} and \code{decode_uricomponent} will return
  strings that are UTF-8 encoded.
 
 @export
 */
-[[cpp4r::register]] strings encodeURI(strings value) {
+[[cpp4r::register]] strings encode_uri(strings value) {
   writable::strings out(value.size());
 
   for (R_xlen_t i = 0; i < value.size(); i++) {
@@ -582,7 +582,7 @@ std::string doEncodeURI(std::string value, bool encodeReserved) {
       out[i] = r_string(NA_STRING);
     } else {
       std::string encoded =
-          doEncodeURI(Rf_translateCharUTF8(SEXP(value[i])), false);
+          do_encode_uri(Rf_translateCharUTF8(SEXP(value[i])), false);
       out[i] = r_string(Rf_mkCharCE(encoded.c_str(), CE_UTF8));
     }
   }
@@ -590,10 +590,10 @@ std::string doEncodeURI(std::string value, bool encodeReserved) {
 }
 
 /* roxygen
-@rdname encodeURI
+@rdname encode_uri
 @export
 */
-[[cpp4r::register]] strings encodeURIComponent(strings value) {
+[[cpp4r::register]] strings encode_uri_component(strings value) {
   writable::strings out(value.size());
 
   for (R_xlen_t i = 0; i < value.size(); i++) {
@@ -601,14 +601,14 @@ std::string doEncodeURI(std::string value, bool encodeReserved) {
       out[i] = r_string(NA_STRING);
     } else {
       std::string encoded =
-          doEncodeURI(Rf_translateCharUTF8(SEXP(value[i])), true);
+          do_encode_uri(Rf_translateCharUTF8(SEXP(value[i])), true);
       out[i] = r_string(Rf_mkCharCE(encoded.c_str(), CE_UTF8));
     }
   }
   return out;
 }
 
-int hexToInt(char c) {
+int hex_to_int(char c) {
   switch (c) {
   case '0':
     return 0;
@@ -653,7 +653,7 @@ int hexToInt(char c) {
   }
 }
 
-std::string doDecodeURI(std::string value, bool component) {
+std::string do_decode_uri(std::string value, bool component) {
   std::ostringstream os;
   for (std::string::const_iterator it = value.begin(); it != value.end();
        it++) {
@@ -668,15 +668,15 @@ std::string doDecodeURI(std::string value, bool component) {
     if (*it == '%') {
       char hi = *(++it);
       char lo = *(++it);
-      int iHi = hexToInt(hi);
-      int iLo = hexToInt(lo);
-      if (iHi < 0 || iLo < 0) {
+      int i_hi = hex_to_int(hi);
+      int i_lo = hex_to_int(lo);
+      if (i_hi < 0 || i_lo < 0) {
         // Invalid escape sequence
         os << '%' << hi << lo;
         continue;
       }
-      char c = (char)(iHi << 4 | iLo);
-      if (!component && isReservedUrlChar(c)) {
+      char c = (char)(i_hi << 4 | i_lo);
+      if (!component && is_reserved_url_char(c)) {
         os << '%' << hi << lo;
       } else {
         os << c;
@@ -690,17 +690,17 @@ std::string doDecodeURI(std::string value, bool component) {
 }
 
 /* roxygen
-@rdname encodeURI
+@rdname encode_uri
 @export
 */
-[[cpp4r::register]] strings decodeURI(strings value) {
+[[cpp4r::register]] strings decode_uri(strings value) {
   writable::strings out(value.size());
 
   for (R_xlen_t i = 0; i < value.size(); i++) {
     if (value[i] == NA_STRING) {
       out[i] = r_string(NA_STRING);
     } else {
-      std::string decoded = doDecodeURI(std::string(value[i]), false);
+      std::string decoded = do_decode_uri(std::string(value[i]), false);
       out[i] =
           r_string(Rf_mkCharLenCE(decoded.c_str(), decoded.length(), CE_UTF8));
     }
@@ -710,17 +710,17 @@ std::string doDecodeURI(std::string value, bool component) {
 }
 
 /* roxygen
-@rdname encodeURI
+@rdname encode_uri
 @export
 */
-[[cpp4r::register]] strings decodeURIComponent(strings value) {
+[[cpp4r::register]] strings decode_uricomponent(strings value) {
   writable::strings out(value.size());
 
   for (R_xlen_t i = 0; i < value.size(); i++) {
     if (value[i] == NA_STRING) {
       out[i] = r_string(NA_STRING);
     } else {
-      std::string decoded = doDecodeURI(std::string(value[i]), true);
+      std::string decoded = do_decode_uri(std::string(value[i]), true);
       out[i] =
           r_string(Rf_mkCharLenCE(decoded.c_str(), decoded.length(), CE_UTF8));
     }
@@ -739,18 +739,18 @@ std::string doDecodeURI(std::string value, bool component) {
 @return For IPv4 addresses, \code{4}; for IPv6 addresses, \code{6}. If the address is neither, \code{-1}.
 
 @examples
- ipFamily("127.0.0.1")   # 4
- ipFamily("500.0.0.500") # -1
- ipFamily("500.0.0.500") # -1
+ ip_family("127.0.0.1")   # 4
+ ip_family("500.0.0.500") # -1
+ ip_family("500.0.0.500") # -1
 
- ipFamily("::")          # 6
- ipFamily("::1")         # 6
- ipFamily("fe80::1ff:fe23:4567:890a") # 6
+ ip_family("::")          # 6
+ ip_family("::1")         # 6
+ ip_family("fe80::1ff:fe23:4567:890a") # 6
 
 @export
 */
-[[cpp4r::register]] int ipFamily(const std::string &ip) {
-  int family = ip_family(ip);
+[[cpp4r::register]] int ip_family(const std::string &ip) {
+  int family = ip_family_impl(ip);
   if (family == AF_INET6)
     return 6;
   else if (family == AF_INET)
@@ -762,7 +762,7 @@ std::string doDecodeURI(std::string value, bool component) {
 // Given a List and an external pointer to a C++ function that takes a List,
 // invoke the function with the List as the single argument. This also clears
 // the external pointer so that the C++ function can't be called again.
-[[cpp4r::register]] void invokeCppCallback(SEXP data, SEXP callback_xptr) {
+[[cpp4r::register]] void invoke_cpp_callback(SEXP data, SEXP callback_xptr) {
   ASSERT_MAIN_THREAD()
 
   if (TYPEOF(callback_xptr) != EXTPTRSXP) {

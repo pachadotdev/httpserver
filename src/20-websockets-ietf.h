@@ -7,34 +7,34 @@ public:
   WebSocketProto_IETF() {}
   virtual ~WebSocketProto_IETF() {}
 
-  bool canHandle(const RequestHeaders &requestHeaders, const char *pData,
+  bool can_handle(const RequestHeaders &request_headers, const char *p_data,
                  size_t len) const;
 
-  void handshake(const std::string &url, const RequestHeaders &requestHeaders,
-                 char **ppData, size_t *pLen, ResponseHeaders *responseHeaders,
-                 std::vector<uint8_t> *pResponse) const;
+  void handshake(const std::string &url, const RequestHeaders &request_headers,
+                 char **pp_data, size_t *p_len, ResponseHeaders *response_headers,
+                 std::vector<uint8_t> *p_response) const;
 
-  bool isFin(uint8_t firstBit) const;
-  uint8_t toFin(bool isFin) const;
-  Opcode decodeOpcode(uint8_t rawCode) const;
-  uint8_t encodeOpcode(Opcode opcode) const;
+  bool is_fin(uint8_t first_bit) const;
+  uint8_t to_fin(bool is_fin) const;
+  Opcode decode_opcode(uint8_t raw_code) const;
+  uint8_t encode_opcode(Opcode opcode) const;
 };
 
-bool WebSocketProto_IETF::canHandle(const RequestHeaders &requestHeaders,
+bool WebSocketProto_IETF::can_handle(const RequestHeaders &request_headers,
                                     const char *, size_t) const {
 
-  return requestHeaders.find("upgrade") != requestHeaders.end() &&
-         strcasecmp(requestHeaders.at("upgrade").c_str(), "websocket") == 0 &&
-         requestHeaders.find("sec-websocket-key") != requestHeaders.end();
+  return request_headers.find("upgrade") != request_headers.end() &&
+         strcasecmp(request_headers.at("upgrade").c_str(), "websocket") == 0 &&
+         request_headers.find("sec-websocket-key") != request_headers.end();
 }
 
 void WebSocketProto_IETF::handshake(const std::string &,
-                                    const RequestHeaders &requestHeaders,
+                                    const RequestHeaders &request_headers,
                                     char **, size_t *,
-                                    ResponseHeaders *pResponseHeaders,
+                                    ResponseHeaders *p_response_headers,
                                     std::vector<uint8_t> *) const {
 
-  std::string key = requestHeaders.at("sec-websocket-key");
+  std::string key = request_headers.at("sec-websocket-key");
 
   std::string clear = trim(key) + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
   SHA1_CTX ctx;
@@ -46,22 +46,22 @@ void WebSocketProto_IETF::handshake(const std::string &,
 
   std::string response = b64encode(digest.begin(), digest.end());
 
-  pResponseHeaders->push_back(
+  p_response_headers->push_back(
       std::pair<std::string, std::string>("Connection", "Upgrade"));
-  pResponseHeaders->push_back(
+  p_response_headers->push_back(
       std::pair<std::string, std::string>("Upgrade", "websocket"));
-  pResponseHeaders->push_back(
+  p_response_headers->push_back(
       std::pair<std::string, std::string>("Sec-WebSocket-Accept", response));
 }
 
-bool WebSocketProto_IETF::isFin(uint8_t firstBit) const {
-  return firstBit != 0;
+bool WebSocketProto_IETF::is_fin(uint8_t first_bit) const {
+  return first_bit != 0;
 }
 
-uint8_t WebSocketProto_IETF::toFin(bool isFin) const { return isFin ? 1 : 0; }
+uint8_t WebSocketProto_IETF::to_fin(bool is_fin) const { return is_fin ? 1 : 0; }
 
-Opcode WebSocketProto_IETF::decodeOpcode(uint8_t rawCode) const {
-  switch (rawCode) {
+Opcode WebSocketProto_IETF::decode_opcode(uint8_t raw_code) const {
+  switch (raw_code) {
   case 0:
     return Continuation;
   case 1:
@@ -81,7 +81,7 @@ Opcode WebSocketProto_IETF::decodeOpcode(uint8_t rawCode) const {
   }
 }
 
-uint8_t WebSocketProto_IETF::encodeOpcode(Opcode opcode) const {
+uint8_t WebSocketProto_IETF::encode_opcode(Opcode opcode) const {
   switch (opcode) {
   case Continuation:
     return 0;

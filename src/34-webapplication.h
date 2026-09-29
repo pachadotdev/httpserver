@@ -5,64 +5,64 @@
 // Utility functions
 // ============================================================================
 
-std::string normalizeHeaderName(const std::string &name) {
+std::string normalize_header_name(const std::string &name) {
   std::string result = name;
   for (std::string::iterator it = result.begin(); it != result.end(); it++) {
     if (*it == '-')
       *it = '_';
-    else if (*it >= 'a' && *it <= 'z')
-      *it = *it + ('A' - 'a');
+    else if (*it >= 'A' && *it <= 'Z')
+      *it = *it + ('a' - 'A');
   }
   return result;
 }
 
-const std::string &getStatusDescription(int code) {
-  static std::map<int, std::string> statusDescs;
+const std::string &get_status_description(int code) {
+  static std::map<int, std::string> status_descs;
   static std::string unknown("Dunno");
-  if (statusDescs.size() == 0) {
-    statusDescs[100] = "Continue";
-    statusDescs[101] = "Switching Protocols";
-    statusDescs[200] = "OK";
-    statusDescs[201] = "Created";
-    statusDescs[202] = "Accepted";
-    statusDescs[203] = "Non-Authoritative Information";
-    statusDescs[204] = "No Content";
-    statusDescs[205] = "Reset Content";
-    statusDescs[206] = "Partial Content";
-    statusDescs[300] = "Multiple Choices";
-    statusDescs[301] = "Moved Permanently";
-    statusDescs[302] = "Found";
-    statusDescs[303] = "See Other";
-    statusDescs[304] = "Not Modified";
-    statusDescs[305] = "Use Proxy";
-    statusDescs[307] = "Temporary Redirect";
-    statusDescs[400] = "Bad Request";
-    statusDescs[401] = "Unauthorized";
-    statusDescs[402] = "Payment Required";
-    statusDescs[403] = "Forbidden";
-    statusDescs[404] = "Not Found";
-    statusDescs[405] = "Method Not Allowed";
-    statusDescs[406] = "Not Acceptable";
-    statusDescs[407] = "Proxy Authentication Required";
-    statusDescs[408] = "Request Timeout";
-    statusDescs[409] = "Conflict";
-    statusDescs[410] = "Gone";
-    statusDescs[411] = "Length Required";
-    statusDescs[412] = "Precondition Failed";
-    statusDescs[413] = "Request Entity Too Large";
-    statusDescs[414] = "Request-URI Too Long";
-    statusDescs[415] = "Unsupported Media Type";
-    statusDescs[416] = "Requested Range Not Satisifable";
-    statusDescs[417] = "Expectation Failed";
-    statusDescs[500] = "Internal Server Error";
-    statusDescs[501] = "Not Implemented";
-    statusDescs[502] = "Bad Gateway";
-    statusDescs[503] = "Service Unavailable";
-    statusDescs[504] = "Gateway Timeout";
-    statusDescs[505] = "HTTP Version Not Supported";
+  if (status_descs.size() == 0) {
+    status_descs[100] = "Continue";
+    status_descs[101] = "Switching Protocols";
+    status_descs[200] = "OK";
+    status_descs[201] = "Created";
+    status_descs[202] = "Accepted";
+    status_descs[203] = "Non-Authoritative Information";
+    status_descs[204] = "No Content";
+    status_descs[205] = "Reset Content";
+    status_descs[206] = "Partial Content";
+    status_descs[300] = "Multiple Choices";
+    status_descs[301] = "Moved Permanently";
+    status_descs[302] = "Found";
+    status_descs[303] = "See Other";
+    status_descs[304] = "Not Modified";
+    status_descs[305] = "Use Proxy";
+    status_descs[307] = "Temporary Redirect";
+    status_descs[400] = "Bad Request";
+    status_descs[401] = "Unauthorized";
+    status_descs[402] = "Payment Required";
+    status_descs[403] = "Forbidden";
+    status_descs[404] = "Not Found";
+    status_descs[405] = "Method Not Allowed";
+    status_descs[406] = "Not Acceptable";
+    status_descs[407] = "Proxy Authentication Required";
+    status_descs[408] = "Request Timeout";
+    status_descs[409] = "Conflict";
+    status_descs[410] = "Gone";
+    status_descs[411] = "Length Required";
+    status_descs[412] = "Precondition Failed";
+    status_descs[413] = "Request Entity Too Large";
+    status_descs[414] = "Request-URI Too Long";
+    status_descs[415] = "Unsupported Media Type";
+    status_descs[416] = "Requested Range Not Satisifable";
+    status_descs[417] = "Expectation Failed";
+    status_descs[500] = "Internal Server Error";
+    status_descs[501] = "Not Implemented";
+    status_descs[502] = "Bad Gateway";
+    status_descs[503] = "Service Unavailable";
+    status_descs[504] = "Gateway Timeout";
+    status_descs[505] = "HTTP Version Not Supported";
   }
-  std::map<int, std::string>::iterator it = statusDescs.find(code);
-  if (it != statusDescs.end())
+  std::map<int, std::string>::iterator it = status_descs.find(code);
+  if (it != status_descs.end())
     return it->second;
   else
     return unknown;
@@ -70,7 +70,7 @@ const std::string &getStatusDescription(int code) {
 
 // A generic HTTP response to send when an error (uncaught in the R code)
 // happens during processing a request.
-list errorResponse() {
+list error_response() {
   ASSERT_MAIN_THREAD()
   return writable::list({"status"_nm = 500L,
                          "headers"_nm = writable::list(
@@ -78,86 +78,86 @@ list errorResponse() {
                          "body"_nm = "An exception occurred."});
 }
 
-// An analog to errorResponse, but this returns an shared_ptr<HttpResponse>
+// An analog to error_response, but this returns an shared_ptr<HttpResponse>
 // instead of an list, doesn't involve any R objects, and can be run on
 // the background thread.
 std::shared_ptr<HttpResponse>
-error_response(std::shared_ptr<HttpRequest> pRequest, int code) {
-  std::string description = getStatusDescription(code);
-  std::string content = toString(code) + " " + description + "\n";
+error_response(std::shared_ptr<HttpRequest> p_request, int code) {
+  std::string description = get_status_description(code);
+  std::string content = to_string(code) + " " + description + "\n";
 
-  std::vector<uint8_t> responseData(content.begin(), content.end());
+  std::vector<uint8_t> response_data(content.begin(), content.end());
 
   // Freed in on_response_written
-  std::shared_ptr<DataSource> pDataSource =
-      std::make_shared<InMemoryDataSource>(responseData);
+  std::shared_ptr<DataSource> p_data_source =
+      std::make_shared<InMemoryDataSource>(response_data);
 
   return std::shared_ptr<HttpResponse>(
-      new HttpResponse(pRequest, code, description, pDataSource),
+      new HttpResponse(p_request, code, description, p_data_source),
       auto_deleter_background<HttpResponse>);
 }
 
 // Given a URL path like "/foo?abc=123", removes the '?' and everything after.
-std::pair<std::string, std::string> splitQueryString(const std::string &url) {
-  size_t qsIndex = url.find('?');
-  std::string path, queryString;
-  if (qsIndex == std::string::npos)
+std::pair<std::string, std::string> split_query_string(const std::string &url) {
+  size_t qs_index = url.find('?');
+  std::string path, query_string;
+  if (qs_index == std::string::npos)
     path = url;
   else {
-    path = url.substr(0, qsIndex);
-    queryString = url.substr(qsIndex);
+    path = url.substr(0, qs_index);
+    query_string = url.substr(qs_index);
   }
 
-  return std::pair<std::string, std::string>(path, queryString);
+  return std::pair<std::string, std::string>(path, query_string);
 }
 
-void requestToEnv(std::shared_ptr<HttpRequest> pRequest, environment *pEnv) {
+void request_to_env(std::shared_ptr<HttpRequest> p_request, environment *p_env) {
   ASSERT_MAIN_THREAD()
-  environment &env = *pEnv;
+  environment &env = *p_env;
 
   std::pair<std::string, std::string> url_query =
-      splitQueryString(pRequest->url());
+      split_query_string(p_request->url());
   std::string &path = url_query.first;
-  std::string &queryString = url_query.second;
+  std::string &query_string = url_query.second;
 
-  env["REQUEST_METHOD"] = pRequest->method();
-  env["SCRIPT_NAME"] = std::string("");
-  env["PATH_INFO"] = path;
-  env["QUERY_STRING"] = queryString;
+  env["request_method"] = p_request->method();
+  env["script_name"] = std::string("");
+  env["path_info"] = path;
+  env["query_string"] = query_string;
 
   env["rook.version"] = std::string("1.1-0");
   env["rook.url_scheme"] = std::string("http");
 
-  Address addr = pRequest->serverAddress();
-  env["SERVER_NAME"] = addr.host;
+  Address addr = p_request->server_address();
+  env["server_name"] = addr.host;
   std::ostringstream portstr;
   portstr << addr.port;
-  env["SERVER_PORT"] = portstr.str();
+  env["server_port"] = portstr.str();
 
-  Address raddr = pRequest->clientAddress();
-  env["REMOTE_ADDR"] = raddr.host;
+  Address raddr = p_request->client_address();
+  env["remote_addr"] = raddr.host;
   std::ostringstream rportstr;
   rportstr << raddr.port;
-  env["REMOTE_PORT"] = rportstr.str();
+  env["remote_port"] = rportstr.str();
 
-  const RequestHeaders &headers = pRequest->headers();
+  const RequestHeaders &headers = p_request->headers();
   writable::strings raw_headers(headers.size());
   writable::strings raw_header_names(headers.size());
 
   for (RequestHeaders::const_iterator it = headers.begin(); it != headers.end();
        it++) {
     int idx = std::distance(headers.begin(), it);
-    env["HTTP_" + normalizeHeaderName(it->first)] = it->second;
+    env["http_" + normalize_header_name(it->first)] = it->second;
     raw_header_names[idx] = to_lower(it->first);
     raw_headers[idx] = it->second;
   }
   raw_headers.attr("names") = raw_header_names;
 
-  env["HEADERS"] = raw_headers;
+  env["headers"] = raw_headers;
 }
 
 std::shared_ptr<HttpResponse>
-listToResponse(std::shared_ptr<HttpRequest> pRequest, const list &response) {
+list_to_response(std::shared_ptr<HttpRequest> p_request, const list &response) {
   ASSERT_MAIN_THREAD()
 
   if (Rf_isNull(response) || response.size() == 0) {
@@ -167,94 +167,94 @@ listToResponse(std::shared_ptr<HttpRequest> pRequest, const list &response) {
   strings resp_names = response.names();
 
   int status = as_cpp<int>(response["status"]);
-  std::string statusDesc = getStatusDescription(status);
+  std::string status_desc = get_status_description(status);
 
   // Self-frees when response is written
-  std::shared_ptr<DataSource> pDataSource;
+  std::shared_ptr<DataSource> p_data_source;
 
   // HTTP 1xx, 204 and 304 responses (as well as responses to HEAD requests)
   // cannot have a body, so permit the body element to be missing or NULL, in
-  // which case pDataSource will be nullptr.
+  // which case p_data_source will be nullptr.
   //
   // See https://tools.ietf.org/html/rfc7231#section-6.3.5 and
   //     https://tools.ietf.org/html/rfc7232#section-4.1
-  bool hasBody = response.contains("body") && !Rf_isNull(response["body"]);
+  bool has_body = response.contains("body") && !Rf_isNull(response["body"]);
 
   // The response can either contain:
-  // - bodyFile: String value that names the file that should be streamed
+  // - body_file: String value that names the file that should be streamed
   // - body: Character vector (which is charToRaw-ed) or raw vector, or NULL
-  if (std::find(resp_names.begin(), resp_names.end(), "bodyFile") !=
+  if (std::find(resp_names.begin(), resp_names.end(), "body_file") !=
       resp_names.end()) {
-    std::shared_ptr<FileDataSource> pFDS = std::make_shared<FileDataSource>();
+    std::shared_ptr<FileDataSource> p_fds = std::make_shared<FileDataSource>();
     FileDataSourceResult ret =
-        pFDS->initialize(as_cpp<std::string>(response["bodyFile"]),
-                         as_cpp<bool>(response["bodyFileOwned"]));
+        p_fds->initialize(as_cpp<std::string>(response["body_file"]),
+                         as_cpp<bool>(response["body_file_owned"]));
     if (ret != FDS_OK) {
-      REprintf("%s", pFDS->lastErrorMessage().c_str());
-      return error_response(pRequest, 500);
+      REprintf("%s", p_fds->last_error_message().c_str());
+      return error_response(p_request, 500);
     }
-    pDataSource = pFDS;
-  } else if (hasBody && Rf_isString(response["body"])) {
-    raws responseBytes(package("base")["charToRaw"](response["body"]));
-    pDataSource = std::make_shared<InMemoryDataSource>(
-        std::vector<uint8_t>(responseBytes.begin(), responseBytes.end()));
-  } else if (hasBody) {
-    raws responseBytes(response["body"]);
-    pDataSource = std::make_shared<InMemoryDataSource>(
-        std::vector<uint8_t>(responseBytes.begin(), responseBytes.end()));
+    p_data_source = p_fds;
+  } else if (has_body && Rf_isString(response["body"])) {
+    raws response_bytes(package("base")["charToRaw"](response["body"]));
+    p_data_source = std::make_shared<InMemoryDataSource>(
+        std::vector<uint8_t>(response_bytes.begin(), response_bytes.end()));
+  } else if (has_body) {
+    raws response_bytes(response["body"]);
+    p_data_source = std::make_shared<InMemoryDataSource>(
+        std::vector<uint8_t>(response_bytes.begin(), response_bytes.end()));
   }
 
-  std::shared_ptr<HttpResponse> pResp(
-      new HttpResponse(pRequest, status, statusDesc, pDataSource),
+  std::shared_ptr<HttpResponse> p_resp(
+      new HttpResponse(p_request, status, status_desc, p_data_source),
       auto_deleter_background<HttpResponse>);
   if (response.contains("headers") && !Rf_isNull(response["headers"])) {
-    list responseHeaders(response["headers"]);
-    strings headerNames = responseHeaders.names();
-    for (R_len_t i = 0; i < responseHeaders.size(); i++) {
-      pResp->addHeader(std::string(headerNames[i]),
-                       as_cpp<std::string>(responseHeaders[i]));
+    list response_headers(response["headers"]);
+    strings header_names = response_headers.names();
+    for (R_len_t i = 0; i < response_headers.size(); i++) {
+      p_resp->add_header(std::string(header_names[i]),
+                       as_cpp<std::string>(response_headers[i]));
     }
   }
 
-  return pResp;
+  return p_resp;
 }
 
-void invokeResponseFun(std::function<void(std::shared_ptr<HttpResponse>)> fun,
-                       std::shared_ptr<HttpRequest> pRequest, list response) {
+void invoke_response_fun(std::function<void(std::shared_ptr<HttpResponse>)> fun,
+                       std::shared_ptr<HttpRequest> p_request, list response) {
   ASSERT_MAIN_THREAD()
   // new HttpResponse object. The callback will invoke
-  // HttpResponse->writeResponse().
-  std::shared_ptr<HttpResponse> pResponse = listToResponse(pRequest, response);
-  fun(pResponse);
+  // HttpResponse->write_response().
+  std::shared_ptr<HttpResponse> p_response = list_to_response(p_request, response);
+  fun(p_response);
 }
 
 // ============================================================================
 // Methods
 // ============================================================================
 
-RWebApplication::RWebApplication(sexp onHeaders, function onBodyData,
-                                 function onRequest, function onWSOpen,
-                                 function onWSMessage, function onWSClose,
-                                 list staticPaths, list staticPathOptions)
-    : _onHeaders(onHeaders), _onBodyData(onBodyData), _onRequest(onRequest),
-      _onWSOpen(onWSOpen), _onWSMessage(onWSMessage), _onWSClose(onWSClose) {
+RWebApplication::RWebApplication(sexp on_headers, function on_body_data,
+                                 function on_request, function on_wsopen,
+                                 function on_wsmessage, function on_wsclose,
+                                 list static_paths, list static_path_options)
+    : _on_headers(on_headers), _on_body_data(on_body_data), _on_request(on_request),
+      _on_wsopen(on_wsopen), _on_wsmessage(on_wsmessage), _on_wsclose(on_wsclose) {
   ASSERT_MAIN_THREAD()
 
-  _staticPathManager = StaticPathManager(staticPaths, staticPathOptions);
+  _static_path_manager = StaticPathManager(static_paths, static_path_options);
 }
 
-void RWebApplication::onHeaders(
-    std::shared_ptr<HttpRequest> pRequest,
+void RWebApplication::on_headers(
+    std::shared_ptr<HttpRequest> p_request,
     std::function<void(std::shared_ptr<HttpResponse>)> callback) {
   ASSERT_MAIN_THREAD()
 
-  requestToEnv(pRequest, &pRequest->env());
+  request_to_env(p_request, &p_request->env());
 
-  // Call the R onHeaders function. If an exception occurs during processing,
+  // Call the R on_headers function. If an exception occurs during processing,
   // catch it and then send a generic error response.
   list response;
   try {
-    sexp result(function(_onHeaders)(pRequest->env()));
+    sexp result(function(_on_headers)(p_request->env()));
     if (Rf_isNull(result)) {
       std::shared_ptr<HttpResponse> null_ptr;
       callback(null_ptr);
@@ -262,74 +262,74 @@ void RWebApplication::onHeaders(
     }
     response = list(result);
   } catch (unwind_exception &e) {
-    debug_log("Interrupt occurred in _onHeaders", LOG_INFO);
-    response = errorResponse();
+    debug_log("Interrupt occurred in _on_headers", LOG_INFO);
+    response = error_response();
   } catch (...) {
-    debug_log("Exception occurred in _onHeaders", LOG_INFO);
-    response = errorResponse();
+    debug_log("Exception occurred in _on_headers", LOG_INFO);
+    response = error_response();
   }
 
   // new HttpResponse object. The callback will invoke
-  // HttpResponse->writeResponse(), which adds a callback to destroy(), which
+  // HttpResponse->write_response(), which adds a callback to destroy(), which
   // deletes the object.
-  std::shared_ptr<HttpResponse> pResponse = listToResponse(pRequest, response);
-  callback(pResponse);
+  std::shared_ptr<HttpResponse> p_response = list_to_response(p_request, response);
+  callback(p_response);
 }
 
-void RWebApplication::onBodyData(
-    std::shared_ptr<HttpRequest> pRequest,
+void RWebApplication::on_body_data(
+    std::shared_ptr<HttpRequest> p_request,
     std::shared_ptr<std::vector<char>> data,
-    std::function<void(std::shared_ptr<HttpResponse>)> errorCallback) {
+    std::function<void(std::shared_ptr<HttpResponse>)> error_callback) {
   ASSERT_MAIN_THREAD()
-  debug_log("RWebApplication::onBodyData", LOG_DEBUG);
+  debug_log("RWebApplication::on_body_data", LOG_DEBUG);
 
   // We're in an error state, but the background thread has already scheduled
   // more data to be processed here. Don't process more data.
-  if (pRequest->isResponseScheduled())
+  if (p_request->is_response_scheduled())
     return;
 
-  writable::raws rawVector(data->size());
-  std::copy(data->begin(), data->end(), rawVector.begin());
+  writable::raws raw_vector(data->size());
+  std::copy(data->begin(), data->end(), raw_vector.begin());
   try {
-    _onBodyData(pRequest->env(), rawVector);
+    _on_body_data(p_request->env(), raw_vector);
   } catch (...) {
-    debug_log("Exception occurred in _onBodyData", LOG_INFO);
+    debug_log("Exception occurred in _on_body_data", LOG_INFO);
     // Send an error message to the client. It's very possible that
-    // getResponse() or more calls to onBodyData() will have been scheduled on
-    // the main thread before the errorCallback is called.
+    // get_response() or more calls to on_body_data() will have been scheduled on
+    // the main thread before the error_callback is called.
     //
     // Note that some (most?) clients won't correctly handle a response that's
     // sent early, before the request is completed.
     // https://stackoverflow.com/a/18370751/412655
-    errorCallback(listToResponse(pRequest, errorResponse()));
+    error_callback(list_to_response(p_request, error_response()));
   }
 }
 
-void RWebApplication::getResponse(
-    std::shared_ptr<HttpRequest> pRequest,
+void RWebApplication::get_response(
+    std::shared_ptr<HttpRequest> p_request,
     std::function<void(std::shared_ptr<HttpResponse>)> callback) {
   ASSERT_MAIN_THREAD()
-  debug_log("RWebApplication::getResponse", LOG_DEBUG);
+  debug_log("RWebApplication::get_response", LOG_DEBUG);
 
   // Pass callback to R:
-  // invokeResponseFun(callback, pRequest, _1)
+  // invoke_response_fun(callback, p_request, _1)
   std::function<void(list)> *callback_wrapper = new std::function<void(list)>(
-      std::bind(invokeResponseFun, callback, pRequest, std::placeholders::_1));
+      std::bind(invoke_response_fun, callback, p_request, std::placeholders::_1));
 
   SEXP callback_xptr =
       PROTECT(R_MakeExternalPtr(callback_wrapper, R_NilValue, R_NilValue));
 
   // We previously encountered an error processing the body. Don't call into
-  // the R call/_onRequest() function. We need to signal the HttpRequest
+  // the R call/_on_request() function. We need to signal the HttpRequest
   // object to let it know that we had an error.
-  if (pRequest->isResponseScheduled()) {
-    invokeCppCallback(SEXP(list()), callback_xptr);
+  if (p_request->is_response_scheduled()) {
+    invoke_cpp_callback(SEXP(list()), callback_xptr);
   } else {
 
     // Call the R call() function, and pass it the callback xptr so it can
     // asynchronously pass data back to C++.
     try {
-      _onRequest(pRequest->env(), callback_xptr);
+      _on_request(p_request->env(), callback_xptr);
 
       // On the R side, httpuv's call() function will catch errors that happen
       // in the user-defined call() function, but if an error happens outside of
@@ -338,53 +338,53 @@ void RWebApplication::getResponse(
       // catch it and deal with it.
 
     } catch (unwind_exception &e) {
-      debug_log("Interrupt occurred in _onRequest", LOG_INFO);
-      invokeCppCallback(SEXP(errorResponse()), callback_xptr);
+      debug_log("Interrupt occurred in _on_request", LOG_INFO);
+      invoke_cpp_callback(SEXP(error_response()), callback_xptr);
     } catch (...) {
-      debug_log("Exception occurred in _onRequest", LOG_INFO);
-      invokeCppCallback(SEXP(errorResponse()), callback_xptr);
+      debug_log("Exception occurred in _on_request", LOG_INFO);
+      invoke_cpp_callback(SEXP(error_response()), callback_xptr);
     }
   }
 
   UNPROTECT(1);
 }
 
-void RWebApplication::onWSOpen(std::shared_ptr<HttpRequest> pRequest,
+void RWebApplication::on_wsopen(std::shared_ptr<HttpRequest> p_request,
                                std::function<void(void)> error_callback) {
   ASSERT_MAIN_THREAD()
-  std::shared_ptr<WebSocketConnection> pConn = pRequest->websocket();
-  if (!pConn) {
+  std::shared_ptr<WebSocketConnection> p_conn = p_request->websocket();
+  if (!p_conn) {
     return;
   }
 
-  requestToEnv(pRequest, &pRequest->env());
+  request_to_env(p_request, &p_request->env());
   try {
-    _onWSOpen(externalize_shared_ptr(pConn), pRequest->env());
+    _on_wsopen(externalize_shared_ptr(p_conn), p_request->env());
   } catch (...) {
     error_callback();
   }
 }
 
-void RWebApplication::onWSMessage(std::shared_ptr<WebSocketConnection> pConn,
+void RWebApplication::on_wsmessage(std::shared_ptr<WebSocketConnection> p_conn,
                                   bool binary,
                                   std::shared_ptr<std::vector<char>> data,
                                   std::function<void(void)> error_callback) {
   ASSERT_MAIN_THREAD()
   try {
     if (binary)
-      _onWSMessage(externalize_shared_ptr(pConn), binary,
+      _on_wsmessage(externalize_shared_ptr(p_conn), binary,
                    std::vector<uint8_t>(data->begin(), data->end()));
     else
-      _onWSMessage(externalize_shared_ptr(pConn), binary,
+      _on_wsmessage(externalize_shared_ptr(p_conn), binary,
                    std::string(data->begin(), data->end()));
   } catch (...) {
     error_callback();
   }
 }
 
-void RWebApplication::onWSClose(std::shared_ptr<WebSocketConnection> pConn) {
+void RWebApplication::on_wsclose(std::shared_ptr<WebSocketConnection> p_conn) {
   ASSERT_MAIN_THREAD()
-  _onWSClose(externalize_shared_ptr(pConn));
+  _on_wsclose(externalize_shared_ptr(p_conn));
 }
 
 // ============================================================================
@@ -395,22 +395,22 @@ void RWebApplication::onWSClose(std::shared_ptr<WebSocketConnection> pConn) {
 // the background thread.
 
 std::shared_ptr<HttpResponse>
-RWebApplication::staticFileResponse(std::shared_ptr<HttpRequest> pRequest) {
+RWebApplication::static_file_response(std::shared_ptr<HttpRequest> p_request) {
   ASSERT_BACKGROUND_THREAD()
 
   // If there's any Upgrade header, don't try to serve a static file. Just
   // fall through, even if the path is one that is in the StaticPathManager.
-  if (pRequest->hasHeader("Upgrade")) {
+  if (p_request->has_header("Upgrade")) {
     return std::shared_ptr<HttpResponse>();
   }
 
   // Strip off query string
   std::pair<std::string, std::string> url_query =
-      splitQueryString(pRequest->url());
-  std::string url_path = doDecodeURI(url_query.first, true);
+      split_query_string(p_request->url());
+  std::string url_path = do_decode_uri(url_query.first, true);
 
   std::experimental::optional<std::pair<StaticPath, std::string>> sp_pair =
-      _staticPathManager.matchStaticPath(url_path);
+      _static_path_manager.match_static_path(url_path);
 
   if (!sp_pair) {
     // This was not a static path. Fall through to the R code to handle this
@@ -430,21 +430,21 @@ RWebApplication::staticFileResponse(std::shared_ptr<HttpRequest> pRequest) {
   }
 
   // Validate headers (if validation pattern was provided).
-  if (!sp.options.validateRequestHeaders(pRequest->headers())) {
-    return error_response(pRequest, 403);
+  if (!sp.options.validate_request_headers(p_request->headers())) {
+    return error_response(p_request, 403);
   }
 
   // Check that method is GET or HEAD; error otherwise.
-  std::string method = pRequest->method();
+  std::string method = p_request->method();
   if (method != "GET" && method != "HEAD") {
-    return error_response(pRequest, 400);
+    return error_response(p_request, 400);
   }
 
   // Make sure that there's no message body.
-  if ((pRequest->hasHeader("Content-Length") &&
-       pRequest->getHeader("Content-Length") != "0") ||
-      pRequest->hasHeader("Transfer-Encoding")) {
-    return error_response(pRequest, 400);
+  if ((p_request->has_header("Content-Length") &&
+       p_request->get_header("Content-Length") != "0") ||
+      p_request->has_header("Transfer-Encoding")) {
+    return error_response(p_request, 400);
   }
 
   // Disallow ".." in paths. (Browsers collapse them anyway, so no normal
@@ -458,7 +458,7 @@ RWebApplication::staticFileResponse(std::shared_ptr<HttpRequest> pRequest) {
     if (*sp.options.fallthrough) {
       return std::shared_ptr<HttpResponse>();
     } else {
-      return error_response(pRequest, 400);
+      return error_response(p_request, 400);
     }
   }
 
@@ -469,29 +469,29 @@ RWebApplication::staticFileResponse(std::shared_ptr<HttpRequest> pRequest) {
   }
 
   if (is_directory(local_path)) {
-    if (*sp.options.indexhtml) {
+    if (*sp.options.index_html) {
       local_path = local_path + "/" + "index.html";
     }
   }
 
-  std::shared_ptr<FileDataSource> pDataSource =
+  std::shared_ptr<FileDataSource> p_data_source =
       std::make_shared<FileDataSource>();
-  FileDataSourceResult ret = pDataSource->initialize(local_path, false);
+  FileDataSourceResult ret = p_data_source->initialize(local_path, false);
 
   if (ret != FDS_OK) {
     if (ret == FDS_NOT_EXIST || ret == FDS_ISDIR) {
       if (*sp.options.fallthrough) {
         return std::shared_ptr<HttpResponse>();
       } else {
-        return error_response(pRequest, 404);
+        return error_response(p_request, 404);
       }
     } else {
-      return error_response(pRequest, 500);
+      return error_response(p_request, 500);
     }
   }
 
   // Use local_path instead of subpath, because if the subpath is "/foo/" and
-  // *(sp.options.indexhtml) is true, then the local_path will be
+  // *(sp.options.index_html) is true, then the local_path will be
   // "/foo/index.html". We need to use the latter to determine mime type.
   std::string content_type =
       find_mime_type(find_extension(basename(local_path)));
@@ -507,10 +507,10 @@ RWebApplication::staticFileResponse(std::shared_ptr<HttpRequest> pRequest) {
   // Check if the client has an up-to-date copy of the file in cache. To do
   // this, compare the If-Modified-Since header to the file's mtime.
   bool client_cache_is_valid = false;
-  if (pRequest->hasHeader("If-Modified-Since")) {
-    time_t file_mtime = pDataSource->getMtime();
+  if (p_request->has_header("If-Modified-Since")) {
+    time_t file_mtime = p_data_source->get_mtime();
     time_t if_mod_since =
-        parse_http_date_string(pRequest->getHeader("If-Modified-Since"));
+        parse_http_date_string(p_request->get_header("If-Modified-Since"));
 
     if (file_mtime != 0 && if_mod_since != 0 && file_mtime <= if_mod_since) {
       client_cache_is_valid = true;
@@ -525,32 +525,32 @@ RWebApplication::staticFileResponse(std::shared_ptr<HttpRequest> pRequest) {
   int status_code = 200;
 
   // This is the pointer that will be passed to the new HttpResponse. We'll
-  // start by setting it to point to the same thing as pDataSource, but it can
+  // start by setting it to point to the same thing as p_data_source, but it can
   // be unset based on various conditions, which means that no body data will
   // be sent.
-  std::shared_ptr<FileDataSource> pDataSource2 = pDataSource;
+  std::shared_ptr<FileDataSource> p_data_source2 = p_data_source;
 
   if (method == "HEAD") {
-    pDataSource2.reset();
+    p_data_source2.reset();
   }
 
   if (client_cache_is_valid) {
-    pDataSource2.reset();
+    p_data_source2.reset();
     status_code = 304;
   }
 
-  std::shared_ptr<HttpResponse> pResponse = std::shared_ptr<HttpResponse>(
-      new HttpResponse(pRequest, status_code, getStatusDescription(status_code),
-                       pDataSource2),
+  std::shared_ptr<HttpResponse> p_response = std::shared_ptr<HttpResponse>(
+      new HttpResponse(p_request, status_code, get_status_description(status_code),
+                       p_data_source2),
       auto_deleter_background<HttpResponse>);
 
-  ResponseHeaders &respHeaders = pResponse->headers();
+  ResponseHeaders &resp_headers = p_response->headers();
 
   // Add extra user-specified headers.
-  const ResponseHeaders &extraRespHeaders = *sp.options.headers;
-  if (extraRespHeaders.size() != 0) {
+  const ResponseHeaders &extra_resp_headers = *sp.options.headers;
+  if (extra_resp_headers.size() != 0) {
     ResponseHeaders::const_iterator it;
-    for (it = extraRespHeaders.begin(); it != extraRespHeaders.end(); it++) {
+    for (it = extra_resp_headers.begin(); it != extra_resp_headers.end(); it++) {
       if (status_code == 304) {
         // For a 304 response, only a few headers should be added. See
         // https://tools.ietf.org/html/rfc7232#section-4.1
@@ -558,12 +558,12 @@ RWebApplication::staticFileResponse(std::shared_ptr<HttpRequest> pRequest) {
         if (it->first == "Cache-Control" || it->first == "Content-Location" ||
             it->first == "ETag" || it->first == "Expires" ||
             it->first == "Vary") {
-          respHeaders.push_back(*it);
+          resp_headers.push_back(*it);
         }
 
       } else {
         // For a normal 200 response, add all headers.
-        respHeaders.push_back(*it);
+        resp_headers.push_back(*it);
       }
     }
   }
@@ -573,18 +573,18 @@ RWebApplication::staticFileResponse(std::shared_ptr<HttpRequest> pRequest) {
     // it. If we didn't set it here, the response for the GET would
     // automatically set the Content-Length (by using the FileDataSource), but
     // the response for the HEAD would not.
-    respHeaders.push_back(
-        std::make_pair("Content-Length", toString(pDataSource->size())));
-    respHeaders.push_back(std::make_pair("Content-Type", content_type));
-    respHeaders.push_back(std::make_pair(
-        "Last-Modified", http_date_string(pDataSource->getMtime())));
+    resp_headers.push_back(
+        std::make_pair("Content-Length", to_string(p_data_source->size())));
+    resp_headers.push_back(std::make_pair("Content-Type", content_type));
+    resp_headers.push_back(std::make_pair(
+        "Last-Modified", http_date_string(p_data_source->get_mtime())));
   }
 
-  return pResponse;
+  return p_response;
 }
 
-StaticPathManager &RWebApplication::getStaticPathManager() {
-  return _staticPathManager;
+StaticPathManager &RWebApplication::get_static_path_manager() {
+  return _static_path_manager;
 }
 
 #endif

@@ -1,29 +1,29 @@
-#' Create a staticPath object
+#' create a static_path object
 #'
-#' The `staticPath` function creates a `staticPath` object. Note that
+#' the `static_path` function creates a `static_path` object. note that
 #' if any of the arguments (other than `path`) are `NULL`, then that
 #' means that for this particular static path, it should inherit the behavior
-#' from the staticPathOptions set for the application as a whole.
+#' from the static_path_options set for the application as a whole.
 #'
-#' The `excludeStaticPath` function tells the application to ignore a
-#' particular path for static serving. This is useful when you want to include a
+#' the `exclude_static_path` function tells the application to ignore a
+#' particular path for static serving. this is useful when you want to include a
 #' path for static serving (like `"/"`) but then exclude a subdirectory of
 #' it (like `"/dynamic"`) so that the subdirectory will always be passed to
-#' the R code for handling requests. `excludeStaticPath` can be used not
+#' the r code for handling requests. `exclude_static_path` can be used not
 #' only for directories; it can also exclude specific files.
 #'
-#' @param path The local path.
-#' @inheritParams staticPathOptions
+#' @param path the local path.
+#' @inheritParams static_path_options
 #'
-#' @return An object of class `staticPath`, consisting of the normalized local
-#'   path and a `staticPathOptions` object describing how it is served.
+#' @return an object of class `static_path`, consisting of the normalized local
+#'   path and a `static_path_options` object describing how it is served.
 #'
-#' @seealso [staticPathOptions()].
+#' @seealso [static_path_options()].
 #'
 #' @export
-staticPath <- function(
+static_path <- function(
   path,
-  indexhtml = NULL,
+  index_html = NULL,
   fallthrough = NULL,
   html_charset = NULL,
   headers = NULL,
@@ -39,8 +39,8 @@ staticPath <- function(
   structure(
     list(
       path = path,
-      options = normalizeStaticPathOptions(staticPathOptions(
-        indexhtml = indexhtml,
+      options = normalize_static_path_options(static_path_options(
+        index_html = index_html,
         fallthrough = fallthrough,
         html_charset = html_charset,
         headers = headers,
@@ -48,18 +48,18 @@ staticPath <- function(
         exclude = FALSE
       ))
     ),
-    class = "staticPath"
+    class = "static_path"
   )
 }
 
-#' @rdname staticPath
+#' @rdname static_path
 #' @export
-excludeStaticPath <- function() {
+exclude_static_path <- function() {
   structure(
     list(
       path = "",
-      options = staticPathOptions(
-        indexhtml = NULL,
+      options = static_path_options(
+        index_html = NULL,
         fallthrough = NULL,
         html_charset = NULL,
         headers = NULL,
@@ -67,106 +67,110 @@ excludeStaticPath <- function() {
         exclude = TRUE
       )
     ),
-    class = "staticPath"
+    class = "static_path"
   )
 }
 
-#' Convert an object to a staticPath object
+#' @title convert an object to a static_path object
 #'
-#' This function is used to convert an object to a `staticPath` object.
-#' It is primarily used internally, but can also be used by users to ensure
-#' that an object is a `staticPath` object.
+#' @description convert an object to a `static_path` object. This is primarily
+#' used internally, but can also be used by users to ensure that an object is a
+#' `static_path` object.
 #'
-#' @param path The object to convert.
+#' @param path the object to convert.
 #'
-#' @return A `staticPath` object. Character paths are converted to objects of
-#'   class `staticPath`; existing `staticPath` objects are returned unchanged.
-#'   Objects of unsupported classes cause an error.
+#' @return a `static_path` object. character paths are converted to objects of
+#'   class `static_path`; existing `static_path` objects are returned unchanged.
+#'   objects of unsupported classes cause an error.
 #'
 #' @keywords internal
-#' @export
-as.staticPath <- function(path) {
-  UseMethod("as.staticPath", path)
+as.static_path <- function(path) {
+  UseMethod("as.static_path", path)
 }
 
-#' @rdname as.staticPath
-#' @exportS3Method as.staticPath staticPath
-as.staticPath.staticPath <- function(path) {
+#' @rdname as.static_path
+#' @method as.static_path static_path
+#' @exportS3Method as.static_path static_path
+as.static_path.static_path <- function(path) {
   path
 }
 
-#' @rdname as.staticPath
-#' @exportS3Method as.staticPath character
-as.staticPath.character <- function(path) {
-  staticPath(path)
+#' @rdname as.static_path
+#' @method as.static_path character
+#' @exportS3Method as.static_path character
+as.static_path.character <- function(path) {
+  static_path(path)
 }
 
-#' @rdname as.staticPath
-#' @exportS3Method as.staticPath default
-as.staticPath.default <- function(path) {
+#' @rdname as.static_path
+#' @method as.static_path default
+#' @exportS3Method as.static_path default
+as.static_path.default <- function(path) {
   stop(
-    "Cannot convert object of class ",
+    "cannot convert object of class ",
     class(path),
-    " to a staticPath object."
+    " to a static_path object."
   )
 }
 
-#' @rdname staticPath
-#' @param x A `staticPath` object.
-#' @param ... Further arguments passed to or from other methods (currently
+#' @rdname static_path
+#' @method print static_path
+#' @exportS3Method print static_path
+#' @param x a `static_path` object.
+#' @param ... further arguments passed to or from other methods (currently
 #'   unused).
-#' @exportS3Method
-print.staticPath <- function(x, ...) {
+print.static_path <- function(x, ...) {
   cat(format(x, ...), sep = "\n")
   invisible(x)
 }
 
-#' @rdname staticPath
-#' @exportS3Method
-format.staticPath <- function(x, ...) {
+#' @rdname static_path
+#' @method format static_path
+#' @exportS3Method format static_path
+format.static_path <- function(x, ...) {
   ret <- paste0(
-    "<staticPath>\n",
-    "  Local path:        ",
+    "<static_path>\n",
+    "  local path:        ",
     x$path,
     "\n",
     format_opts(x$options)
   )
 }
 
-#' Create options for static paths
+#' create options for static paths
 #'
 #'
-#' @param indexhtml If an index.html file is present, should it be served up
+#' @param index_html if an index.html file is present, should it be served up
 #'   when the client requests the static path or any subdirectory?
-#' @param fallthrough With the default value, `FALSE`, if a request is made
+#' @param fallthrough with the default value, `FALSE`, if a request is made
 #'   for a file that doesn't exist, then httpserver will immediately send a 404
-#'   response from the background I/O thread, without needing to call back into
-#'   the main R thread. This offers the best performance. If the value is
+#'   response from the background i/o thread, without needing to call back into
+#'   the main r thread. this offers the best performance. if the value is
 #'   `TRUE`, then instead of sending a 404 response, httpserver will call the
 #'   application's `call` function, and allow it to handle the request.
-#' @param html_charset When HTML files are served, the value that will be
-#'   provided for `charset` in the Content-Type header. For example, with
-#'   the default value, `"utf-8"`, the header is `Content-Type:
-#'   text/html; charset=utf-8`. If `""` is used, then no `charset`
-#'   will be added in the Content-Type header.
-#' @param headers Additional headers and values that will be included in the
+#' @param html_charset when html files are served, the value that will be
+#'   provided for `charset` in the content-type header. for example, with
+#'   the default value, `"utf-8"`, the header is `content-type:
+#'   text/html; charset=utf-8`. if `""` is used, then no `charset`
+#'   will be added in the content-type header.
+#' @param headers additional headers and values that will be included in the
 #'   response.
-#' @param validation An optional validation pattern. Presently, the only type of
-#'   validation supported is an exact string match of a header. For example, if
-#'   `validation` is `'"abc" = "xyz"'`, then HTTP requests must have a
+#' @param validation an optional validation pattern. presently, the only type of
+#'   validation supported is an exact string match of a header. for example, if
+#'   `validation` is `'"abc" = "xyz"'`, then http requests must have a
 #'   header named `abc` (case-insensitive) with the value `xyz`
-#'   (case-sensitive). If a request does not have a matching header, than
-#'   httpserver will give a 403 Forbidden response. If the `character(0)` (the
+#'   (case-sensitive). if a request does not have a matching header, than
+#'   httpserver will give a 403 forbidden response. if the `character(0)` (the
 #'   default), then no validation check will be performed.
-#' @param exclude Should this path be excluded from static serving? (This is
-#'   only to be used internally, for [excludeStaticPath()].)
+#' @param exclude should this path be excluded from static serving? (this is
+#'   only to be used internally, for [exclude_static_path()].)
 #'
-#' @return An object of class `staticPathOptions`, containing the normalized
+#' @return an object of class `static_path_options`, containing the normalized
 #'   options used when serving static paths.
 #'
 #' @export
-staticPathOptions <- function(
-  indexhtml = TRUE,
+static_path_options <- function(
+  index_html = TRUE,
   fallthrough = FALSE,
   html_charset = "utf-8",
   headers = list(),
@@ -175,35 +179,37 @@ staticPathOptions <- function(
 ) {
   res <- structure(
     list(
-      indexhtml = indexhtml,
+      index_html = index_html,
       fallthrough = fallthrough,
       html_charset = html_charset,
       headers = headers,
       validation = validation,
       exclude = exclude
     ),
-    class = "staticPathOptions"
+    class = "static_path_options"
   )
 
-  normalizeStaticPathOptions(res)
+  normalize_static_path_options(res)
 }
 
-#' @rdname staticPathOptions
-#' @param x A `staticPathOptions` object.
-#' @param ... Further arguments passed to or from other methods (currently
+#' @rdname static_path_options
+#' @method print static_path_options
+#' @exportS3Method print static_path_options
+#' @param x a `static_path_options` object.
+#' @param ... further arguments passed to or from other methods (currently
 #'   unused).
-#' @exportS3Method
-print.staticPathOptions <- function(x, ...) {
+print.static_path_options <- function(x, ...) {
   cat(format(x, ...), sep = "\n")
   invisible(x)
 }
 
 
-#' @rdname staticPathOptions
-#' @exportS3Method
-format.staticPathOptions <- function(x, ...) {
+#' @rdname static_path_options
+#' @method format static_path_options
+#' @exportS3Method format static_path_options
+format.static_path_options <- function(x, ...) {
   paste0(
-    "<staticPathOptions>\n",
+    "<static_path_options>\n",
     format_opts(x, format_empty = "<none>")
   )
 }
@@ -213,13 +219,13 @@ format_opts <- function(x, format_empty = "<inherit>") {
     if (is.null(opt) || length(opt) == 0) {
       format_empty
     } else if (!is.null(names(opt))) {
-      # Named character vector
+      # named character vector
       lines <- mapply(
         function(name, value) paste0('    "', name, '" = "', value, '"'),
         names(opt),
         opt,
-        SIMPLIFY = FALSE,
-        USE.NAMES = FALSE
+        simplify = FALSE,
+        use.names = FALSE
       )
 
       lines <- paste(as.character(lines), collapse = "\n")
@@ -230,67 +236,67 @@ format_opts <- function(x, format_empty = "<inherit>") {
     }
   }
   ret <- paste0(
-    "  Use index.html:    ",
-    format_option(x$indexhtml),
+    "  use index.html:    ",
+    format_option(x$index_html),
     "\n",
-    "  Fallthrough to R:  ",
+    "  fallthrough to r:  ",
     format_option(x$fallthrough),
     "\n",
-    "  HTML charset:      ",
+    "  html charset:      ",
     format_option(x$html_charset),
     "\n",
-    "  Extra headers:     ",
+    "  extra headers:     ",
     format_option(x$headers),
     "\n",
-    "  Validation params: ",
+    "  validation params: ",
     format_option(x$validation),
     "\n",
-    "  Exclude path:      ",
+    "  exclude path:      ",
     format_option(x$exclude),
     "\n"
   )
 }
 
 
-# This function always returns a named list of staticPath objects. The names
-# will all start with "/". The input can be a named character vector or a
-# named list containing a mix of strings and staticPath objects. This function
+# this function always returns a named list of static_path objects. the names
+# will all start with "/". the input can be a named character vector or a
+# named list containing a mix of strings and static_path objects. this function
 # is idempotent.
-normalizeStaticPaths <- function(paths) {
+normalize_static_paths <- function(paths) {
   if (is.null(paths) || length(paths) == 0) {
     return(list())
   }
 
   if (any_unnamed(paths)) {
     stop(
-      "paths must be a named character vector, a named list containing strings and staticPath objects, or NULL."
+      "paths must be a named character vector, a named list containing strings and static_path objects, or null."
     )
   }
 
   if (!is.character(paths) && !is.list(paths)) {
     stop(
-      "paths must be a named character vector, a named list containing strings and staticPath objects, or NULL."
+      "paths must be a named character vector, a named list containing strings and static_path objects, or null."
     )
   }
 
-  # Convert to list of staticPath objects. Need this verbose wrapping of
-  # as.staticPath because of S3 dispatch for non-registered methods.
-  paths <- lapply(paths, function(path) as.staticPath(path))
+  # convert to list of static_path objects. need this verbose wrapping of
+  # as.static_path because of s3 dispatch for non-registered methods.
+  paths <- lapply(paths, function(path) as.static_path(path))
 
-  # Make sure URL paths have a leading '/' and no trailing '/'.
+  # make sure url paths have a leading '/' and no trailing '/'.
   names(paths) <- vapply(
     names(paths),
     function(path) {
       path <- enc2utf8(path)
 
       if (path == "") {
-        stop("All paths must be non-empty strings.")
+        stop("all paths must be non-empty strings.")
       }
-      # Ensure there's a leading / for every path
+      # ensure there's a leading / for every path
       if (substr(path, 1, 1) != "/") {
         path <- paste0("/", path)
       }
-      # Strip trailing slashes, except when the path is just "/".
+      # strip trailing slashes, except when the path is just "/".
       if (path != "/") {
         path <- sub("/+$", "", path)
       }
@@ -303,17 +309,17 @@ normalizeStaticPaths <- function(paths) {
   paths
 }
 
-# Takes a staticPathOptions object and modifies it so that the resulting
-# object is easier to work with on the C++ side. The resulting object is not
-# meant to be modified on the R side. This function is idempotent; if the
-# object has already been normalized, it will not be modified. For each entry,
+# takes a static_path_options object and modifies it so that the resulting
+# object is easier to work with on the c++ side. the resulting object is not
+# meant to be modified on the r side. this function is idempotent; if the
+# object has already been normalized, it will not be modified. for each entry,
 # a NULL means to inherit.
-normalizeStaticPathOptions <- function(opts) {
+normalize_static_path_options <- function(opts) {
   if (isTRUE(attr(opts, "normalized", exact = TRUE))) {
     return(opts)
   }
 
-  # html_charset can accept "" or character(0). But on the C++ side, we want
+  # html_charset can accept "" or character(0). but on the c++ side, we want
   # "".
   if (!is.null(opts$html_charset)) {
     if (length(opts$html_charset) == 0) {
@@ -327,13 +333,13 @@ normalizeStaticPathOptions <- function(opts) {
     }
   }
 
-  # Can be a named list of strings, or a named character vector. On the C++
+  # can be a named list of strings, or a named character vector. on the c++
   # side, we want a named character vector.
   if (is.list(opts$headers)) {
-    # Convert list to named character vector
+    # convert list to named character vector
     opts$headers <- unlist(opts$headers, recursive = FALSE)
-    # Special case: if opts$headers was an empty list before unlist(), it is
-    # now NULL. Replace it with an empty named character vector.
+    # special case: if opts$headers was an empty list before unlist(), it is
+    # now null. replace it with an empty named character vector.
     if (length(opts$headers) == 0) {
       opts$headers <- c(a = "a")[0]
     }
@@ -350,7 +356,7 @@ normalizeStaticPathOptions <- function(opts) {
       )
     }
 
-    # Both "" and character(0) result in character(0). Length-1 strings other
+    # both "" and character(0) result in character(0). length-1 strings other
     # than "" will be parsed.
     if (length(opts$validation) == 1) {
       if (opts$validation == "") {
@@ -379,7 +385,7 @@ normalizeStaticPathOptions <- function(opts) {
           )
         }
 
-        # Turn it into a char vector for easier processing in C++
+        # turn it into a char vector for easier processing in c++
         opts$validation <- as.character(p)
       }
     }

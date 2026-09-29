@@ -3,14 +3,14 @@
 
 class StaticPathOptions {
 public:
-  std::experimental::optional<bool> indexhtml;
+  std::experimental::optional<bool> index_html;
   std::experimental::optional<bool> fallthrough;
   std::experimental::optional<std::string> html_charset;
   std::experimental::optional<ResponseHeaders> headers;
   std::experimental::optional<std::vector<std::string>> validation;
   std::experimental::optional<bool> exclude;
   StaticPathOptions()
-      : indexhtml(std::experimental::nullopt),
+      : index_html(std::experimental::nullopt),
         fallthrough(std::experimental::nullopt),
         html_charset(std::experimental::nullopt),
         headers(std::experimental::nullopt),
@@ -18,14 +18,14 @@ public:
         exclude(std::experimental::nullopt) {};
   StaticPathOptions(const list &options);
 
-  void setOptions(const list &options);
+  void set_options(const list &options);
 
-  list asRObject() const;
+  list as_robject() const;
 
   static StaticPathOptions merge(const StaticPathOptions &a,
                                  const StaticPathOptions &b);
 
-  bool validateRequestHeaders(const RequestHeaders &headers) const;
+  bool validate_request_headers(const RequestHeaders &headers) const;
 };
 
 class StaticPath {
@@ -35,7 +35,7 @@ public:
 
   StaticPath(const list &sp);
 
-  list asRObject() const;
+  list as_robject() const;
 };
 
 class StaticPathManager {
@@ -61,12 +61,12 @@ public:
   void remove(const strings &paths);
 
   std::experimental::optional<std::pair<StaticPath, std::string>>
-  matchStaticPath(const std::string &url_path) const;
+  match_static_path(const std::string &url_path) const;
 
-  const StaticPathOptions &getOptions() const;
-  void setOptions(const list &opts);
+  const StaticPathOptions &get_options() const;
+  void set_options(const list &opts);
 
-  list pathsAsRObject() const;
+  list paths_as_robject() const;
 };
 
 // ============================================================================
@@ -74,7 +74,7 @@ public:
 // ============================================================================
 
 StaticPathOptions::StaticPathOptions(const list &options)
-    : indexhtml(std::experimental::nullopt),
+    : index_html(std::experimental::nullopt),
       fallthrough(std::experimental::nullopt),
       html_charset(std::experimental::nullopt),
       headers(std::experimental::nullopt),
@@ -83,8 +83,8 @@ StaticPathOptions::StaticPathOptions(const list &options)
   ASSERT_MAIN_THREAD()
 
   std::string obj_class = std::string(strings(SEXP(options.attr("class")))[0]);
-  if (obj_class != "staticPathOptions") {
-    stop("staticPath options object must have class 'staticPathOptions'.");
+  if (obj_class != "static_path_options") {
+    stop("static_path options object must have class 'static_path_options'.");
   }
 
   SEXP temp;
@@ -92,13 +92,13 @@ StaticPathOptions::StaticPathOptions(const list &options)
   temp = options.attr("normalized");
   std::experimental::optional<bool> normalized = optional_as<bool>(temp);
   if (!normalized || !*normalized) {
-    stop("staticPathOptions object must be normalized.");
+    stop("static_path_options object must be normalized.");
   }
 
   // There's probably a more concise way to do this assignment than by using
   // temp.
-  temp = options["indexhtml"];
-  indexhtml = optional_as<bool>(temp);
+  temp = options["index_html"];
+  index_html = optional_as<bool>(temp);
   temp = options["fallthrough"];
   fallthrough = optional_as<bool>(temp);
   temp = options["html_charset"];
@@ -111,13 +111,13 @@ StaticPathOptions::StaticPathOptions(const list &options)
   exclude = optional_as<bool>(temp);
 }
 
-void StaticPathOptions::setOptions(const list &options) {
+void StaticPathOptions::set_options(const list &options) {
   ASSERT_MAIN_THREAD()
   SEXP temp;
-  if (options.contains("indexhtml")) {
-    temp = options["indexhtml"];
+  if (options.contains("index_html")) {
+    temp = options["index_html"];
     if (!Rf_isNull(temp)) {
-      indexhtml = optional_as<bool>(temp);
+      index_html = optional_as<bool>(temp);
     }
   }
   if (options.contains("fallthrough")) {
@@ -152,15 +152,15 @@ void StaticPathOptions::setOptions(const list &options) {
   }
 }
 
-list StaticPathOptions::asRObject() const {
+list StaticPathOptions::as_robject() const {
   ASSERT_MAIN_THREAD()
-  writable::list obj{"indexhtml"_nm = optional_wrap(indexhtml),
+  writable::list obj{"index_html"_nm = optional_wrap(index_html),
                      "fallthrough"_nm = optional_wrap(fallthrough),
                      "html_charset"_nm = optional_wrap(html_charset),
                      "headers"_nm = optional_wrap(headers),
                      "validation"_nm = optional_wrap(validation),
                      "exclude"_nm = optional_wrap(exclude)};
-  obj.attr("class") = "staticPathOptions";
+  obj.attr("class") = "static_path_options";
   return obj;
 }
 
@@ -168,8 +168,8 @@ list StaticPathOptions::asRObject() const {
 StaticPathOptions StaticPathOptions::merge(const StaticPathOptions &a,
                                            const StaticPathOptions &b) {
   StaticPathOptions new_sp = a;
-  if (new_sp.indexhtml == std::experimental::nullopt)
-    new_sp.indexhtml = b.indexhtml;
+  if (new_sp.index_html == std::experimental::nullopt)
+    new_sp.index_html = b.index_html;
   if (new_sp.fallthrough == std::experimental::nullopt)
     new_sp.fallthrough = b.fallthrough;
   if (new_sp.html_charset == std::experimental::nullopt)
@@ -185,7 +185,7 @@ StaticPathOptions StaticPathOptions::merge(const StaticPathOptions &a,
 
 // Check if a set of request headers satisfies the condition specified by
 // `validation`.
-bool StaticPathOptions::validateRequestHeaders(
+bool StaticPathOptions::validate_request_headers(
     const RequestHeaders &headers) const {
   if (validation == std::experimental::nullopt) {
     throw std::runtime_error("Cannot validate request headers because "
@@ -234,10 +234,10 @@ StaticPath::StaticPath(const list &sp) {
   }
 }
 
-list StaticPath::asRObject() const {
+list StaticPath::as_robject() const {
   ASSERT_MAIN_THREAD()
-  writable::list obj{"path"_nm = path, "options"_nm = options.asRObject()};
-  obj.attr("class") = "staticPath";
+  writable::list obj{"path"_nm = path, "options"_nm = options.as_robject()};
+  obj.attr("class") = "static_path";
   return obj;
 }
 
@@ -322,7 +322,7 @@ void StaticPathManager::set(const std::map<std::string, StaticPath> &pmap) {
 
 void StaticPathManager::set(const list &pmap) {
   ASSERT_MAIN_THREAD()
-  std::map<std::string, StaticPath> pmap2 = toMap<StaticPath, list>(pmap);
+  std::map<std::string, StaticPath> pmap2 = to_map<StaticPath, list>(pmap);
   set(pmap2);
 }
 
@@ -370,7 +370,7 @@ void StaticPathManager::remove(const strings &paths) {
 // std::experimental::nullopt.
 //
 std::experimental::optional<std::pair<StaticPath, std::string>>
-StaticPathManager::matchStaticPath(const std::string &url_path) const {
+StaticPathManager::match_static_path(const std::string &url_path) const {
 
   if (url_path.empty()) {
     return std::experimental::nullopt;
@@ -402,7 +402,7 @@ StaticPathManager::matchStaticPath(const std::string &url_path) const {
   // previous '/' and searches again, and so on, until there are no more to
   // split on.
   while (true) {
-    // Check if the part before the split-on '/' is a staticPath.
+    // Check if the part before the split-on '/' is a static_path.
     std::experimental::optional<StaticPath> sp = this->get(pre_slash);
 
     if (sp) {
@@ -434,17 +434,17 @@ StaticPathManager::matchStaticPath(const std::string &url_path) const {
   }
 }
 
-const StaticPathOptions &StaticPathManager::getOptions() const {
+const StaticPathOptions &StaticPathManager::get_options() const {
   return options;
 }
 
-void StaticPathManager::setOptions(const list &opts) {
-  options.setOptions(opts);
+void StaticPathManager::set_options(const list &opts) {
+  options.set_options(opts);
 }
 
 // Returns a list of R objects that reflect the StaticPaths, without merging
 // the overall options.
-list StaticPathManager::pathsAsRObject() const {
+list StaticPathManager::paths_as_robject() const {
   ASSERT_MAIN_THREAD()
   guard guard(mutex);
 
@@ -456,7 +456,7 @@ list StaticPathManager::pathsAsRObject() const {
   std::map<std::string, StaticPath>::const_iterator it;
   for (it = path_map.begin(); it != path_map.end(); ++it, ++i) {
     nms[i] = it->first;
-    obj[i] = it->second.asRObject();
+    obj[i] = it->second.as_robject();
   }
   obj.attr("names") = nms;
 

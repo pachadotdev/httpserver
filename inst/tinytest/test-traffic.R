@@ -1,11 +1,11 @@
 # `skip()` is a testthat function and isn't available under tinytest, so
 # this returns TRUE/FALSE and callers do `if (skip_if_not_possible()) return(NULL)`.
 skip_if_not_possible <- function() {
-  # @pachadotdev: run sudo pacman -S apache
-  # this is to run all tests for the WebTechnologies view
+  # @pachadotdev: run sudo pacman -s apache
+  # this is to run all tests for the web_technologies view
 
   if (Sys.which("ab")[[1]] == "") {
-    message("ab (Apache bench) not available for running traffic tests")
+    message("ab (apache bench) not available for running traffic tests")
     return(TRUE)
   }
 
@@ -15,7 +15,7 @@ skip_if_not_possible <- function() {
 parse_ab_output <- function(p) {
   text <- readLines(p$get_output_file())
 
-  if (!any(grepl("^Complete requests:\\s+", text))) {
+  if (!any(grepl("^complete requests:\\s+", text))) {
     return(list(
       completed = NULL,
       failed = NULL,
@@ -29,16 +29,16 @@ parse_ab_output <- function(p) {
     text = text
   )
 
-  line <- text[grepl("^Complete requests:\\s+", text)]
+  line <- text[grepl("^complete requests:\\s+", text)]
   results$completed <- as.integer(sub(
-    "^Complete requests:\\s+(\\d+).*",
+    "^complete requests:\\s+(\\d+).*",
     "\\1",
     line
   ))
 
-  line <- text[grepl("^Failed requests:\\s+", text)]
+  line <- text[grepl("^failed requests:\\s+", text)]
   results$failed <- as.integer(sub(
-    "^Failed requests:\\s+(\\d+).*",
+    "^failed requests:\\s+(\\d+).*",
     "\\1",
     line
   ))
@@ -46,10 +46,10 @@ parse_ab_output <- function(p) {
   results
 }
 
-# Launch sample_app process and return process object
+# launch sample_app process and return process object
 start_app <- function(port) {
   outfile <- tempfile()
-  # Resolve the absolute path here (in the tinytest working directory) since
+  # resolve the absolute path here (in the tinytest working directory) since
   # the background process may not inherit the same cwd.
   app_path <- file.path(getwd(), "sample_app.R")
   callr::r_bg(
@@ -64,7 +64,7 @@ start_app <- function(port) {
   )
 }
 
-# Start an apachebench test
+# start an apachebench test
 start_ab <- function(port, path, n = 400, concurrent = 100) {
   outfile <- tempfile()
   callr::process$new(
@@ -80,10 +80,10 @@ start_ab <- function(port, path, n = 400, concurrent = 100) {
 }
 
 local({
-  # Basic traffic test ----
+  # basic traffic test ----
 
   if (skip_if_not_possible()) return(NULL)
-  port <- randomPort()
+  port <- random_port()
   p <- start_app(port)
   Sys.sleep(1)
 
@@ -99,10 +99,10 @@ local({
 })
 
 local({
-  # Two concurrent ----
+  # two concurrent ----
 
   if (skip_if_not_possible()) return(NULL)
-  port <- randomPort()
+  port <- random_port()
   p <- start_app(port)
   Sys.sleep(1)
   expect_true(p$is_alive())
@@ -130,7 +130,7 @@ local({
   # /header /sync endpoints ----
 
   if (skip_if_not_possible()) return(NULL)
-  port <- randomPort()
+  port <- random_port()
   p <- start_app(port)
 
   Sys.sleep(1)
@@ -159,7 +159,7 @@ local({
   # /header /async endpoints ----
 
   if (skip_if_not_possible()) return(NULL)
-  port <- randomPort()
+  port <- random_port()
   p <- start_app(port)
 
   Sys.sleep(1)
@@ -188,7 +188,7 @@ local({
   # /header /async-error endpoints
 
   if (skip_if_not_possible()) return(NULL)
-  port <- randomPort()
+  port <- random_port()
   p <- start_app(port)
 
   Sys.sleep(1)
@@ -217,7 +217,7 @@ local({
   # /async /async-error endpoints ----
 
   if (skip_if_not_possible()) return(NULL)
-  port <- randomPort()
+  port <- random_port()
   p <- start_app(port)
 
   Sys.sleep(1)
@@ -246,7 +246,7 @@ local({
   # /body-error /async-error endpoints ----
 
   if (skip_if_not_possible()) return(NULL)
-  port <- randomPort()
+  port <- random_port()
   p <- start_app(port)
 
   Sys.sleep(1)
@@ -275,7 +275,7 @@ local({
   # static paths ----
 
   if (skip_if_not_possible()) return(NULL)
-  port <- randomPort()
+  port <- random_port()
   p <- start_app(port)
 
   Sys.sleep(1)
@@ -298,7 +298,7 @@ local({
   bench$kill()
   bencha$kill()
 
-  # Check fallthrough
+  # check fallthrough
   bench <- start_ab(port, "/static_fallthrough", n = 2000)
   bencha <- start_ab(port, "/static_fallthrough/missing_file", n = 1000)
 

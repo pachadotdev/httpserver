@@ -8,89 +8,89 @@ public:
   virtual ~WebSocketProto() {}
 
   // Return true if the request uses this protocol version and is valid
-  virtual bool canHandle(const RequestHeaders &requestHeaders,
-                         const char *pData, size_t len) const = 0;
+  virtual bool can_handle(const RequestHeaders &request_headers,
+                         const char *p_data, size_t len) const = 0;
 
   // Populate response headers with the appropriate values. This call
-  // must not fail, but it will not be called unless canHandle returned
-  // true previously, so any validation should be done in canHandle.
+  // must not fail, but it will not be called unless can_handle returned
+  // true previously, so any validation should be done in can_handle.
   virtual void handshake(const std::string &url,
-                         const RequestHeaders &requestHeaders, char **ppData,
-                         size_t *pLen, ResponseHeaders *responseHeaders,
-                         std::vector<uint8_t> *pResponse) const = 0;
+                         const RequestHeaders &request_headers, char **pp_data,
+                         size_t *p_len, ResponseHeaders *response_headers,
+                         std::vector<uint8_t> *p_response) const = 0;
 
-  void createFrameHeader(Opcode opcode, bool mask, size_t payloadSize,
-                         int32_t maskingKey, char pData[MAX_HEADER_BYTES],
-                         size_t *pLen) const;
+  void create_frame_header(Opcode opcode, bool mask, size_t payload_size,
+                         int32_t masking_key, char p_data[MAX_HEADER_BYTES],
+                         size_t *p_len) const;
 
-  virtual bool isFin(uint8_t firstBit) const = 0;
-  virtual uint8_t toFin(bool isFin) const = 0;
-  virtual Opcode decodeOpcode(uint8_t rawCode) const = 0;
-  virtual uint8_t encodeOpcode(Opcode opcode) const = 0;
+  virtual bool is_fin(uint8_t first_bit) const = 0;
+  virtual uint8_t to_fin(bool is_fin) const = 0;
+  virtual Opcode decode_opcode(uint8_t raw_code) const = 0;
+  virtual uint8_t encode_opcode(Opcode opcode) const = 0;
 };
 
-bool isBigEndian();
-// Swaps the byte range [pStart, pEnd)
-void swapByteOrder(unsigned char *pStart, unsigned char *pEnd);
+bool is_big_endian();
+// Swaps the byte range [p_start, p_end)
+void swap_byte_order(unsigned char *p_start, unsigned char *p_end);
 
-bool isBigEndian() {
+bool is_big_endian() {
   uint32_t i = 1;
   return *((uint8_t *)&i) == 0;
 }
 
-// Swaps the byte range [pStart, pEnd)
-void swapByteOrder(unsigned char *pStart, unsigned char *pEnd) {
+// Swaps the byte range [p_start, p_end)
+void swap_byte_order(unsigned char *p_start, unsigned char *p_end) {
   // Easier for callers to use exclusive end but easier to implement
   // using inclusive end
-  pEnd--;
+  p_end--;
 
-  while (pStart < pEnd) {
+  while (p_start < p_end) {
 
     unsigned char tmp;
-    tmp = *pStart;
-    *pStart = *pEnd;
-    *pEnd = tmp;
+    tmp = *p_start;
+    *p_start = *p_end;
+    *p_end = tmp;
 
-    pStart++;
-    pEnd--;
+    p_start++;
+    p_end--;
   }
 }
 
-void WebSocketProto::createFrameHeader(Opcode opcode, bool mask,
-                                       size_t payloadSize, int32_t maskingKey,
-                                       char pData[MAX_HEADER_BYTES],
-                                       size_t *pLen) const {
+void WebSocketProto::create_frame_header(Opcode opcode, bool mask,
+                                       size_t payload_size, int32_t masking_key,
+                                       char p_data[MAX_HEADER_BYTES],
+                                       size_t *p_len) const {
 
-  unsigned char *pBuf = (unsigned char *)pData;
-  unsigned char *pMaskingKey = pBuf + 2;
+  unsigned char *p_buf = (unsigned char *)p_data;
+  unsigned char *p_masking_key = p_buf + 2;
   // Need to copy from a 64-bit chunk of memory, but size_t may be smaller.
-  uint64_t payloadSize_64 = payloadSize;
+  uint64_t payload_size_64 = payload_size;
 
-  pBuf[0] = toFin(true) << 7 | // FIN; always true
-            encodeOpcode(opcode);
-  pBuf[1] = mask ? 1 << 7 : 0;
-  if (payloadSize_64 <= 125) {
-    pBuf[1] |= payloadSize_64;
-    pMaskingKey = pBuf + 2;
-  } else if (payloadSize_64 <= 65535) { // 2^16-1
-    pBuf[1] |= 126;
-    memcpy(pBuf + 2, &payloadSize_64, sizeof(uint16_t));
-    if (!isBigEndian())
-      swapByteOrder(pBuf + 2, pBuf + 4);
-    pMaskingKey = pBuf + 4;
+  p_buf[0] = to_fin(true) << 7 | // FIN; always true
+            encode_opcode(opcode);
+  p_buf[1] = mask ? 1 << 7 : 0;
+  if (payload_size_64 <= 125) {
+    p_buf[1] |= payload_size_64;
+    p_masking_key = p_buf + 2;
+  } else if (payload_size_64 <= 65535) { // 2^16-1
+    p_buf[1] |= 126;
+    memcpy(p_buf + 2, &payload_size_64, sizeof(uint16_t));
+    if (!is_big_endian())
+      swap_byte_order(p_buf + 2, p_buf + 4);
+    p_masking_key = p_buf + 4;
   } else {
-    pBuf[1] |= 127;
-    memcpy(pBuf + 2, &payloadSize_64, sizeof(uint64_t));
-    if (!isBigEndian())
-      swapByteOrder(pBuf + 2, pBuf + 10);
-    pMaskingKey = pBuf + 10;
+    p_buf[1] |= 127;
+    memcpy(p_buf + 2, &payload_size_64, sizeof(uint64_t));
+    if (!is_big_endian())
+      swap_byte_order(p_buf + 2, p_buf + 10);
+    p_masking_key = p_buf + 10;
   }
 
   if (mask) {
-    memcpy(pMaskingKey, &maskingKey, sizeof(int32_t));
+    memcpy(p_masking_key, &masking_key, sizeof(int32_t));
   }
 
-  *pLen = (pMaskingKey - pBuf) + (mask ? 4 : 0);
+  *p_len = (p_masking_key - p_buf) + (mask ? 4 : 0);
 }
 
 #endif

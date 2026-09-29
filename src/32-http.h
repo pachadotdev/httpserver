@@ -12,13 +12,13 @@ void on_request(uv_stream_t *handle, int status) {
   }
 
   // Copy the shared_ptr
-  std::shared_ptr<Socket> pSocket(*(std::shared_ptr<Socket> *)handle->data);
-  CallbackQueue *bg_queue = pSocket->background_queue;
+  std::shared_ptr<Socket> p_socket(*(std::shared_ptr<Socket> *)handle->data);
+  CallbackQueue *bg_queue = p_socket->background_queue;
 
   // Freed by HttpRequest itself when close() is called, which
   // can occur on EOF, error, or when the Socket is destroyed
-  std::shared_ptr<HttpRequest> req = createHttpRequest(
-      handle->loop, pSocket->pWebApplication, pSocket, bg_queue);
+  std::shared_ptr<HttpRequest> req = create_http_request(
+      handle->loop, p_socket->p_web_application, p_socket, bg_queue);
 
   int r = uv_accept(handle, req->handle());
   if (r) {
@@ -26,105 +26,105 @@ void on_request(uv_stream_t *handle, int status) {
     return;
   }
 
-  req->handleRequest();
+  req->handle_request();
 }
 
-uv_stream_t *createPipeServer(uv_loop_t *pLoop, const std::string &name,
+uv_stream_t *create_pipe_server(uv_loop_t *p_loop, const std::string &name,
                               int mask,
-                              std::shared_ptr<WebApplication> pWebApplication,
+                              std::shared_ptr<WebApplication> p_web_application,
                               bool quiet, CallbackQueue *background_queue) {
   ASSERT_BACKGROUND_THREAD()
 
-  // We own pWebApplication. It will be destroyed by the socket but if in
+  // We own p_web_application. It will be destroyed by the socket but if in
   // the future we have failure cases that stop execution before we get
-  // that far, we MUST delete pWebApplication ourselves.
+  // that far, we MUST delete p_web_application ourselves.
 
-  std::shared_ptr<Socket> pSocket =
-      std::make_shared<Socket>(pWebApplication, background_queue);
+  std::shared_ptr<Socket> p_socket =
+      std::make_shared<Socket>(p_web_application, background_queue);
 
   // TODO: Handle error
-  uv_pipe_init(pLoop, &pSocket->handle.pipe, 0);
-  pSocket->handle.isTcp = false;
+  uv_pipe_init(p_loop, &p_socket->handle.pipe, 0);
+  p_socket->handle.is_tcp = false;
   // data is a pointer to the shared_ptr. This is necessary because the
   // uv_stream_t.data field is a void*.
-  pSocket->handle.stream.data = new std::shared_ptr<Socket>(pSocket);
+  p_socket->handle.stream.data = new std::shared_ptr<Socket>(p_socket);
 
-  mode_t oldMask = 0;
+  mode_t old_mask = 0;
   if (mask >= 0)
-    oldMask = umask(mask);
-  int r = uv_pipe_bind(&pSocket->handle.pipe, name.c_str());
+    old_mask = umask(mask);
+  int r = uv_pipe_bind(&p_socket->handle.pipe, name.c_str());
   if (mask >= 0)
-    umask(oldMask);
+    umask(old_mask);
 
   if (r) {
     if (!quiet)
-      err_printf("createPipeServer: %s\n", uv_strerror(r));
+      err_printf("create_pipe_server: %s\n", uv_strerror(r));
     // It's important that close() is explicitly called, so that the uv_pipe_t
     // is cleaned up
-    pSocket->close();
+    p_socket->close();
     return NULL;
   }
-  r = uv_listen((uv_stream_t *)&pSocket->handle.stream, 128, &on_request);
+  r = uv_listen((uv_stream_t *)&p_socket->handle.stream, 128, &on_request);
   if (r) {
     if (!quiet)
-      err_printf("createPipeServer: %s\n", uv_strerror(r));
+      err_printf("create_pipe_server: %s\n", uv_strerror(r));
     // It's important that close() is explicitly called, so that the uv_pipe_t
     // is cleaned up
-    pSocket->close();
+    p_socket->close();
     return NULL;
   }
 
-  return &pSocket->handle.stream;
+  return &p_socket->handle.stream;
 }
 
-// A wrapper for createPipeServer. The main thread schedules this to run on
+// A wrapper for create_pipe_server. The main thread schedules this to run on
 // the background thread, then waits for this to finish, using a barrier.
-void createPipeServerSync(uv_loop_t *loop, const std::string &name, int mask,
-                          std::shared_ptr<WebApplication> pWebApplication,
+void create_pipe_server_sync(uv_loop_t *loop, const std::string &name, int mask,
+                          std::shared_ptr<WebApplication> p_web_application,
                           bool quiet, CallbackQueue *background_queue,
-                          uv_stream_t **pServer,
+                          uv_stream_t **p_server,
                           std::shared_ptr<Barrier> blocker) {
   ASSERT_BACKGROUND_THREAD()
 
-  *pServer = createPipeServer(loop, name, mask, pWebApplication, quiet,
+  *p_server = create_pipe_server(loop, name, mask, p_web_application, quiet,
                               background_queue);
 
   // Tell the main thread that the server is ready
   blocker->wait();
 }
 
-uv_stream_t *createTcpServer(uv_loop_t *pLoop, const std::string &host,
+uv_stream_t *create_tcp_server(uv_loop_t *p_loop, const std::string &host,
                              int port,
-                             std::shared_ptr<WebApplication> pWebApplication,
+                             std::shared_ptr<WebApplication> p_web_application,
                              bool quiet, CallbackQueue *background_queue) {
   ASSERT_BACKGROUND_THREAD()
 
-  // We own pWebApplication. It will be destroyed by the socket but if in
+  // We own p_web_application. It will be destroyed by the socket but if in
   // the future we have failure cases that stop execution before we get
-  // that far, we MUST delete pWebApplication ourselves.
+  // that far, we MUST delete p_web_application ourselves.
 
-  std::shared_ptr<Socket> pSocket =
-      std::make_shared<Socket>(pWebApplication, background_queue);
+  std::shared_ptr<Socket> p_socket =
+      std::make_shared<Socket>(p_web_application, background_queue);
 
   // TODO: Handle error
-  uv_tcp_init(pLoop, &pSocket->handle.tcp);
-  pSocket->handle.isTcp = true;
+  uv_tcp_init(p_loop, &p_socket->handle.tcp);
+  p_socket->handle.is_tcp = true;
   // data is a pointer to the shared_ptr. This is necessary because the
   // uv_stream_t.data field is a void*.
-  pSocket->handle.stream.data = new std::shared_ptr<Socket>(pSocket);
+  p_socket->handle.stream.data = new std::shared_ptr<Socket>(p_socket);
 
   int r;
-  // Lifetime of these needs to encompass use of pAddress in uv_tcp_bind()
+  // Lifetime of these needs to encompass use of p_address in uv_tcp_bind()
   struct sockaddr_in6 addr6;
   struct sockaddr_in addr4;
-  sockaddr *pAddress;
-  int family = ip_family(host);
+  sockaddr *p_address;
+  int family = ip_family_impl(host);
   if (family == AF_INET6) {
     r = uv_ip6_addr(host.c_str(), port, &addr6);
-    pAddress = reinterpret_cast<sockaddr *>(&addr6);
+    p_address = reinterpret_cast<sockaddr *>(&addr6);
   } else if (family == AF_INET) {
     r = uv_ip4_addr(host.c_str(), port, &addr4);
-    pAddress = reinterpret_cast<sockaddr *>(&addr4);
+    p_address = reinterpret_cast<sockaddr *>(&addr4);
   } else {
     r = 1;
     if (!quiet)
@@ -133,58 +133,58 @@ uv_stream_t *createTcpServer(uv_loop_t *pLoop, const std::string &host,
 
   if (r) {
     if (!quiet)
-      err_printf("createTcpServer: %s\n", uv_strerror(r));
+      err_printf("create_tcp_server: %s\n", uv_strerror(r));
     // It's important that close() is explicitly called, so that the uv_tcp_t is
     // cleaned up
-    pSocket->close();
+    p_socket->close();
     return NULL;
   }
 
-  r = uv_tcp_bind(&pSocket->handle.tcp, pAddress, 0);
+  r = uv_tcp_bind(&p_socket->handle.tcp, p_address, 0);
 
   if (r) {
     if (!quiet)
-      err_printf("createTcpServer: %s\n", uv_strerror(r));
+      err_printf("create_tcp_server: %s\n", uv_strerror(r));
     // It's important that close() is explicitly called, so that the uv_tcp_t is
     // cleaned up
-    pSocket->close();
+    p_socket->close();
     return NULL;
   }
-  r = uv_listen((uv_stream_t *)&pSocket->handle.stream, 128, &on_request);
+  r = uv_listen((uv_stream_t *)&p_socket->handle.stream, 128, &on_request);
   if (r) {
     if (!quiet)
-      err_printf("createTcpServer: %s\n", uv_strerror(r));
+      err_printf("create_tcp_server: %s\n", uv_strerror(r));
     // It's important that close() is explicitly called, so that the uv_tcp_t is
     // cleaned up
-    pSocket->close();
+    p_socket->close();
     return NULL;
   }
 
-  return &pSocket->handle.stream;
+  return &p_socket->handle.stream;
 }
 
-// A wrapper for createTcpServer. The main thread schedules this to run on the
+// A wrapper for create_tcp_server. The main thread schedules this to run on the
 // background thread, then waits for this to finish, using a barrier.
-void createTcpServerSync(uv_loop_t *pLoop, const std::string &host, int port,
-                         std::shared_ptr<WebApplication> pWebApplication,
+void create_tcp_server_sync(uv_loop_t *p_loop, const std::string &host, int port,
+                         std::shared_ptr<WebApplication> p_web_application,
                          bool quiet, CallbackQueue *background_queue,
-                         uv_stream_t **pServer,
+                         uv_stream_t **p_server,
                          std::shared_ptr<Barrier> blocker) {
   ASSERT_BACKGROUND_THREAD()
 
-  *pServer = createTcpServer(pLoop, host, port, pWebApplication, quiet,
+  *p_server = create_tcp_server(p_loop, host, port, p_web_application, quiet,
                              background_queue);
 
   // Tell the main thread that the server is ready
   blocker->wait();
 }
 
-void freeServer(uv_stream_t *pHandle) {
+void free_server(uv_stream_t *p_handle) {
   ASSERT_BACKGROUND_THREAD()
   // TODO: Check if server is still running?
-  std::shared_ptr<Socket> *ppSocket = (std::shared_ptr<Socket> *)pHandle->data;
-  (*ppSocket)->close();
-  // ppSocket gets deleted in a callback in close()
+  std::shared_ptr<Socket> *pp_socket = (std::shared_ptr<Socket> *)p_handle->data;
+  (*pp_socket)->close();
+  // pp_socket gets deleted in a callback in close()
 }
 
 #endif

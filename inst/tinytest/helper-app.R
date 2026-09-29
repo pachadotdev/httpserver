@@ -30,7 +30,7 @@ curl_fetch_async <- function(
 }
 
 
-# A way of sending an HTTP request using a socketConnection. This isn't as
+# a way of sending an http request using a socket_connection. this isn't as
 # reliable as using curl, so we'll use it only when curl can't do what we want.
 http_request_con_async <- function(request, host, port) {
   resolve_fun <- NULL
@@ -69,8 +69,8 @@ wait_for_it <- function() {
 }
 
 
-# Block until the promise is resolved/rejected. If resolved, return the value.
-# If rejected, throw (yes throw, not return) the error.
+# block until the promise is resolved/rejected. if resolved, return the value.
+# if rejected, throw (yes throw, not return) the error.
 extract <- function(promise) {
   promise_value <- NULL
   error <- NULL
@@ -88,10 +88,10 @@ extract <- function(promise) {
   }
 }
 
-# Make an HTTP request using curl.
+# make an http request using curl.
 fetch <- function(url, handle = curl::new_handle(), gzip = TRUE) {
   if (!gzip) {
-    # Disable gzip; this is often needed only because the unit tests predate
+    # disable gzip; this is often needed only because the unit tests predate
     # gzip support in httpuv
     curl::handle_setopt(handle, accept_encoding = NULL)
   }
@@ -100,7 +100,7 @@ fetch <- function(url, handle = curl::new_handle(), gzip = TRUE) {
   extract(p)
 }
 
-# Make an HTTP request using a socketConnection. Not as robust as fetch(), so
+# make an http request using a socket_connection. not as robust as fetch(), so
 # we'll use this only when necessary.
 http_request_con <- function(request, host, port) {
   p <- http_request_con_async(request, host, port)
@@ -121,8 +121,8 @@ raw_file_content <- function(filename) {
   readBin(filename, "raw", n = size)
 }
 
-# Given a POSIXct object, return a date string in the format required for a
-# HTTP Date header. For example: "Wed, 21 Oct 2015 07:28:00 GMT"
+# given a posixct object, return a date string in the format required for a
+# http date header. for example: "wed, 21 oct 2015 07:28:00 gmt"
 http_date_string <- function(time) {
   weekday_names <- c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
   weekday_num <- as.integer(strftime(time, format = "%w", tz = "GMT"))

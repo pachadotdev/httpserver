@@ -2,129 +2,139 @@
 // clang-format off
 
 
+
 #include "cpp4r/declarations.hpp"
 #include <R_ext/Visibility.h>
 
-// httpserver.cpp
-void sendWSMessage(SEXP conn, bool binary, SEXP message);
-extern "C" SEXP _httpserver_sendWSMessage(SEXP conn, SEXP binary, SEXP message) {
+#ifndef HTTPSERVER_05_UTILS_H
+// 05-utils.h
+std::string log_level(const std::string & level);
+extern "C" SEXP _httpserver_log_level(SEXP level) {
   BEGIN_CPP4R
-    sendWSMessage(cpp4r::as_cpp<cpp4r::decay_t<SEXP>>(conn), cpp4r::as_cpp<cpp4r::decay_t<bool>>(binary), cpp4r::as_cpp<cpp4r::decay_t<SEXP>>(message));
+    return cpp4r::as_sexp(log_level(cpp4r::as_cpp<cpp4r::decay_t<const std::string &>>(level)));
+  END_CPP4R
+}
+#endif
+// httpserver.cpp
+void send_ws_message(SEXP conn, bool binary, SEXP message);
+extern "C" SEXP _httpserver_send_ws_message(SEXP conn, SEXP binary, SEXP message) {
+  BEGIN_CPP4R
+    send_ws_message(cpp4r::as_cpp<cpp4r::decay_t<SEXP>>(conn), cpp4r::as_cpp<cpp4r::decay_t<bool>>(binary), cpp4r::as_cpp<cpp4r::decay_t<SEXP>>(message));
     return R_NilValue;
   END_CPP4R
 }
 // httpserver.cpp
-void closeWS(SEXP conn, uint16_t code, std::string reason);
-extern "C" SEXP _httpserver_closeWS(SEXP conn, SEXP code, SEXP reason) {
+void close_ws(SEXP conn, uint16_t code, std::string reason);
+extern "C" SEXP _httpserver_close_ws(SEXP conn, SEXP code, SEXP reason) {
   BEGIN_CPP4R
-    closeWS(cpp4r::as_cpp<cpp4r::decay_t<SEXP>>(conn), cpp4r::as_cpp<cpp4r::decay_t<uint16_t>>(code), cpp4r::as_cpp<cpp4r::decay_t<std::string>>(reason));
+    close_ws(cpp4r::as_cpp<cpp4r::decay_t<SEXP>>(conn), cpp4r::as_cpp<cpp4r::decay_t<uint16_t>>(code), cpp4r::as_cpp<cpp4r::decay_t<std::string>>(reason));
     return R_NilValue;
   END_CPP4R
 }
 // httpserver.cpp
-SEXP makeTcpServer(const std::string & host, int port, sexp onHeaders, function onBodyData, function onRequest, function onWSOpen, function onWSMessage, function onWSClose, list staticPaths, list staticPathOptions, bool quiet);
-extern "C" SEXP _httpserver_makeTcpServer(SEXP host, SEXP port, SEXP onHeaders, SEXP onBodyData, SEXP onRequest, SEXP onWSOpen, SEXP onWSMessage, SEXP onWSClose, SEXP staticPaths, SEXP staticPathOptions, SEXP quiet) {
+SEXP make_tcp_server(const std::string & host, int port, sexp on_headers, function on_body_data, function on_request, function on_wsopen, function on_wsmessage, function on_wsclose, list static_paths, list static_path_options, bool quiet);
+extern "C" SEXP _httpserver_make_tcp_server(SEXP host, SEXP port, SEXP on_headers, SEXP on_body_data, SEXP on_request, SEXP on_wsopen, SEXP on_wsmessage, SEXP on_wsclose, SEXP static_paths, SEXP static_path_options, SEXP quiet) {
   BEGIN_CPP4R
-    return cpp4r::as_sexp(makeTcpServer(cpp4r::as_cpp<cpp4r::decay_t<const std::string &>>(host), cpp4r::as_cpp<cpp4r::decay_t<int>>(port), cpp4r::as_cpp<cpp4r::decay_t<sexp>>(onHeaders), cpp4r::as_cpp<cpp4r::decay_t<function>>(onBodyData), cpp4r::as_cpp<cpp4r::decay_t<function>>(onRequest), cpp4r::as_cpp<cpp4r::decay_t<function>>(onWSOpen), cpp4r::as_cpp<cpp4r::decay_t<function>>(onWSMessage), cpp4r::as_cpp<cpp4r::decay_t<function>>(onWSClose), cpp4r::as_cpp<cpp4r::decay_t<list>>(staticPaths), cpp4r::as_cpp<cpp4r::decay_t<list>>(staticPathOptions), cpp4r::as_cpp<cpp4r::decay_t<bool>>(quiet)));
+    return cpp4r::as_sexp(make_tcp_server(cpp4r::as_cpp<cpp4r::decay_t<const std::string &>>(host), cpp4r::as_cpp<cpp4r::decay_t<int>>(port), cpp4r::as_cpp<cpp4r::decay_t<sexp>>(on_headers), cpp4r::as_cpp<cpp4r::decay_t<function>>(on_body_data), cpp4r::as_cpp<cpp4r::decay_t<function>>(on_request), cpp4r::as_cpp<cpp4r::decay_t<function>>(on_wsopen), cpp4r::as_cpp<cpp4r::decay_t<function>>(on_wsmessage), cpp4r::as_cpp<cpp4r::decay_t<function>>(on_wsclose), cpp4r::as_cpp<cpp4r::decay_t<list>>(static_paths), cpp4r::as_cpp<cpp4r::decay_t<list>>(static_path_options), cpp4r::as_cpp<cpp4r::decay_t<bool>>(quiet)));
   END_CPP4R
 }
 // httpserver.cpp
-SEXP makePipeServer(const std::string & name, int mask, sexp onHeaders, function onBodyData, function onRequest, function onWSOpen, function onWSMessage, function onWSClose, list staticPaths, list staticPathOptions, bool quiet);
-extern "C" SEXP _httpserver_makePipeServer(SEXP name, SEXP mask, SEXP onHeaders, SEXP onBodyData, SEXP onRequest, SEXP onWSOpen, SEXP onWSMessage, SEXP onWSClose, SEXP staticPaths, SEXP staticPathOptions, SEXP quiet) {
+SEXP make_pipe_server(const std::string & name, int mask, sexp on_headers, function on_body_data, function on_request, function on_wsopen, function on_wsmessage, function on_wsclose, list static_paths, list static_path_options, bool quiet);
+extern "C" SEXP _httpserver_make_pipe_server(SEXP name, SEXP mask, SEXP on_headers, SEXP on_body_data, SEXP on_request, SEXP on_wsopen, SEXP on_wsmessage, SEXP on_wsclose, SEXP static_paths, SEXP static_path_options, SEXP quiet) {
   BEGIN_CPP4R
-    return cpp4r::as_sexp(makePipeServer(cpp4r::as_cpp<cpp4r::decay_t<const std::string &>>(name), cpp4r::as_cpp<cpp4r::decay_t<int>>(mask), cpp4r::as_cpp<cpp4r::decay_t<sexp>>(onHeaders), cpp4r::as_cpp<cpp4r::decay_t<function>>(onBodyData), cpp4r::as_cpp<cpp4r::decay_t<function>>(onRequest), cpp4r::as_cpp<cpp4r::decay_t<function>>(onWSOpen), cpp4r::as_cpp<cpp4r::decay_t<function>>(onWSMessage), cpp4r::as_cpp<cpp4r::decay_t<function>>(onWSClose), cpp4r::as_cpp<cpp4r::decay_t<list>>(staticPaths), cpp4r::as_cpp<cpp4r::decay_t<list>>(staticPathOptions), cpp4r::as_cpp<cpp4r::decay_t<bool>>(quiet)));
+    return cpp4r::as_sexp(make_pipe_server(cpp4r::as_cpp<cpp4r::decay_t<const std::string &>>(name), cpp4r::as_cpp<cpp4r::decay_t<int>>(mask), cpp4r::as_cpp<cpp4r::decay_t<sexp>>(on_headers), cpp4r::as_cpp<cpp4r::decay_t<function>>(on_body_data), cpp4r::as_cpp<cpp4r::decay_t<function>>(on_request), cpp4r::as_cpp<cpp4r::decay_t<function>>(on_wsopen), cpp4r::as_cpp<cpp4r::decay_t<function>>(on_wsmessage), cpp4r::as_cpp<cpp4r::decay_t<function>>(on_wsclose), cpp4r::as_cpp<cpp4r::decay_t<list>>(static_paths), cpp4r::as_cpp<cpp4r::decay_t<list>>(static_path_options), cpp4r::as_cpp<cpp4r::decay_t<bool>>(quiet)));
   END_CPP4R
 }
 // httpserver.cpp
-void stopServer_(std::string handle);
-extern "C" SEXP _httpserver_stopServer_(SEXP handle) {
+void stop_server_(std::string handle);
+extern "C" SEXP _httpserver_stop_server_(SEXP handle) {
   BEGIN_CPP4R
-    stopServer_(cpp4r::as_cpp<cpp4r::decay_t<std::string>>(handle));
+    stop_server_(cpp4r::as_cpp<cpp4r::decay_t<std::string>>(handle));
     return R_NilValue;
   END_CPP4R
 }
 // httpserver.cpp
-list getStaticPaths_(std::string handle);
-extern "C" SEXP _httpserver_getStaticPaths_(SEXP handle) {
+list get_static_paths_(std::string handle);
+extern "C" SEXP _httpserver_get_static_paths_(SEXP handle) {
   BEGIN_CPP4R
-    return cpp4r::as_sexp(getStaticPaths_(cpp4r::as_cpp<cpp4r::decay_t<std::string>>(handle)));
+    return cpp4r::as_sexp(get_static_paths_(cpp4r::as_cpp<cpp4r::decay_t<std::string>>(handle)));
   END_CPP4R
 }
 // httpserver.cpp
-list setStaticPaths_(std::string handle, list sp);
-extern "C" SEXP _httpserver_setStaticPaths_(SEXP handle, SEXP sp) {
+list set_static_paths_(std::string handle, list sp);
+extern "C" SEXP _httpserver_set_static_paths_(SEXP handle, SEXP sp) {
   BEGIN_CPP4R
-    return cpp4r::as_sexp(setStaticPaths_(cpp4r::as_cpp<cpp4r::decay_t<std::string>>(handle), cpp4r::as_cpp<cpp4r::decay_t<list>>(sp)));
+    return cpp4r::as_sexp(set_static_paths_(cpp4r::as_cpp<cpp4r::decay_t<std::string>>(handle), cpp4r::as_cpp<cpp4r::decay_t<list>>(sp)));
   END_CPP4R
 }
 // httpserver.cpp
-list removeStaticPaths_(std::string handle, strings paths);
-extern "C" SEXP _httpserver_removeStaticPaths_(SEXP handle, SEXP paths) {
+list remove_static_paths_(std::string handle, strings paths);
+extern "C" SEXP _httpserver_remove_static_paths_(SEXP handle, SEXP paths) {
   BEGIN_CPP4R
-    return cpp4r::as_sexp(removeStaticPaths_(cpp4r::as_cpp<cpp4r::decay_t<std::string>>(handle), cpp4r::as_cpp<cpp4r::decay_t<strings>>(paths)));
+    return cpp4r::as_sexp(remove_static_paths_(cpp4r::as_cpp<cpp4r::decay_t<std::string>>(handle), cpp4r::as_cpp<cpp4r::decay_t<strings>>(paths)));
   END_CPP4R
 }
 // httpserver.cpp
-list getStaticPathOptions_(std::string handle);
-extern "C" SEXP _httpserver_getStaticPathOptions_(SEXP handle) {
+list get_static_path_options_(std::string handle);
+extern "C" SEXP _httpserver_get_static_path_options_(SEXP handle) {
   BEGIN_CPP4R
-    return cpp4r::as_sexp(getStaticPathOptions_(cpp4r::as_cpp<cpp4r::decay_t<std::string>>(handle)));
+    return cpp4r::as_sexp(get_static_path_options_(cpp4r::as_cpp<cpp4r::decay_t<std::string>>(handle)));
   END_CPP4R
 }
 // httpserver.cpp
-list setStaticPathOptions_(std::string handle, list opts);
-extern "C" SEXP _httpserver_setStaticPathOptions_(SEXP handle, SEXP opts) {
+list set_static_path_options_(std::string handle, list opts);
+extern "C" SEXP _httpserver_set_static_path_options_(SEXP handle, SEXP opts) {
   BEGIN_CPP4R
-    return cpp4r::as_sexp(setStaticPathOptions_(cpp4r::as_cpp<cpp4r::decay_t<std::string>>(handle), cpp4r::as_cpp<cpp4r::decay_t<list>>(opts)));
+    return cpp4r::as_sexp(set_static_path_options_(cpp4r::as_cpp<cpp4r::decay_t<std::string>>(handle), cpp4r::as_cpp<cpp4r::decay_t<list>>(opts)));
   END_CPP4R
 }
 // httpserver.cpp
-std::string base64encode(const raws & x);
-extern "C" SEXP _httpserver_base64encode(SEXP x) {
+std::string base64_encode(const raws & x);
+extern "C" SEXP _httpserver_base64_encode(SEXP x) {
   BEGIN_CPP4R
-    return cpp4r::as_sexp(base64encode(cpp4r::as_cpp<cpp4r::decay_t<const raws &>>(x)));
+    return cpp4r::as_sexp(base64_encode(cpp4r::as_cpp<cpp4r::decay_t<const raws &>>(x)));
   END_CPP4R
 }
 // httpserver.cpp
-strings encodeURI(strings value);
-extern "C" SEXP _httpserver_encodeURI(SEXP value) {
+strings encode_uri(strings value);
+extern "C" SEXP _httpserver_encode_uri(SEXP value) {
   BEGIN_CPP4R
-    return cpp4r::as_sexp(encodeURI(cpp4r::as_cpp<cpp4r::decay_t<strings>>(value)));
+    return cpp4r::as_sexp(encode_uri(cpp4r::as_cpp<cpp4r::decay_t<strings>>(value)));
   END_CPP4R
 }
 // httpserver.cpp
-strings encodeURIComponent(strings value);
-extern "C" SEXP _httpserver_encodeURIComponent(SEXP value) {
+strings encode_uri_component(strings value);
+extern "C" SEXP _httpserver_encode_uri_component(SEXP value) {
   BEGIN_CPP4R
-    return cpp4r::as_sexp(encodeURIComponent(cpp4r::as_cpp<cpp4r::decay_t<strings>>(value)));
+    return cpp4r::as_sexp(encode_uri_component(cpp4r::as_cpp<cpp4r::decay_t<strings>>(value)));
   END_CPP4R
 }
 // httpserver.cpp
-strings decodeURI(strings value);
-extern "C" SEXP _httpserver_decodeURI(SEXP value) {
+strings decode_uri(strings value);
+extern "C" SEXP _httpserver_decode_uri(SEXP value) {
   BEGIN_CPP4R
-    return cpp4r::as_sexp(decodeURI(cpp4r::as_cpp<cpp4r::decay_t<strings>>(value)));
+    return cpp4r::as_sexp(decode_uri(cpp4r::as_cpp<cpp4r::decay_t<strings>>(value)));
   END_CPP4R
 }
 // httpserver.cpp
-strings decodeURIComponent(strings value);
-extern "C" SEXP _httpserver_decodeURIComponent(SEXP value) {
+strings decode_uricomponent(strings value);
+extern "C" SEXP _httpserver_decode_uricomponent(SEXP value) {
   BEGIN_CPP4R
-    return cpp4r::as_sexp(decodeURIComponent(cpp4r::as_cpp<cpp4r::decay_t<strings>>(value)));
+    return cpp4r::as_sexp(decode_uricomponent(cpp4r::as_cpp<cpp4r::decay_t<strings>>(value)));
   END_CPP4R
 }
 // httpserver.cpp
-int ipFamily(const std::string & ip);
-extern "C" SEXP _httpserver_ipFamily(SEXP ip) {
+int ip_family(const std::string & ip);
+extern "C" SEXP _httpserver_ip_family(SEXP ip) {
   BEGIN_CPP4R
-    return cpp4r::as_sexp(ipFamily(cpp4r::as_cpp<cpp4r::decay_t<const std::string &>>(ip)));
+    return cpp4r::as_sexp(ip_family(cpp4r::as_cpp<cpp4r::decay_t<const std::string &>>(ip)));
   END_CPP4R
 }
 // httpserver.cpp
-void invokeCppCallback(SEXP data, SEXP callback_xptr);
-extern "C" SEXP _httpserver_invokeCppCallback(SEXP data, SEXP callback_xptr) {
+void invoke_cpp_callback(SEXP data, SEXP callback_xptr);
+extern "C" SEXP _httpserver_invoke_cpp_callback(SEXP data, SEXP callback_xptr) {
   BEGIN_CPP4R
-    invokeCppCallback(cpp4r::as_cpp<cpp4r::decay_t<SEXP>>(data), cpp4r::as_cpp<cpp4r::decay_t<SEXP>>(callback_xptr));
+    invoke_cpp_callback(cpp4r::as_cpp<cpp4r::decay_t<SEXP>>(data), cpp4r::as_cpp<cpp4r::decay_t<SEXP>>(callback_xptr));
     return R_NilValue;
   END_CPP4R
 }
@@ -143,36 +153,31 @@ extern "C" SEXP _httpserver_wsconn_address(SEXP external_ptr) {
     return cpp4r::as_sexp(wsconn_address(cpp4r::as_cpp<cpp4r::decay_t<SEXP>>(external_ptr)));
   END_CPP4R
 }
-// utils.cpp
-std::string log_level(const std::string & level);
-extern "C" SEXP _httpserver_log_level(SEXP level) {
-  BEGIN_CPP4R
-    return cpp4r::as_sexp(log_level(cpp4r::as_cpp<cpp4r::decay_t<const std::string &>>(level)));
-  END_CPP4R
-}
 
 extern "C" {
 static const R_CallMethodDef CallEntries[] = {
-    {"_httpserver_sendWSMessage", (DL_FUNC) &_httpserver_sendWSMessage, 3},
-    {"_httpserver_closeWS", (DL_FUNC) &_httpserver_closeWS, 3},
-    {"_httpserver_makeTcpServer", (DL_FUNC) &_httpserver_makeTcpServer, 11},
-    {"_httpserver_makePipeServer", (DL_FUNC) &_httpserver_makePipeServer, 11},
-    {"_httpserver_stopServer_", (DL_FUNC) &_httpserver_stopServer_, 1},
-    {"_httpserver_getStaticPaths_", (DL_FUNC) &_httpserver_getStaticPaths_, 1},
-    {"_httpserver_setStaticPaths_", (DL_FUNC) &_httpserver_setStaticPaths_, 2},
-    {"_httpserver_removeStaticPaths_", (DL_FUNC) &_httpserver_removeStaticPaths_, 2},
-    {"_httpserver_getStaticPathOptions_", (DL_FUNC) &_httpserver_getStaticPathOptions_, 1},
-    {"_httpserver_setStaticPathOptions_", (DL_FUNC) &_httpserver_setStaticPathOptions_, 2},
-    {"_httpserver_base64encode", (DL_FUNC) &_httpserver_base64encode, 1},
-    {"_httpserver_encodeURI", (DL_FUNC) &_httpserver_encodeURI, 1},
-    {"_httpserver_encodeURIComponent", (DL_FUNC) &_httpserver_encodeURIComponent, 1},
-    {"_httpserver_decodeURI", (DL_FUNC) &_httpserver_decodeURI, 1},
-    {"_httpserver_decodeURIComponent", (DL_FUNC) &_httpserver_decodeURIComponent, 1},
-    {"_httpserver_ipFamily", (DL_FUNC) &_httpserver_ipFamily, 1},
-    {"_httpserver_invokeCppCallback", (DL_FUNC) &_httpserver_invokeCppCallback, 2},
+#ifndef HTTPSERVER_05_UTILS_H
+    {"_httpserver_log_level", (DL_FUNC) &_httpserver_log_level, 1},
+#endif
+    {"_httpserver_send_ws_message", (DL_FUNC) &_httpserver_send_ws_message, 3},
+    {"_httpserver_close_ws", (DL_FUNC) &_httpserver_close_ws, 3},
+    {"_httpserver_make_tcp_server", (DL_FUNC) &_httpserver_make_tcp_server, 11},
+    {"_httpserver_make_pipe_server", (DL_FUNC) &_httpserver_make_pipe_server, 11},
+    {"_httpserver_stop_server_", (DL_FUNC) &_httpserver_stop_server_, 1},
+    {"_httpserver_get_static_paths_", (DL_FUNC) &_httpserver_get_static_paths_, 1},
+    {"_httpserver_set_static_paths_", (DL_FUNC) &_httpserver_set_static_paths_, 2},
+    {"_httpserver_remove_static_paths_", (DL_FUNC) &_httpserver_remove_static_paths_, 2},
+    {"_httpserver_get_static_path_options_", (DL_FUNC) &_httpserver_get_static_path_options_, 1},
+    {"_httpserver_set_static_path_options_", (DL_FUNC) &_httpserver_set_static_path_options_, 2},
+    {"_httpserver_base64_encode", (DL_FUNC) &_httpserver_base64_encode, 1},
+    {"_httpserver_encode_uri", (DL_FUNC) &_httpserver_encode_uri, 1},
+    {"_httpserver_encode_uri_component", (DL_FUNC) &_httpserver_encode_uri_component, 1},
+    {"_httpserver_decode_uri", (DL_FUNC) &_httpserver_decode_uri, 1},
+    {"_httpserver_decode_uricomponent", (DL_FUNC) &_httpserver_decode_uricomponent, 1},
+    {"_httpserver_ip_family", (DL_FUNC) &_httpserver_ip_family, 1},
+    {"_httpserver_invoke_cpp_callback", (DL_FUNC) &_httpserver_invoke_cpp_callback, 2},
     {"_httpserver_getRNGState", (DL_FUNC) &_httpserver_getRNGState, 0},
     {"_httpserver_wsconn_address", (DL_FUNC) &_httpserver_wsconn_address, 1},
-    {"_httpserver_log_level", (DL_FUNC) &_httpserver_log_level, 1},
     {NULL, NULL, 0}
 };
 }
