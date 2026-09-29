@@ -64,7 +64,10 @@ void HttpResponse::write_response() {
     if (strcasecmp(it->first.c_str(), "Content-Length") == 0) {
       content_length = it->second;
     } else {
-      response << it->first << ": " << it->second << "\r\n";
+      response.append(it->first);
+      response.append(": ");
+      response.append(it->second);
+      response.append("\r\n");
       if (strcasecmp(it->first.c_str(), "Content-Encoding") == 0) {
         content_encoding = true;
       }
@@ -96,7 +99,7 @@ void HttpResponse::write_response() {
   }
 
   if (gzip) {
-    response << "Content-Encoding: gzip\r\n";
+    response.append("Content-Encoding: gzip\r\n");
     _chunked = true;
     _p_body = std::make_shared<GZipDataSource>(_p_body);
   }
