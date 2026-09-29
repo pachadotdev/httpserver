@@ -291,12 +291,15 @@ Address HttpRequest::serverAddress() {
     int len = sizeof(sockaddr_in);
     int r = uv_tcp_getsockname(&_handle.tcp, (struct sockaddr *)&addr, &len);
     if (r) {
-      // TODO: warn?
+      debug_log(std::string("HttpRequest::serverAddress: uv_tcp_getsockname: ") +
+                    uv_strerror(r),
+                LOG_WARN);
       return address;
     }
 
     if (addr.sin_family != AF_INET) {
-      // TODO: warn
+      debug_log("HttpRequest::serverAddress: unsupported address family",
+                LOG_WARN);
       return address;
     }
 
@@ -305,7 +308,7 @@ Address HttpRequest::serverAddress() {
     if (addrstr)
       address.host = std::string(addrstr);
     else {
-      // TODO: warn?
+      debug_log("HttpRequest::serverAddress: inet_ntoa failed", LOG_WARN);
     }
     address.port = ntohs(addr.sin_port);
   }
@@ -321,12 +324,15 @@ Address HttpRequest::clientAddress() {
     int len = sizeof(sockaddr_in);
     int r = uv_tcp_getpeername(&_handle.tcp, (struct sockaddr *)&addr, &len);
     if (r) {
-      // TODO: warn?
+      debug_log(std::string("HttpRequest::clientAddress: uv_tcp_getpeername: ") +
+                    uv_strerror(r),
+                LOG_WARN);
       return address;
     }
 
     if (addr.sin_family != AF_INET) {
-      // TODO: warn
+      debug_log("HttpRequest::clientAddress: unsupported address family",
+                LOG_WARN);
       return address;
     }
 
@@ -335,7 +341,7 @@ Address HttpRequest::clientAddress() {
     if (addrstr)
       address.host = std::string(addrstr);
     else {
-      // TODO: warn?
+      debug_log("HttpRequest::clientAddress: inet_ntoa failed", LOG_WARN);
     }
     address.port = ntohs(addr.sin_port);
   }
@@ -731,8 +737,6 @@ void HttpRequest::_on_message_complete_complete(
     return;
   }
 
-  // TODO: ADding this fixes the ERROR: [uv_write] bad file descriptor, but
-  // then we need to make sure the pResponse gets cleaned up. Smart pointer?
   if (_is_closing)
     return;
 
@@ -780,7 +784,6 @@ void HttpRequest::onWSMessage(bool binary, const char *data, size_t len) {
 
 void HttpRequest::onWSClose(int) {
   debug_log("HttpRequest::onWSClose", LOG_DEBUG);
-  // TODO: Call close() here?
 }
 
 // ============================================================================
@@ -795,11 +798,14 @@ typedef struct {
   std::function<void(void)> *pOnSent;
 } ws_send_t;
 
-void on_ws_message_sent(uv_write_t *handle, int) {
+void on_ws_message_sent(uv_write_t *handle, int status) {
   ASSERT_BACKGROUND_THREAD()
   debug_log("on_ws_message_sent", LOG_DEBUG);
-  // TODO: Handle error if status != 0
   ws_send_t *pSend = (ws_send_t *)handle;
+  if (status != 0) {
+    debug_log(std::string("WebSocket write failed: ") + uv_strerror(status),
+              LOG_WARN);
+  }
   delete pSend->pHeader;
   delete pSend->pData;
   delete pSend->pFooter;
@@ -831,9 +837,19 @@ void HttpRequest::sendWSFrame(const char *pHeader, size_t headerSize,
   buffers[2] =
       uv_buf_init(safe_vec_addr(*pSend->pFooter), pSend->pFooter->size());
 
-  // TODO: Handle return code
-  uv_write(&pSend->writeReq, (uv_stream_t *)handle(), buffers, 3,
-           &on_ws_message_sent);
+  int r = uv_write(&pSend->writeReq, (uv_stream_t *)handle(), buffers, 3,
+                   &on_ws_message_sent);
+  if (r != 0) {
+    debug_log(std::string("WebSocket uv_write failed: ") + uv_strerror(r),
+              LOG_WARN);
+    delete pSend->pHeader;
+    delete pSend->pData;
+    delete pSend->pFooter;
+    if (*pSend->pOnSent)
+      (*pSend->pOnSent)();
+    delete pSend->pOnSent;
+    free(pSend);
+  }
 }
 
 void HttpRequest::closeWSSocket() {
@@ -997,7 +1013,7 @@ void HttpRequest::_parse_http_data(char *buffer, const ssize_t n) {
     }
 
     if (_protocol != WebSockets) {
-      // TODO: Write failure
+      debug_log("WebSocket upgrade failed", LOG_WARN);
       close();
     }
   } else if (parsed < n) {
