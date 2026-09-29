@@ -4,7 +4,7 @@
 \alias{run_server}
 \title{run a server}
 \usage{
-run_server(host, port, app, interrupt_interval_ms = NULL)
+run_server(host, port, app)
 }
 
 \arguments{
@@ -14,7 +14,6 @@ run_server(host, port, app, interrupt_interval_ms = NULL)
 
 \item{app}{a collection of functions that define your application. see \code{\link[=start_server]{start_server()}}.}
 
-\item{interrupt_interval_ms}{deprecated (last used in httpuv 1.3.5).}
 }
 
 \value{
@@ -52,4 +51,3 @@ run_server(
   )
 )
 }
-

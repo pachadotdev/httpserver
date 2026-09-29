@@ -406,8 +406,7 @@ web_socket <- function(handle, req) {
     if (is.raw(message)) {
       send_ws_message(self$handle, TRUE, message)
     } else {
-      # todo: ensure that message is utf-8 encoded
-      send_ws_message(self$handle, FALSE, as.character(message))
+      send_ws_message(self$handle, FALSE, enc2utf8(as.character(message)))
     }
   }
 
@@ -462,11 +461,6 @@ web_socket <- function(handle, req) {
 #'   [later2::later()]. the [service()] function is
 #'   essentially a wrapper for [later2::run_now()].
 #'
-#'   in older versions of httpuv (1.3.5 and below), it did not use a background
-#'   thread for i/o, and when this function was called, it did not accept
-#'   connections immediately. it was necessary to call [service()]
-#'   repeatedly in order to actually accept and handle connections.
-#'
 #'   if the port cannot be bound (most likely due to permissions or because it
 #'   is already bound), an error is raised.
 #'
@@ -485,7 +479,7 @@ web_socket <- function(handle, req) {
 #'     \item{`call(req)`}{process the given http request, and return an
 #'     http response (see response values). this method should be implemented in
 #'     accordance with the [rook](https://github.com/jeffreyhorner/rook/)
-#'     specification. note that httpuv augments `req` with an additional
+#'     specification. note that httpserver augments `req` with an additional
 #'     item, `req$headers`, which is a named character vector of request
 #'     headers.}
 #'     \item{`on_headers(req)`}{optional. similar to `call`, but occurs
@@ -620,10 +614,6 @@ start_pipe_server <- function(name, mask, app, quiet = FALSE) {
 #' call stack is empty, or this function is called (or alternatively,
 #' [later2::run_now()] is called).
 #'
-#' in previous versions of httpuv (1.3.5 and below), even if a server created by
-#' [start_server()] exists, no requests were serviced unless and until
-#' `service` was called.
-#'
 #' this function simply calls [later2::run_now()], so if your
 #' application schedules any [later2::later()] callbacks, they will be
 #' invoked.
@@ -643,7 +633,7 @@ start_pipe_server <- function(name, mask, app, quiet = FALSE) {
 service <- function(timeout_ms = ifelse(interactive(), 100, 1000)) {
   # in all cases, call `run_now` with `all = FALSE` so that if there is a lot of
   # incoming traffic (relative to the time it takes to process it) we give the
-  # owning event loop opportunities to do housekeeping in between httpuv related
+  # owning event loop opportunities to do housekeeping in between httpserver related
   # callbacks.
 
   if (is.na(timeout_ms)) {
@@ -686,7 +676,6 @@ service <- function(timeout_ms = ifelse(interactive(), 100, 1000)) {
 #'   port numbers smaller than 1024 require root privileges.
 #' @param app a collection of functions that define your application. see
 #'   [start_server()].
-#' @param interrupt_interval_ms deprecated (last used in httpuv 1.3.5).
 #'
 #' @return normally does not return; after interruption, returns the logical
 #'   value `TRUE` from [service()]. the server is stopped as an exit side effect.
@@ -714,17 +703,16 @@ service <- function(timeout_ms = ifelse(interactive(), 100, 1000)) {
 #' )
 #'
 #' @export
-run_server <- function(host, port, app, interrupt_interval_ms = NULL) {
+run_server <- function(host, port, app) {
   server <- start_server(host, port, app)
   on.exit(stop_server(server))
 
-  # todo: in the future, add deprecation message to interrupt_interval_ms.
   service(0)
 }
 
-#' interrupt httpuv runloop
+#' interrupt httpserver runloop
 #'
-#' interrupts the currently running httpuv runloop, meaning
+#' interrupts the currently running httpserver runloop, meaning
 #' [run_server()] or [service()] will return control back to
 #' the caller and no further tasks will be processed until those methods are
 #' called again. note that this may cause in-process uploads or downloads to be

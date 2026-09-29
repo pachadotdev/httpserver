@@ -29,7 +29,7 @@
 #'
 #' @seealso [run_server()] provides a similar interface for running a dynamic
 #'   app server. both `run_static_server()` and [run_server()] are built on top of
-#'   [start_server()], [service()] and [stop_server()]. learn more about httpuv
+#'   [start_server()], [service()] and [stop_server()]. learn more about httpserver
 #'   servers in [start_server()].
 #'
 #' @export

@@ -114,18 +114,6 @@ else
   echo "    [skip] snprintf.c dummy typedef already present"
 fi
 
-# --- Fix: Solaris support (httpuv commit 1898a29) ---------------------------
-MAKEFILE_AM="$LIBUV/Makefile.am"
-if ! grep -q 'DSUNOS_NO_IFADDRS' "$MAKEFILE_AM"; then
-  echo "==> Fix: adding -DSUNOS_NO_IFADDRS to Makefile.am (1898a29)"
-  # Insert after the '-D_XOPEN_SOURCE=500 \' line that is followed by '-D_REENTRANT'
-  perl -i -0pe \
-    's/(-D_XOPEN_SOURCE=500 \\\n)([ \t]*-D_REENTRANT)/$1                   -DSUNOS_NO_IFADDRS \\\n$2/' \
-    "$MAKEFILE_AM"
-else
-  echo "    [skip] Makefile.am Solaris flag already present"
-fi
-
 # --- Fix: pragma NOTE (httpuv commit 421f092) --------------------------------
 CORE="$UNIX/core.c"
 if grep -q '^#pragma GCC diagnostic' "$CORE"; then

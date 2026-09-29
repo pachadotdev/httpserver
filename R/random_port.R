@@ -51,7 +51,7 @@ error_unavailable_port <- function(message = "cannot find an available port.") {
   stop(
     structure(
       list(message = message, call = sys.call(-1)),
-      class = c("httpuv_unavailable_port", "error", "condition")
+      class = c("httpserver_unavailable_port", "error", "condition")
     )
   )
 }
