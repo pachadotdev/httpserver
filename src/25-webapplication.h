@@ -9,19 +9,19 @@ public:
   virtual ~WebApplication() {}
   virtual void
   on_headers(std::shared_ptr<HttpRequest> p_request,
-            std::function<void(std::shared_ptr<HttpResponse>)> callback) = 0;
+             std::function<void(std::shared_ptr<HttpResponse>)> callback) = 0;
   virtual void on_body_data(
       std::shared_ptr<HttpRequest> p_request,
       std::shared_ptr<std::vector<char>> data,
       std::function<void(std::shared_ptr<HttpResponse>)> error_callback) = 0;
   virtual void
   get_response(std::shared_ptr<HttpRequest> request,
-              std::function<void(std::shared_ptr<HttpResponse>)> callback) = 0;
+               std::function<void(std::shared_ptr<HttpResponse>)> callback) = 0;
   virtual void on_wsopen(std::shared_ptr<HttpRequest> p_request,
-                        std::function<void(void)> error_callback) = 0;
+                         std::function<void(void)> error_callback) = 0;
   virtual void on_wsmessage(std::shared_ptr<WebSocketConnection>, bool binary,
-                           std::shared_ptr<std::vector<char>> data,
-                           std::function<void(void)> error_callback) = 0;
+                            std::shared_ptr<std::vector<char>> data,
+                            std::function<void(void)> error_callback) = 0;
   virtual void on_wsclose(std::shared_ptr<WebSocketConnection>) = 0;
 
   virtual std::shared_ptr<HttpResponse>
@@ -42,26 +42,28 @@ private:
 
 public:
   RWebApplication(sexp on_headers, function on_body_data, function on_request,
-                  function on_wsopen, function on_wsmessage, function on_wsclose,
-                  list static_paths, list static_path_options);
+                  function on_wsopen, function on_wsmessage,
+                  function on_wsclose, list static_paths,
+                  list static_path_options);
 
   virtual ~RWebApplication() { ASSERT_MAIN_THREAD() }
 
   virtual void
   on_headers(std::shared_ptr<HttpRequest> p_request,
-            std::function<void(std::shared_ptr<HttpResponse>)> callback);
-  virtual void
-  on_body_data(std::shared_ptr<HttpRequest> p_request,
-             std::shared_ptr<std::vector<char>> data,
-             std::function<void(std::shared_ptr<HttpResponse>)> error_callback);
+             std::function<void(std::shared_ptr<HttpResponse>)> callback);
+  virtual void on_body_data(
+      std::shared_ptr<HttpRequest> p_request,
+      std::shared_ptr<std::vector<char>> data,
+      std::function<void(std::shared_ptr<HttpResponse>)> error_callback);
   virtual void
   get_response(std::shared_ptr<HttpRequest> request,
-              std::function<void(std::shared_ptr<HttpResponse>)> callback);
+               std::function<void(std::shared_ptr<HttpResponse>)> callback);
   virtual void on_wsopen(std::shared_ptr<HttpRequest> p_request,
-                        std::function<void(void)> error_callback);
+                         std::function<void(void)> error_callback);
   virtual void on_wsmessage(std::shared_ptr<WebSocketConnection> conn,
-                           bool binary, std::shared_ptr<std::vector<char>> data,
-                           std::function<void(void)> error_callback);
+                            bool binary,
+                            std::shared_ptr<std::vector<char>> data,
+                            std::function<void(void)> error_callback);
   virtual void on_wsclose(std::shared_ptr<WebSocketConnection> conn);
 
   virtual std::shared_ptr<HttpResponse>

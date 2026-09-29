@@ -69,11 +69,12 @@ private:
   LastHeaderState _last_header_state;
 
 public:
-  HttpRequest(uv_loop_t *p_loop, std::shared_ptr<WebApplication> p_web_application,
+  HttpRequest(uv_loop_t *p_loop,
+              std::shared_ptr<WebApplication> p_web_application,
               std::shared_ptr<Socket> p_socket, CallbackQueue *background_queue)
-      : _p_loop(p_loop), _p_web_application(p_web_application), _p_socket(p_socket),
-        _protocol(HTTP), _ignore_new_data(false), _is_closing(false),
-        _is_upgrade(false), _response_scheduled(false),
+      : _p_loop(p_loop), _p_web_application(p_web_application),
+        _p_socket(p_socket), _protocol(HTTP), _ignore_new_data(false),
+        _is_closing(false), _is_upgrade(false), _response_scheduled(false),
         _handling_request(false), _background_queue(background_queue) {
     ASSERT_BACKGROUND_THREAD()
     uv_tcp_init(p_loop, &_handle.tcp);
@@ -110,14 +111,15 @@ public:
 
   bool has_header(const std::string &name) const;
   bool has_header(const std::string &name, const std::string &value,
-                 bool ci = false) const;
+                  bool ci = false) const;
   std::string get_header(const std::string &name) const;
 
   // Is the request an Upgrade (i.e. WebSocket connection)?
   bool is_upgrade() const;
 
-  void send_wsframe(const char *p_header, size_t header_size, const char *p_data,
-                   size_t data_size, const char *p_footer, size_t footer_size);
+  void send_wsframe(const char *p_header, size_t header_size,
+                    const char *p_data, size_t data_size, const char *p_footer,
+                    size_t footer_size);
   void close_wssocket();
 
   // Call this function from the main thread to indicate that a response has
@@ -147,7 +149,8 @@ public:
   // Callbacks
   virtual int _on_message_begin(http_parser *p_parser);
   virtual int _on_url(http_parser *p_parser, const char *p_at, size_t length);
-  virtual int _on_status(http_parser *p_parser, const char *p_at, size_t length);
+  virtual int _on_status(http_parser *p_parser, const char *p_at,
+                         size_t length);
   virtual int _on_header_field(http_parser *p_parser, const char *p_at,
                                size_t length);
   virtual int _on_header_value(http_parser *p_parser, const char *p_at,
@@ -258,7 +261,7 @@ bool HttpRequest::has_header(const std::string &name) const {
 // true, do a case-insensitive comparison of the value (fields are always
 // case- insensitive.)
 bool HttpRequest::has_header(const std::string &name, const std::string &value,
-                            bool ci) const {
+                             bool ci) const {
   RequestHeaders::const_iterator item = _headers.find(name);
   if (item == _headers.end())
     return false;
@@ -290,9 +293,10 @@ Address HttpRequest::server_address() {
     int len = sizeof(sockaddr_in);
     int r = uv_tcp_getsockname(&_handle.tcp, (struct sockaddr *)&addr, &len);
     if (r) {
-      debug_log(std::string("HttpRequest::server_address: uv_tcp_getsockname: ") +
-                    uv_strerror(r),
-                LOG_WARN);
+      debug_log(
+          std::string("HttpRequest::server_address: uv_tcp_getsockname: ") +
+              uv_strerror(r),
+          LOG_WARN);
       return address;
     }
 
@@ -323,9 +327,10 @@ Address HttpRequest::client_address() {
     int len = sizeof(sockaddr_in);
     int r = uv_tcp_getpeername(&_handle.tcp, (struct sockaddr *)&addr, &len);
     if (r) {
-      debug_log(std::string("HttpRequest::client_address: uv_tcp_getpeername: ") +
-                    uv_strerror(r),
-                LOG_WARN);
+      debug_log(
+          std::string("HttpRequest::client_address: uv_tcp_getpeername: ") +
+              uv_strerror(r),
+          LOG_WARN);
       return address;
     }
 
@@ -431,8 +436,7 @@ int HttpRequest::_on_url(http_parser *, const char *p_at, size_t length) {
   return 0;
 }
 
-int HttpRequest::_on_status(http_parser *, const char *,
-                            size_t) {
+int HttpRequest::_on_status(http_parser *, const char *, size_t) {
   ASSERT_BACKGROUND_THREAD()
   debug_log("HttpRequest::_on_status", LOG_DEBUG);
   return 0;
@@ -643,8 +647,7 @@ void HttpRequest::_on_headers_complete_complete(
 // Message body (for POST)
 // ============================================================================
 
-int HttpRequest::_on_body(http_parser *, const char *p_at,
-                          size_t length) {
+int HttpRequest::_on_body(http_parser *, const char *p_at, size_t length) {
   ASSERT_BACKGROUND_THREAD()
   debug_log("HttpRequest::_on_body", LOG_DEBUG);
 
@@ -779,8 +782,8 @@ void HttpRequest::on_wsmessage(bool binary, const char *data, size_t len) {
 
   // Schedule:
   // _p_web_application->on_wsmessage(p_wsc, binary, data, len);
-  invoke_later(std::bind(&WebApplication::on_wsmessage, _p_web_application, p_wsc,
-                         binary, buf, error_callback));
+  invoke_later(std::bind(&WebApplication::on_wsmessage, _p_web_application,
+                         p_wsc, binary, buf, error_callback));
 }
 
 void HttpRequest::on_wsclose(int) {
@@ -813,8 +816,8 @@ void on_ws_message_sent(uv_write_t *handle, int status) {
 }
 
 void HttpRequest::send_wsframe(const char *p_header, size_t header_size,
-                              const char *p_data, size_t data_size,
-                              const char *p_footer, size_t footer_size) {
+                               const char *p_data, size_t data_size,
+                               const char *p_footer, size_t footer_size) {
   ASSERT_BACKGROUND_THREAD()
   debug_log("HttpRequest::send_wsframe", LOG_DEBUG);
   ws_send_t *p_send = (ws_send_t *)malloc(sizeof(ws_send_t));
@@ -826,7 +829,8 @@ void HttpRequest::send_wsframe(const char *p_header, size_t header_size,
   uv_buf_t buffers[3];
   buffers[0] =
       uv_buf_init(safe_vec_addr(*p_send->p_header), p_send->p_header->size());
-  buffers[1] = uv_buf_init(safe_vec_addr(*p_send->p_data), p_send->p_data->size());
+  buffers[1] =
+      uv_buf_init(safe_vec_addr(*p_send->p_data), p_send->p_data->size());
   buffers[2] =
       uv_buf_init(safe_vec_addr(*p_send->p_footer), p_send->p_footer->size());
 
@@ -967,8 +971,8 @@ void HttpRequest::_parse_http_data(char *buffer, const ssize_t n) {
     size_t p_data_len = n - parsed;
 
     std::shared_ptr<WebSocketConnection> p_wsc = _p_web_socket_connection;
-    // It's possible for _p_web_socket_connection to have had its refcount drop to
-    // zero from another thread or earlier callback in this thread. If that
+    // It's possible for _p_web_socket_connection to have had its refcount drop
+    // to zero from another thread or earlier callback in this thread. If that
     // happened, do nothing.
     if (!p_wsc) {
       return;
@@ -979,7 +983,8 @@ void HttpRequest::_parse_http_data(char *buffer, const ssize_t n) {
       std::shared_ptr<InMemoryDataSource> p_ds =
           std::make_shared<InMemoryDataSource>();
       std::shared_ptr<HttpResponse> p_resp(
-          new HttpResponse(shared_from_this(), 101, "Switching Protocols", p_ds),
+          new HttpResponse(shared_from_this(), 101, "Switching Protocols",
+                           p_ds),
           auto_deleter_background<HttpResponse>);
 
       std::vector<uint8_t> body;
@@ -994,7 +999,8 @@ void HttpRequest::_parse_http_data(char *buffer, const ssize_t n) {
 
       _protocol = WebSockets;
 
-      _request_buffer.insert(_request_buffer.end(), p_data, p_data + p_data_len);
+      _request_buffer.insert(_request_buffer.end(), p_data,
+                             p_data + p_data_len);
 
       // Schedule on main thread:
       // this->_call_r_on_ws_open()
@@ -1039,9 +1045,9 @@ void HttpRequest::_on_request_read(uv_stream_t *, ssize_t nread,
 
     } else if (_protocol == WebSockets) {
       std::shared_ptr<WebSocketConnection> p_wsc = _p_web_socket_connection;
-      // It's possible for _p_web_socket_connection to have had its refcount drop
-      // to zero from another thread or earlier callback in this thread. If that
-      // happened, do nothing.
+      // It's possible for _p_web_socket_connection to have had its refcount
+      // drop to zero from another thread or earlier callback in this thread. If
+      // that happened, do nothing.
       if (p_wsc) {
         p_wsc->read(buf->base, nread);
       }
@@ -1066,9 +1072,10 @@ void HttpRequest::handle_request() {
   ASSERT_BACKGROUND_THREAD()
   int r = uv_read_start(handle(), &on_alloc, &HttpRequest_on_request_read);
   if (r) {
-    debug_log(std::string("HttpRequest::handl_request error: [uv_read_start] ") +
-                  uv_strerror(r),
-              LOG_INFO);
+    debug_log(
+        std::string("HttpRequest::handl_request error: [uv_read_start] ") +
+            uv_strerror(r),
+        LOG_INFO);
     return;
   }
 }

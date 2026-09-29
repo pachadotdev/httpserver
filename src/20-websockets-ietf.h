@@ -8,10 +8,11 @@ public:
   virtual ~WebSocketProto_IETF() {}
 
   bool can_handle(const RequestHeaders &request_headers, const char *p_data,
-                 size_t len) const;
+                  size_t len) const;
 
   void handshake(const std::string &url, const RequestHeaders &request_headers,
-                 char **pp_data, size_t *p_len, ResponseHeaders *response_headers,
+                 char **pp_data, size_t *p_len,
+                 ResponseHeaders *response_headers,
                  std::vector<uint8_t> *p_response) const;
 
   bool is_fin(uint8_t first_bit) const;
@@ -21,7 +22,7 @@ public:
 };
 
 bool WebSocketProto_IETF::can_handle(const RequestHeaders &request_headers,
-                                    const char *, size_t) const {
+                                     const char *, size_t) const {
 
   return request_headers.find("upgrade") != request_headers.end() &&
          strcasecmp(request_headers.at("upgrade").c_str(), "websocket") == 0 &&
@@ -58,7 +59,9 @@ bool WebSocketProto_IETF::is_fin(uint8_t first_bit) const {
   return first_bit != 0;
 }
 
-uint8_t WebSocketProto_IETF::to_fin(bool is_fin) const { return is_fin ? 1 : 0; }
+uint8_t WebSocketProto_IETF::to_fin(bool is_fin) const {
+  return is_fin ? 1 : 0;
+}
 
 Opcode WebSocketProto_IETF::decode_opcode(uint8_t raw_code) const {
   switch (raw_code) {

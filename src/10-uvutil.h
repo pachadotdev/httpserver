@@ -1,7 +1,9 @@
 #ifndef HTTPSERVER_10_UVUTIL_H
 #define HTTPSERVER_10_UVUTIL_H
 
-inline uv_handle_t *to_handle(uv_timer_t *timer) { return (uv_handle_t *)timer; }
+inline uv_handle_t *to_handle(uv_timer_t *timer) {
+  return (uv_handle_t *)timer;
+}
 inline uv_handle_t *to_handle(uv_tcp_t *tcp) { return (uv_handle_t *)tcp; }
 inline uv_handle_t *to_handle(uv_stream_t *stream) {
   return (uv_handle_t *)stream;
@@ -62,10 +64,10 @@ class ExtendedWrite {
   std::shared_ptr<DataSource> _p_data_source;
 
 public:
-  ExtendedWrite(uv_stream_t *p_handle, std::shared_ptr<DataSource> p_data_source,
-                bool chunked)
-      : _chunked(chunked), _active_writes(0), _errored(false), _completed(false),
-        _p_handle(p_handle), _p_data_source(p_data_source) {}
+  ExtendedWrite(uv_stream_t *p_handle,
+                std::shared_ptr<DataSource> p_data_source, bool chunked)
+      : _chunked(chunked), _active_writes(0), _errored(false),
+        _completed(false), _p_handle(p_handle), _p_data_source(p_data_source) {}
   virtual ~ExtendedWrite() {}
 
   virtual void on_write_complete(int status) = 0;
@@ -253,7 +255,8 @@ void ExtendedWrite::next() {
   WriteOp *p_write_op = new WriteOp(this, prefix, buf, suffix);
   _active_writes++;
   auto op_bufs = p_write_op->bufs();
-  uv_write(&p_write_op->handle, _p_handle, &op_bufs[0], op_bufs.size(), &writecb);
+  uv_write(&p_write_op->handle, _p_handle, &op_bufs[0], op_bufs.size(),
+           &writecb);
 }
 
 #endif

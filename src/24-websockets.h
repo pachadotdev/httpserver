@@ -122,15 +122,15 @@ void WSHyBiParser::handshake(const std::string &url,
                              std::vector<uint8_t> *p_response) const {
   ASSERT_BACKGROUND_THREAD()
   _p_proto->handshake(url, request_headers, pp_data, p_len, p_response_headers,
-                     p_response);
+                      p_response);
 }
 
 void WSHyBiParser::create_frame_header_footer(
     Opcode opcode, bool mask, size_t payload_size, int32_t masking_key,
     char p_header_data[MAX_HEADER_BYTES], size_t *p_header_len,
     char[MAX_FOOTER_BYTES], size_t *) const {
-  _p_proto->create_frame_header(opcode, mask, payload_size, masking_key, p_header_data,
-                             p_header_len);
+  _p_proto->create_frame_header(opcode, mask, payload_size, masking_key,
+                                p_header_data, p_header_len);
 }
 
 void WSHyBiParser::read(const char *data, size_t len) {
@@ -237,11 +237,11 @@ void WebSocketConnection::handshake(const std::string &url,
     return;
 
   _p_parser->handshake(url, request_headers, pp_data, p_len, p_response_headers,
-                      p_response);
+                       p_response);
 }
 
 void WebSocketConnection::send_ws_message(Opcode opcode, const char *p_data,
-                                        size_t length) {
+                                          size_t length) {
   ASSERT_BACKGROUND_THREAD()
   if (_conn_state == WS_CLOSED)
     return;
@@ -253,13 +253,13 @@ void WebSocketConnection::send_ws_message(Opcode opcode, const char *p_data,
   size_t footer_length = 0;
 
   _p_parser->create_frame_header_footer(opcode, false, length, 0,
-                                    safe_vec_addr(header), &header_length,
-                                    safe_vec_addr(footer), &footer_length);
+                                        safe_vec_addr(header), &header_length,
+                                        safe_vec_addr(footer), &footer_length);
   header.resize(header_length);
   footer.resize(footer_length);
 
-  _p_callbacks->send_wsframe(safe_vec_addr(header), header.size(), p_data, length,
-                           safe_vec_addr(footer), footer.size());
+  _p_callbacks->send_wsframe(safe_vec_addr(header), header.size(), p_data,
+                             length, safe_vec_addr(footer), footer.size());
 }
 
 void WebSocketConnection::send_ping() {
@@ -353,8 +353,8 @@ void WebSocketConnection::on_frame_complete() {
       std::copy(_payload.begin(), _payload.end(),
                 std::back_inserter(_incomplete_content_payload));
       _p_callbacks->on_wsmessage(_incomplete_content_header.opcode == Binary,
-                               safe_vec_addr(_incomplete_content_payload),
-                               _incomplete_content_payload.size());
+                                 safe_vec_addr(_incomplete_content_payload),
+                                 _incomplete_content_payload.size());
 
       _incomplete_content_payload.clear();
       break;
@@ -362,7 +362,7 @@ void WebSocketConnection::on_frame_complete() {
     case Text:
     case Binary: {
       _p_callbacks->on_wsmessage(_header.opcode == Binary,
-                               safe_vec_addr(_payload), _payload.size());
+                                 safe_vec_addr(_payload), _payload.size());
       break;
     }
     case Close: {

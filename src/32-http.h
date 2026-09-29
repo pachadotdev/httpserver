@@ -27,10 +27,10 @@ void on_request(uv_stream_t *handle, int status) {
   req->handle_request();
 }
 
-uv_stream_t *create_pipe_server(uv_loop_t *p_loop, const std::string &name,
-                              int mask,
-                              std::shared_ptr<WebApplication> p_web_application,
-                              bool quiet, CallbackQueue *background_queue) {
+uv_stream_t *
+create_pipe_server(uv_loop_t *p_loop, const std::string &name, int mask,
+                   std::shared_ptr<WebApplication> p_web_application,
+                   bool quiet, CallbackQueue *background_queue) {
   ASSERT_BACKGROUND_THREAD()
 
   // We own p_web_application. It will be destroyed by the socket but if in
@@ -82,23 +82,23 @@ uv_stream_t *create_pipe_server(uv_loop_t *p_loop, const std::string &name,
 // A wrapper for create_pipe_server. The main thread schedules this to run on
 // the background thread, then waits for this to finish, using a barrier.
 void create_pipe_server_sync(uv_loop_t *loop, const std::string &name, int mask,
-                          std::shared_ptr<WebApplication> p_web_application,
-                          bool quiet, CallbackQueue *background_queue,
-                          uv_stream_t **p_server,
-                          std::shared_ptr<Barrier> blocker) {
+                             std::shared_ptr<WebApplication> p_web_application,
+                             bool quiet, CallbackQueue *background_queue,
+                             uv_stream_t **p_server,
+                             std::shared_ptr<Barrier> blocker) {
   ASSERT_BACKGROUND_THREAD()
 
   *p_server = create_pipe_server(loop, name, mask, p_web_application, quiet,
-                              background_queue);
+                                 background_queue);
 
   // Tell the main thread that the server is ready
   blocker->wait();
 }
 
-uv_stream_t *create_tcp_server(uv_loop_t *p_loop, const std::string &host,
-                             int port,
-                             std::shared_ptr<WebApplication> p_web_application,
-                             bool quiet, CallbackQueue *background_queue) {
+uv_stream_t *
+create_tcp_server(uv_loop_t *p_loop, const std::string &host, int port,
+                  std::shared_ptr<WebApplication> p_web_application, bool quiet,
+                  CallbackQueue *background_queue) {
   ASSERT_BACKGROUND_THREAD()
 
   // We own p_web_application. It will be destroyed by the socket but if in
@@ -170,15 +170,16 @@ uv_stream_t *create_tcp_server(uv_loop_t *p_loop, const std::string &host,
 
 // A wrapper for create_tcp_server. The main thread schedules this to run on the
 // background thread, then waits for this to finish, using a barrier.
-void create_tcp_server_sync(uv_loop_t *p_loop, const std::string &host, int port,
-                         std::shared_ptr<WebApplication> p_web_application,
-                         bool quiet, CallbackQueue *background_queue,
-                         uv_stream_t **p_server,
-                         std::shared_ptr<Barrier> blocker) {
+void create_tcp_server_sync(uv_loop_t *p_loop, const std::string &host,
+                            int port,
+                            std::shared_ptr<WebApplication> p_web_application,
+                            bool quiet, CallbackQueue *background_queue,
+                            uv_stream_t **p_server,
+                            std::shared_ptr<Barrier> blocker) {
   ASSERT_BACKGROUND_THREAD()
 
   *p_server = create_tcp_server(p_loop, host, port, p_web_application, quiet,
-                             background_queue);
+                                background_queue);
 
   // Tell the main thread that the server is ready
   blocker->wait();
@@ -188,7 +189,8 @@ void free_server(uv_stream_t *p_handle) {
   ASSERT_BACKGROUND_THREAD()
   if (p_handle == NULL || uv_is_closing((uv_handle_t *)p_handle))
     return;
-  std::shared_ptr<Socket> *pp_socket = (std::shared_ptr<Socket> *)p_handle->data;
+  std::shared_ptr<Socket> *pp_socket =
+      (std::shared_ptr<Socket> *)p_handle->data;
   (*pp_socket)->close();
   // pp_socket gets deleted in a callback in close()
 }

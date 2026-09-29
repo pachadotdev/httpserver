@@ -19,24 +19,25 @@ struct Address {
 
 class Socket;
 
-uv_stream_t *create_pipe_server(uv_loop_t *loop, const std::string &name,
-                              int mask,
-                              std::shared_ptr<WebApplication> p_web_application);
+uv_stream_t *
+create_pipe_server(uv_loop_t *loop, const std::string &name, int mask,
+                   std::shared_ptr<WebApplication> p_web_application);
 
-uv_stream_t *create_tcp_server(uv_loop_t *loop, const std::string &host, int port,
-                             std::shared_ptr<WebApplication> p_web_application);
+uv_stream_t *
+create_tcp_server(uv_loop_t *loop, const std::string &host, int port,
+                  std::shared_ptr<WebApplication> p_web_application);
 
 void create_pipe_server_sync(uv_loop_t *loop, const std::string &name, int mask,
-                          std::shared_ptr<WebApplication> p_web_application,
-                          bool quiet, CallbackQueue *background_queue,
-                          uv_stream_t **p_server,
-                          std::shared_ptr<Barrier> blocker);
+                             std::shared_ptr<WebApplication> p_web_application,
+                             bool quiet, CallbackQueue *background_queue,
+                             uv_stream_t **p_server,
+                             std::shared_ptr<Barrier> blocker);
 
 void create_tcp_server_sync(uv_loop_t *loop, const std::string &host, int port,
-                         std::shared_ptr<WebApplication> p_web_application,
-                         bool quiet, CallbackQueue *background_queue,
-                         uv_stream_t **p_server,
-                         std::shared_ptr<Barrier> blocker);
+                            std::shared_ptr<WebApplication> p_web_application,
+                            bool quiet, CallbackQueue *background_queue,
+                            uv_stream_t **p_server,
+                            std::shared_ptr<Barrier> blocker);
 
 void free_server(uv_stream_t *p_server);
 bool run_non_blocking(uv_loop_t *loop);

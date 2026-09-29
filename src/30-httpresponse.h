@@ -16,7 +16,7 @@ void on_response_written(uv_write_t *handle, int status) {
 ResponseHeaders &HttpResponse::headers() { return _headers; }
 
 void HttpResponse::add_header(const std::string &name,
-                             const std::string &value) {
+                              const std::string &value) {
   _headers.push_back(std::pair<std::string, std::string>(name, value));
 }
 
@@ -24,7 +24,7 @@ void HttpResponse::add_header(const std::string &name,
 // it, and add the header with the new value. The new header will be the last
 // item.
 void HttpResponse::set_header(const std::string &name,
-                             const std::string &value) {
+                              const std::string &value) {
   // Look for existing header with same name, and delete if present
   ResponseHeaders::iterator it = _headers.begin();
   while (it != _headers.end()) {
@@ -141,7 +141,7 @@ void HttpResponse::write_response() {
       _response_header.reserve(_response_header.size() + buffer.len);
     }
     _response_header.insert(_response_header.end(), buffer.base,
-                           buffer.base + buffer.len);
+                            buffer.base + buffer.len);
     if (buffer.len == _p_body->size()) {
       // We used up the body, kill it
       _p_body.reset();

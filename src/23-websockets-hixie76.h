@@ -33,15 +33,16 @@ public:
   ~WSHixie76Parser() {}
 
   void handshake(const std::string &url, const RequestHeaders &request_headers,
-                 char **pp_data, size_t *p_len, ResponseHeaders *response_headers,
+                 char **pp_data, size_t *p_len,
+                 ResponseHeaders *response_headers,
                  std::vector<uint8_t> *p_response) const;
 
   void create_frame_header_footer(Opcode opcode, bool mask, size_t payload_size,
-                               int32_t masking_key,
-                               char p_header_data[MAX_HEADER_BYTES],
-                               size_t *p_header_len,
-                               char p_footer_data[MAX_FOOTER_BYTES],
-                               size_t *p_footer_len) const;
+                                  int32_t masking_key,
+                                  char p_header_data[MAX_HEADER_BYTES],
+                                  size_t *p_header_len,
+                                  char p_footer_data[MAX_FOOTER_BYTES],
+                                  size_t *p_footer_len) const;
 
   void read(const char *data, size_t len);
 };
@@ -56,9 +57,9 @@ void WSHixie76Parser::handshake(const std::string &url,
 }
 
 void WSHixie76Parser::create_frame_header_footer(
-    Opcode, bool, size_t, int32_t,
-    char p_header_data[MAX_HEADER_BYTES], size_t *p_header_len,
-    char p_footer_data[MAX_FOOTER_BYTES], size_t *p_footer_len) const {
+    Opcode, bool, size_t, int32_t, char p_header_data[MAX_HEADER_BYTES],
+    size_t *p_header_len, char p_footer_data[MAX_FOOTER_BYTES],
+    size_t *p_footer_len) const {
   p_header_data[0] = 0;
   *p_header_len = 1;
 

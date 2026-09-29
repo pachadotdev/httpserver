@@ -9,7 +9,7 @@ public:
 
   // Return true if the request uses this protocol version and is valid
   virtual bool can_handle(const RequestHeaders &request_headers,
-                         const char *p_data, size_t len) const = 0;
+                          const char *p_data, size_t len) const = 0;
 
   // Populate response headers with the appropriate values. This call
   // must not fail, but it will not be called unless can_handle returned
@@ -20,8 +20,8 @@ public:
                          std::vector<uint8_t> *p_response) const = 0;
 
   void create_frame_header(Opcode opcode, bool mask, size_t payload_size,
-                         int32_t masking_key, char p_data[MAX_HEADER_BYTES],
-                         size_t *p_len) const;
+                           int32_t masking_key, char p_data[MAX_HEADER_BYTES],
+                           size_t *p_len) const;
 
   virtual bool is_fin(uint8_t first_bit) const = 0;
   virtual uint8_t to_fin(bool is_fin) const = 0;
@@ -57,9 +57,10 @@ void swap_byte_order(unsigned char *p_start, unsigned char *p_end) {
 }
 
 void WebSocketProto::create_frame_header(Opcode opcode, bool mask,
-                                       size_t payload_size, int32_t masking_key,
-                                       char p_data[MAX_HEADER_BYTES],
-                                       size_t *p_len) const {
+                                         size_t payload_size,
+                                         int32_t masking_key,
+                                         char p_data[MAX_HEADER_BYTES],
+                                         size_t *p_len) const {
 
   unsigned char *p_buf = (unsigned char *)p_data;
   unsigned char *p_masking_key = p_buf + 2;
@@ -67,7 +68,7 @@ void WebSocketProto::create_frame_header(Opcode opcode, bool mask,
   uint64_t payload_size_64 = payload_size;
 
   p_buf[0] = to_fin(true) << 7 | // FIN; always true
-            encode_opcode(opcode);
+             encode_opcode(opcode);
   p_buf[1] = mask ? 1 << 7 : 0;
   if (payload_size_64 <= 125) {
     p_buf[1] |= payload_size_64;

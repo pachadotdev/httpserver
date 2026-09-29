@@ -20,7 +20,8 @@ Socket::~Socket() {
 
 // A deleter callback for the shared_ptr<Socket>.
 void delete_ppsocket(uv_handle_t *p_handle) {
-  std::shared_ptr<Socket> *pp_socket = (std::shared_ptr<Socket> *)p_handle->data;
+  std::shared_ptr<Socket> *pp_socket =
+      (std::shared_ptr<Socket> *)p_handle->data;
   delete pp_socket;
 }
 

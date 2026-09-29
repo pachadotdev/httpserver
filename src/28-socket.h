@@ -13,7 +13,8 @@ public:
 
   Socket(std::shared_ptr<WebApplication> p_web_application,
          CallbackQueue *background_queue)
-      : p_web_application(p_web_application), background_queue(background_queue) {}
+      : p_web_application(p_web_application),
+        background_queue(background_queue) {}
 
   void add_connection(std::shared_ptr<HttpRequest> request);
   void remove_connection(std::shared_ptr<HttpRequest> request);

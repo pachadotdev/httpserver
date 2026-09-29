@@ -8,15 +8,16 @@ public:
   virtual ~WebSocketProto_HyBi03() {}
 
   bool can_handle(const RequestHeaders &request_headers, const char *p_data,
-                 size_t len) const;
+                  size_t len) const;
 
   void handshake(const std::string &url, const RequestHeaders &request_headers,
-                 char **pp_data, size_t *p_len, ResponseHeaders *p_response_headers,
+                 char **pp_data, size_t *p_len,
+                 ResponseHeaders *p_response_headers,
                  std::vector<uint8_t> *p_response) const;
 
   void create_frame_header(Opcode opcode, bool mask, size_t payload_size,
-                         int32_t masking_key, char p_data[MAX_HEADER_BYTES],
-                         size_t *p_len) const;
+                           int32_t masking_key, char p_data[MAX_HEADER_BYTES],
+                           size_t *p_len) const;
 
   bool is_fin(uint8_t first_bit) const;
   uint8_t to_fin(bool is_fin) const;
@@ -47,7 +48,7 @@ bool calculate_key_value(const std::string &key, uint32_t *p_result = NULL) {
 }
 
 bool WebSocketProto_HyBi03::can_handle(const RequestHeaders &request_headers,
-                                      const char *, size_t len) const {
+                                       const char *, size_t len) const {
 
   if (len != 8)
     return false;
@@ -118,7 +119,9 @@ bool WebSocketProto_HyBi03::is_fin(uint8_t first_bit) const {
   return first_bit == 0;
 }
 
-uint8_t WebSocketProto_HyBi03::to_fin(bool is_fin) const { return is_fin ? 0 : 1; }
+uint8_t WebSocketProto_HyBi03::to_fin(bool is_fin) const {
+  return is_fin ? 0 : 1;
+}
 
 Opcode WebSocketProto_HyBi03::decode_opcode(uint8_t raw_code) const {
   switch (raw_code) {

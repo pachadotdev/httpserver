@@ -24,8 +24,8 @@ public:
 
   // The data is copied (up to 14 bytes worth)
   WSHyBiFrameHeader(WebSocketProto *p_proto, const char *data, size_t len)
-      : _data(data, data + (std::min(MAX_HEADER_BYTES, len))), _p_proto(p_proto) {
-  }
+      : _data(data, data + (std::min(MAX_HEADER_BYTES, len))),
+        _p_proto(p_proto) {}
 
   virtual ~WSHyBiFrameHeader() {}
 
@@ -77,12 +77,10 @@ public:
                          size_t *p_len, ResponseHeaders *response_headers,
                          std::vector<uint8_t> *p_response) const = 0;
 
-  virtual void create_frame_header_footer(Opcode opcode, bool mask,
-                                       size_t payload_size, int32_t masking_key,
-                                       char p_header_data[MAX_HEADER_BYTES],
-                                       size_t *p_header_len,
-                                       char p_footer_data[MAX_FOOTER_BYTES],
-                                       size_t *p_footer_len) const = 0;
+  virtual void create_frame_header_footer(
+      Opcode opcode, bool mask, size_t payload_size, int32_t masking_key,
+      char p_header_data[MAX_HEADER_BYTES], size_t *p_header_len,
+      char p_footer_data[MAX_FOOTER_BYTES], size_t *p_footer_len) const = 0;
 
   virtual void read(const char *data, size_t len) = 0;
 };
@@ -105,15 +103,16 @@ public:
   }
 
   void handshake(const std::string &url, const RequestHeaders &request_headers,
-                 char **pp_data, size_t *p_len, ResponseHeaders *response_headers,
+                 char **pp_data, size_t *p_len,
+                 ResponseHeaders *response_headers,
                  std::vector<uint8_t> *p_response) const;
 
   void create_frame_header_footer(Opcode opcode, bool mask, size_t payload_size,
-                               int32_t masking_key,
-                               char p_header_data[MAX_HEADER_BYTES],
-                               size_t *p_header_len,
-                               char p_footer_data[MAX_FOOTER_BYTES],
-                               size_t *p_footer_len) const;
+                                  int32_t masking_key,
+                                  char p_header_data[MAX_HEADER_BYTES],
+                                  size_t *p_header_len,
+                                  char p_footer_data[MAX_FOOTER_BYTES],
+                                  size_t *p_footer_len) const;
 
   void read(const char *data, size_t len);
 };
@@ -135,8 +134,8 @@ public:
   virtual void on_wsclose(int code) = 0;
   // Implementers MUST copy data
   virtual void send_wsframe(const char *header_data, size_t header_length,
-                           const char *p_data, size_t data_length,
-                           const char *footer_data, size_t footer_length) = 0;
+                            const char *p_data, size_t data_length,
+                            const char *footer_data, size_t footer_length) = 0;
   virtual void close_wssocket() = 0;
 };
 
@@ -180,7 +179,8 @@ public:
   bool accept(const RequestHeaders &request_headers, const char *p_data,
               size_t len);
   void handshake(const std::string &url, const RequestHeaders &request_headers,
-                 char **pp_data, size_t *p_len, ResponseHeaders *p_response_headers,
+                 char **pp_data, size_t *p_len,
+                 ResponseHeaders *p_response_headers,
                  std::vector<uint8_t> *p_response);
 
   void send_ws_message(Opcode opcode, const char *p_data, size_t length);

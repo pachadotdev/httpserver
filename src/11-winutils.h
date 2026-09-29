@@ -3,16 +3,14 @@
 
 #ifdef _WIN32
 
-
 std::string wide_to_utf8(const std::wstring &value);
 
 std::wstring utf8_to_wide(const std::string &value,
-                        const std::string &context = std::string());
+                          const std::string &context = std::string());
 
 #endif // #ifdef _WIN32
 
 #ifdef _WIN32
-
 
 std::string wide_to_utf8(const std::wstring &value) {
   if (value.size() == 0)
@@ -32,7 +30,8 @@ std::string wide_to_utf8(const std::wstring &value) {
   return std::string(result.begin(), result.end());
 }
 
-std::wstring utf8_to_wide(const std::string &value, const std::string &context) {
+std::wstring utf8_to_wide(const std::string &value,
+                          const std::string &context) {
   if (value.size() == 0)
     return std::wstring();
 

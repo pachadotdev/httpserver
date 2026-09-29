@@ -16,9 +16,9 @@ FileDataSourceResult FileDataSource::initialize(const std::string &path,
     flags |= FILE_FLAG_DELETE_ON_CLOSE;
 
   _h_file = CreateFileW(utf8_to_wide(path).data(), GENERIC_READ,
-                       FILE_SHARE_READ, // allow other processes to read
-                       NULL,            // security attributes
-                       OPEN_EXISTING, flags, NULL);
+                        FILE_SHARE_READ, // allow other processes to read
+                        NULL,            // security attributes
+                        OPEN_EXISTING, flags, NULL);
 
   if (_h_file == INVALID_HANDLE_VALUE) {
     if (GetLastError() == ERROR_FILE_NOT_FOUND ||
@@ -38,8 +38,8 @@ FileDataSourceResult FileDataSource::initialize(const std::string &path,
       return FDS_ISDIR;
 
     } else {
-      _lastErrorMessage =
-          "Error opening file " + path + ": " + to_string(GetLastError()) + "\n";
+      _lastErrorMessage = "Error opening file " + path + ": " +
+                          to_string(GetLastError()) + "\n";
       return FDS_ERROR;
     }
   }
