@@ -24,8 +24,7 @@ std::string find_extension(const std::string &filename) {
 
 // Given a filename, return the extension.
 std::string basename(const std::string &path) {
-  // TODO: handle Windows separators
-  size_t found_idx = path.find_last_of('/');
+  size_t found_idx = path.find_last_of("/\\");
 
   if (found_idx == std::string::npos) {
     return path;
