@@ -405,7 +405,9 @@ void WebSocketConnection::onFrameComplete() {
       break;
     }
     case Reserved: {
-      // TODO: Warn and close connection?
+      debug_log("WebSocketConnection::onFrameComplete: reserved opcode",
+                LOG_WARN);
+      closeWS(1002, "Protocol error");
       break;
     }
     }
