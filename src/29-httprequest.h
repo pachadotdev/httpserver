@@ -425,8 +425,7 @@ int HttpRequest::_on_url(http_parser *, const char *p_at, size_t length) {
   return 0;
 }
 
-int HttpRequest::_on_status(http_parser *, const char *,
-                            size_t) {
+int HttpRequest::_on_status(http_parser *, const char *, size_t) {
   ASSERT_BACKGROUND_THREAD()
   debug_log("HttpRequest::_on_status", LOG_DEBUG);
   return 0;

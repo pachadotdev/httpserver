@@ -4,97 +4,97 @@ log_level <- function(level) {
 	.Call(`_httpserver_log_level`, level)
 }
 
-send_ws_message <- function(conn, binary, message) {
-	invisible(.Call(`_httpserver_send_ws_message`, conn, binary, message))
+sendWSMessage <- function(conn, binary, message) {
+	invisible(.Call(`_httpserver_sendWSMessage`, conn, binary, message))
 }
 
-close_ws <- function(conn, code, reason) {
-	invisible(.Call(`_httpserver_close_ws`, conn, code, reason))
+closeWS <- function(conn, code, reason) {
+	invisible(.Call(`_httpserver_closeWS`, conn, code, reason))
 }
 
-make_tcp_server <- function(host, port, on_headers, on_body_data, on_request, on_wsopen, on_wsmessage, on_wsclose, static_paths, static_path_options, quiet) {
-	.Call(`_httpserver_make_tcp_server`, host, port, on_headers, on_body_data, on_request, on_wsopen, on_wsmessage, on_wsclose, static_paths, static_path_options, quiet)
+makeTcpServer <- function(host, port, onHeaders, onBodyData, onRequest, onWSOpen, onWSMessage, onWSClose, staticPaths, staticPathOptions, quiet) {
+	.Call(`_httpserver_makeTcpServer`, host, port, onHeaders, onBodyData, onRequest, onWSOpen, onWSMessage, onWSClose, staticPaths, staticPathOptions, quiet)
 }
 
-make_pipe_server <- function(name, mask, on_headers, on_body_data, on_request, on_wsopen, on_wsmessage, on_wsclose, static_paths, static_path_options, quiet) {
-	.Call(`_httpserver_make_pipe_server`, name, mask, on_headers, on_body_data, on_request, on_wsopen, on_wsmessage, on_wsclose, static_paths, static_path_options, quiet)
+makePipeServer <- function(name, mask, onHeaders, onBodyData, onRequest, onWSOpen, onWSMessage, onWSClose, staticPaths, staticPathOptions, quiet) {
+	.Call(`_httpserver_makePipeServer`, name, mask, onHeaders, onBodyData, onRequest, onWSOpen, onWSMessage, onWSClose, staticPaths, staticPathOptions, quiet)
 }
 
-stop_server_ <- function(handle) {
-	invisible(.Call(`_httpserver_stop_server_`, handle))
+stopServer_ <- function(handle) {
+	invisible(.Call(`_httpserver_stopServer_`, handle))
 }
 
-get_static_paths_ <- function(handle) {
-	.Call(`_httpserver_get_static_paths_`, handle)
+getStaticPaths_ <- function(handle) {
+	.Call(`_httpserver_getStaticPaths_`, handle)
 }
 
-set_static_paths_ <- function(handle, sp) {
-	.Call(`_httpserver_set_static_paths_`, handle, sp)
+setStaticPaths_ <- function(handle, sp) {
+	.Call(`_httpserver_setStaticPaths_`, handle, sp)
 }
 
-remove_static_paths_ <- function(handle, paths) {
-	.Call(`_httpserver_remove_static_paths_`, handle, paths)
+removeStaticPaths_ <- function(handle, paths) {
+	.Call(`_httpserver_removeStaticPaths_`, handle, paths)
 }
 
-get_static_path_options_ <- function(handle) {
-	.Call(`_httpserver_get_static_path_options_`, handle)
+getStaticPathOptions_ <- function(handle) {
+	.Call(`_httpserver_getStaticPathOptions_`, handle)
 }
 
-set_static_path_options_ <- function(handle, opts) {
-	.Call(`_httpserver_set_static_path_options_`, handle, opts)
+setStaticPathOptions_ <- function(handle, opts) {
+	.Call(`_httpserver_setStaticPathOptions_`, handle, opts)
 }
 
-base64_encode <- function(x) {
-	.Call(`_httpserver_base64_encode`, x)
+base64encode <- function(x) {
+	.Call(`_httpserver_base64encode`, x)
 }
 
 #' @title URI encoding/decoding
 #' 
 #' @description Encodes/decodes strings using URI encoding/decoding in the same way that web
 #'  browsers do. The precise behaviors of these functions can be found at developer.mozilla.org:
-#'  \href{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encode_uri}{encode_uri},
-#'  \href{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encode_uri_component}{encode_uri_component},
-#'  \href{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decode_uri}{decode_uri},
-#'  \href{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decode_uricomponent}{decode_uricomponent}
+#'  \href{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURI}{encodeURI},
+#'  \href{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent}{encodeURIComponent},
+#'  \href{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURI}{decodeURI},
+#'  \href{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent}{decodeURIComponent}
 #' 
 #'  Intended as a faster replacement for [utils::URLencode()] and [utils::URLdecode()].
-#'  encode_uri differs from encode_uri_component in that the former will not encode
+#'  encodeURI differs from encodeURIComponent in that the former will not encode
 #'  reserved characters: \code{;,/?:@@&=+$}
 #' 
-#'  decode_uri differs from decode_uricomponent in that it will refuse to decode
+#'  decodeURI differs from decodeURIComponent in that it will refuse to decode
 #'  encoded sequences that decode to a reserved character. (If in doubt, use
-#'  decode_uricomponent.)
+#'  decodeURIComponent.)
 #' 
-#'  For \code{encode_uri} and \code{encode_uri_component}, input strings will be
+#'  For \code{encodeURI} and \code{encodeURIComponent}, input strings will be
 #'  converted to UTF-8 before URL-encoding.
 #' 
 #' @param value Character vector to be encoded or decoded.
 #' 
 #' @return Encoded or decoded character vector of the same length as the
-#'  input value. \code{decode_uri} and \code{decode_uricomponent} will return
+#'  input value. \code{decodeURI} and \code{decodeURIComponent} will return
 #'  strings that are UTF-8 encoded.
 #' 
 #' @export
-encode_uri <- function(value) {
-	.Call(`_httpserver_encode_uri`, value)
+encodeURI <- function(value) {
+	.Call(`_httpserver_encodeURI`, value)
 }
 
-#' @rdname encode_uri
+#' @rdname encodeURI
 #' @export
-encode_uri_component <- function(value) {
-	.Call(`_httpserver_encode_uri_component`, value)
+encodeURIComponent <- function(value) {
+	.Call(`_httpserver_encodeURIComponent`, value)
 }
 
-#' @rdname encode_uri
+#' @rdname encodeURI
 #' @export
-decode_uri <- function(value) {
-	.Call(`_httpserver_decode_uri`, value)
+decodeURI <- function(value) {
+	.Call(`_httpserver_decodeURI`, value)
 }
 
-#' @rdname encode_uri
+#' @rdname encodeURI
 #' @export
-decode_uricomponent <- function(value) {
-	.Call(`_httpserver_decode_uricomponent`, value)
+decodeURIComponent <- function(value) {
+	.Call(`_httpserver_decodeURIComponent`, value)
 }
 
 #' @title Check whether an address is IPv4 or IPv6
@@ -106,21 +106,21 @@ decode_uricomponent <- function(value) {
 #' @return For IPv4 addresses, \code{4}; for IPv6 addresses, \code{6}. If the address is neither, \code{-1}.
 #' 
 #' @examples
-#'  ip_family("127.0.0.1")   # 4
-#'  ip_family("500.0.0.500") # -1
-#'  ip_family("500.0.0.500") # -1
+#'  ipFamily("127.0.0.1")   # 4
+#'  ipFamily("500.0.0.500") # -1
+#'  ipFamily("500.0.0.500") # -1
 #' 
-#'  ip_family("::")          # 6
-#'  ip_family("::1")         # 6
-#'  ip_family("fe80::1ff:fe23:4567:890a") # 6
+#'  ipFamily("::")          # 6
+#'  ipFamily("::1")         # 6
+#'  ipFamily("fe80::1ff:fe23:4567:890a") # 6
 #' 
 #' @export
-ip_family <- function(ip) {
-	.Call(`_httpserver_ip_family`, ip)
+ipFamily <- function(ip) {
+	.Call(`_httpserver_ipFamily`, ip)
 }
 
-invoke_cpp_callback <- function(data, callback_xptr) {
-	invisible(.Call(`_httpserver_invoke_cpp_callback`, data, callback_xptr))
+invokeCppCallback <- function(data, callback_xptr) {
+	invisible(.Call(`_httpserver_invokeCppCallback`, data, callback_xptr))
 }
 
 #' @title Apply the value of .Random.seed to R's internal RNG state

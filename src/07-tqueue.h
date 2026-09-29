@@ -2,8 +2,6 @@
 #define HTTPSERVER_07_TQUEUE_H
 
 // A thread-safe queue, using threading constructs from libuv.
-
-
 template <typename T> class tqueue {
 
 private:

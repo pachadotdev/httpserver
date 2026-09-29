@@ -26,7 +26,7 @@ This is a basic web server that listens on port 8080 and responds to HTTP reques
 ```R
 library(httpserver)
 
-s <- startServer(host = "0.0.0.0", port = 8080,
+s <- start_server(host = "0.0.0.0", port = 8080,
   app = list(
     call = function(req) {
       body <- paste0("Time: ", Sys.time(), "<br>Path requested: ", req$PATH_INFO)
@@ -42,7 +42,7 @@ s <- startServer(host = "0.0.0.0", port = 8080,
 
 Note that when `host` is 0.0.0.0, it listens on all network interfaces. If `host` is 127.0.0.1, it will only listen to connections from the local host.
 
-The `startServer()` function takes an _app object_, which is a named list with functions that are invoked in response to certain events. In the example above, the list contains a function `call`. This function is invoked when a complete HTTP request is received by the server, and it is passed an environment object `req`, which contains information about HTTP request. `req$PATH_INFO` is the path requested (if the request was for http://127.0.0.1:8080/foo, it would be `"/foo"`).
+The `start_server()` function takes an _app object_, which is a named list with functions that are invoked in response to certain events. In the example above, the list contains a function `call`. This function is invoked when a complete HTTP request is received by the server, and it is passed an environment object `req`, which contains information about HTTP request. `req$PATH_INFO` is the path requested (if the request was for http://127.0.0.1:8080/foo, it would be `"/foo"`).
 
 The `call` function is expected to return a list containing `status`, `headers`, and `body`. That list will be transformed into a HTTP response and sent to the client.
 
@@ -55,17 +55,17 @@ s$stop()
 Or, to stop all running httpserver servers:
 
 ```R
-stopAllServers()
+stop_all_servers()
 ```
 
 ### Static paths
 
 A httpserver server application can serve up files on disk. This happens entirely within the I/O thread, so doing so will not block or be blocked by activity in the main R thread.
 
-To serve a path, use `staticPaths` in the app. This will serve the `www/` subdirectory of the current directory (from when `startServer` is called) as the root of the web path:
+To serve a path, use `static_paths` in the app. This will serve the `www/` subdirectory of the current directory (from when `start_server` is called) as the root of the web path:
 
 ```R
-s <- startServer("0.0.0.0", 8080,
+s <- start_server("0.0.0.0", 8080,
   app = list(
     staticPaths = list("/" = "www/")
   )
@@ -77,7 +77,7 @@ By default, if a file named `index.html` exists in the directory, it will be ser
 `staticPaths` can be combined with `call`. In this example, the web paths `/assets` and `/lib` are served from disk, but requests for any other paths go through the `call` function.
 
 ```R
-s <- startServer("0.0.0.0", 8080,
+s <- start_server("0.0.0.0", 8080,
   list(
     call = function(req) {
       list(
@@ -102,7 +102,7 @@ s <- startServer("0.0.0.0", 8080,
 httpserver also can handle WebSocket connections. For example, this app acts as a WebSocket echo server:
 
 ```R
-s <- startServer("127.0.0.1", 8080,
+s <- start_server("127.0.0.1", 8080,
   list(
     onWSOpen = function(ws) {
       # The ws object is a WebSocket object

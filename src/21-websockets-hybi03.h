@@ -24,9 +24,7 @@ public:
   uint8_t encode_opcode(Opcode opcode) const;
 };
 
-extern "C" {
-}
-
+extern "C" {}
 
 bool calculate_key_value(const std::string &key, uint32_t *p_result = NULL) {
   std::string trimmed = trim(key);

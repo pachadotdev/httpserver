@@ -201,6 +201,3 @@ if [[ -n "$PRAGMA_FILES" ]]; then
 else
   echo "    [ok] No remaining #pragma diagnostic ignored found"
 fi
-
-echo ""
-echo "Done. Update dev/build-notes.md if any fixes needed manual adjustment."

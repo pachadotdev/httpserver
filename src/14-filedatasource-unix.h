@@ -3,7 +3,6 @@
 
 #ifndef _WIN32
 
-
 FileDataSourceResult FileDataSource::initialize(const std::string &path,
                                                 bool owned) {
   // This can be called from either the main thread or background thread.

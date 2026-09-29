@@ -81,7 +81,7 @@ check-cran-extra:
 		./scripts/check.sh $$image || exit 1; \
 	done
 
-clang_format=`which clang-format-21`
+clang_format=`which clang-format`
 
 format: $(shell find . -name '*.h') $(shell find . -name '*.hpp') $(shell find . -name '*.cxx')
 	@${clang_format} -i $?

@@ -3,7 +3,6 @@
 
 #ifdef _WIN32
 
-
 // Windows gets a whole different implementation of FileDataSource
 // so we can use FILE_FLAG_DELETE_ON_CLOSE, which is not available
 // using the POSIX file functions.

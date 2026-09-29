@@ -11,7 +11,6 @@ bool is_directory(const std::string &filename);
 #else
 #endif
 
-
 // Given a filename, return the extension.
 std::string find_extension(const std::string &filename) {
   size_t found_idx = filename.find_last_of('.');

@@ -10,8 +10,6 @@
 // The idea and interface is based on Boost.Optional library
 // authored by Fernando Luis Cacciola Carballal
 
-
-
 #define TR2_OPTIONAL_REQUIRES(...)                                             \
   typename enable_if<__VA_ARGS__::value, bool>::type = false
 
