@@ -54,9 +54,13 @@ public:
 void HttpResponse::write_response() {
   ASSERT_BACKGROUND_THREAD()
   debug_log("HttpResponse::write_response", LOG_DEBUG);
-  // TODO: Optimize
-  std::ostringstream response(std::ios_base::binary);
-  response << "HTTP/1.1 " << _status_code << " " << _status << "\r\n";
+  std::string response;
+  response.reserve(256);
+  response.append("HTTP/1.1 ");
+  response.append(std::to_string(_status_code));
+  response.append(" ");
+  response.append(_status);
+  response.append("\r\n");
   bool content_encoding = false;
   std::string content_length;
   for (ResponseHeaders::const_iterator it = _headers.begin();
@@ -82,10 +86,10 @@ void HttpResponse::write_response() {
   } else if (_status_code == 101 || _p_body == nullptr) {
     gzip = false;
   } else {
-    RequestHeaders h = _p_request->headers();
+    const RequestHeaders &h = _p_request->headers();
     auto accept_encoding = h.find("Accept-Encoding");
     if (accept_encoding != h.end()) {
-      std::string enc = accept_encoding->second;
+      const std::string &enc = accept_encoding->second;
       if (enc.find("gzip") != std::string::npos) {
         gzip = true;
       } else {
@@ -109,11 +113,15 @@ void HttpResponse::write_response() {
     // actually not a true HTTP body, but instead, just the first bytes for the
     // switched-to protocol)
   } else if (_chunked) {
-    response << "Transfer-Encoding: chunked\r\n";
+    response.append("Transfer-Encoding: chunked\r\n");
   } else if (!content_length.empty()) {
-    response << "Content-Length: " << content_length << "\r\n";
+    response.append("Content-Length: ");
+    response.append(content_length);
+    response.append("\r\n");
   } else if (_p_body != nullptr) {
-    response << "Content-Length: " << _p_body->size() << "\r\n";
+    response.append("Content-Length: ");
+    response.append(std::to_string(_p_body->size()));
+    response.append("\r\n");
   } else {
     // Some valid responses (such as HTTP 204 and 304) must not set this header,
     // since they can't have a body.
@@ -121,9 +129,8 @@ void HttpResponse::write_response() {
     // See: https://tools.ietf.org/html/rfc7230#section-3.3.2
   }
 
-  response << "\r\n";
-  std::string response_str = response.str();
-  _response_header.assign(response_str.begin(), response_str.end());
+  response.append("\r\n");
+  _response_header.assign(response.begin(), response.end());
 
   // For Hixie-76 and HyBi-03, it's important that the body be sent immediately,
   // before any WebSocket traffic is sent from the server
