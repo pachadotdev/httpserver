@@ -55,21 +55,17 @@ check-cran-extra-%:
 	@./scripts/check.sh $*
 
 # CRAN-like containers (pair: CRAN name : r-hub image)
-CRAN_EXTRA_PAIRS := \
-	r-devel-linux-x86_64-debian-clang:ubuntu-clang \
-	r-devel-linux-x86_64-debian-gcc:ubuntu-gcc15 \
-	r-patched-linux-x86_64:ubuntu-next \
-	r-release-linux-x86_64:ubuntu-release
+CRAN_DEFAULT := ubuntu-clang ubuntu-gcc16 ubuntu-next ubuntu-release
 
 # Extra CRAN check images
 CRAN_EXTRA := atlas clang-asan clang-ubsan clang21 clang22 donttest \
 	gcc16 gcc-asan lto mkl nold nosuggests rchk valgrind
 
-# Loop the single-image CRAN check above over every image in CRAN_EXTRA_PAIRS
+# Loop the single-image CRAN check above over every image in CRAN_DEFAULT
 # (the r-hub image is the part of each pair after the colon).
 check-cran:
 	@chmod +x ./scripts/check.sh
-	@for pair in $(CRAN_EXTRA_PAIRS); do \
+	@for pair in $(CRAN_DEFAULT); do \
 		image=$${pair#*:}; \
 		./scripts/check.sh $$image || exit 1; \
 	done
