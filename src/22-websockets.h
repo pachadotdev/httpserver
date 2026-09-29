@@ -6,9 +6,9 @@ public:
   bool fin;
   Opcode opcode;
   bool masked;
-  std::vector<uint8_t> masking_key;
+  std::vector<uint8_t> maskingKey;
   bool hasLength;
-  uint64_t payload_length;
+  uint64_t payloadLength;
 };
 
 /* Interprets the bytes that make up a WebSocket frame header.
@@ -17,52 +17,52 @@ public:
  */
 class WSHyBiFrameHeader {
   std::vector<char> _data;
-  WebSocketProto *_p_proto;
+  WebSocketProto *_pProto;
 
 public:
-  WSHyBiFrameHeader() : _data(MAX_HEADER_BYTES), _p_proto(NULL) {}
+  WSHyBiFrameHeader() : _data(MAX_HEADER_BYTES), _pProto(NULL) {}
 
   // The data is copied (up to 14 bytes worth)
-  WSHyBiFrameHeader(WebSocketProto *p_proto, const char *data, size_t len)
-      : _data(data, data + (std::min(MAX_HEADER_BYTES, len))), _p_proto(p_proto) {
+  WSHyBiFrameHeader(WebSocketProto *pProto, const char *data, size_t len)
+      : _data(data, data + (std::min(MAX_HEADER_BYTES, len))), _pProto(pProto) {
   }
 
   virtual ~WSHyBiFrameHeader() {}
 
   // IMPORTANT: Don't attempt to call any of the other methods
-  // until is_header_complete is true!!
-  bool is_header_complete() const;
-  bool is_payload_complete() const;
+  // until isHeaderComplete is true!!
+  bool isHeaderComplete() const;
+  bool isPayloadComplete() const;
 
   WSFrameHeaderInfo info() const;
-  uint64_t payload_length() const;
-  size_t header_length() const;
+  uint64_t payloadLength() const;
+  size_t headerLength() const;
 
 private:
   bool fin() const;
   Opcode opcode() const;
   bool masked() const;
-  void masking_key(uint8_t key[4]) const;
+  void maskingKey(uint8_t key[4]) const;
 
   // Read part of a byte, and interpret the bits as an unsigned number.
-  // The bit_offset is starting from the most significant bit.
-  // IMPORTANT: (bit_offset % 8) + bit_width MUST be 8 or less!
+  // The bitOffset is starting from the most significant bit.
+  // IMPORTANT: (bitOffset % 8) + bitWidth MUST be 8 or less!
   // In other words, the bits you request must not span multiple bytes.
-  uint8_t read(size_t bit_offset, size_t bit_width) const;
+  uint8_t read(size_t bitOffset, size_t bitWidth) const;
   // Read bytes, an interpret them as a big endian number.
-  // IMPORTANT: bit_offset and bit_width MUST be multiples of 8!
-  // IMPORTANT: bit_width MUST be 64 or less!
-  uint64_t read64(size_t bit_offset, size_t bit_width) const;
-  uint8_t payload_length_length() const;
-  uint8_t masking_key_length() const;
+  // IMPORTANT: bitOffset and bitWidth MUST be multiples of 8!
+  // IMPORTANT: bitWidth MUST be 64 or less!
+  uint64_t read64(size_t bitOffset, size_t bitWidth) const;
+  uint8_t payloadLengthLength() const;
+  uint8_t maskingKeyLength() const;
 };
 
 class WSParserCallbacks {
 public:
-  virtual void on_header_complete(const WSFrameHeaderInfo &header) = 0;
+  virtual void onHeaderComplete(const WSFrameHeaderInfo &header) = 0;
   // The data is copied
-  virtual void on_payload(const char *data, size_t len) = 0;
-  virtual void on_frame_complete() = 0;
+  virtual void onPayload(const char *data, size_t len) = 0;
+  virtual void onFrameComplete() = 0;
 };
 
 class WSParser {
@@ -70,50 +70,50 @@ public:
   virtual ~WSParser() {}
 
   // Populate response headers with the appropriate values. This call
-  // must not fail, but it will not be called unless can_handle returned
-  // true previously, so any validation should be done in can_handle.
+  // must not fail, but it will not be called unless canHandle returned
+  // true previously, so any validation should be done in canHandle.
   virtual void handshake(const std::string &url,
-                         const RequestHeaders &request_headers, char **pp_data,
-                         size_t *p_len, ResponseHeaders *response_headers,
-                         std::vector<uint8_t> *p_response) const = 0;
+                         const RequestHeaders &requestHeaders, char **ppData,
+                         size_t *pLen, ResponseHeaders *responseHeaders,
+                         std::vector<uint8_t> *pResponse) const = 0;
 
-  virtual void create_frame_header_footer(Opcode opcode, bool mask,
-                                       size_t payload_size, int32_t masking_key,
-                                       char p_header_data[MAX_HEADER_BYTES],
-                                       size_t *p_header_len,
-                                       char p_footer_data[MAX_FOOTER_BYTES],
-                                       size_t *p_footer_len) const = 0;
+  virtual void createFrameHeaderFooter(Opcode opcode, bool mask,
+                                       size_t payloadSize, int32_t maskingKey,
+                                       char pHeaderData[MAX_HEADER_BYTES],
+                                       size_t *pHeaderLen,
+                                       char pFooterData[MAX_FOOTER_BYTES],
+                                       size_t *pFooterLen) const = 0;
 
   virtual void read(const char *data, size_t len) = 0;
 };
 
 class WSHyBiParser : public WSParser {
-  WSParserCallbacks *_p_callbacks;
-  WebSocketProto *_p_proto;
+  WSParserCallbacks *_pCallbacks;
+  WebSocketProto *_pProto;
   WSParseState _state;
   std::vector<char> _header;
-  uint64_t _bytes_left;
+  uint64_t _bytesLeft;
 
 public:
-  WSHyBiParser(WSParserCallbacks *callbacks, WebSocketProto *p_proto)
-      : _p_callbacks(callbacks), _p_proto(p_proto), _state(InHeader) {}
+  WSHyBiParser(WSParserCallbacks *callbacks, WebSocketProto *pProto)
+      : _pCallbacks(callbacks), _pProto(pProto), _state(InHeader) {}
   virtual ~WSHyBiParser() {
     try {
-      delete _p_proto;
+      delete _pProto;
     } catch (...) {
     }
   }
 
-  void handshake(const std::string &url, const RequestHeaders &request_headers,
-                 char **pp_data, size_t *p_len, ResponseHeaders *response_headers,
-                 std::vector<uint8_t> *p_response) const;
+  void handshake(const std::string &url, const RequestHeaders &requestHeaders,
+                 char **ppData, size_t *pLen, ResponseHeaders *responseHeaders,
+                 std::vector<uint8_t> *pResponse) const;
 
-  void create_frame_header_footer(Opcode opcode, bool mask, size_t payload_size,
-                               int32_t masking_key,
-                               char p_header_data[MAX_HEADER_BYTES],
-                               size_t *p_header_len,
-                               char p_footer_data[MAX_FOOTER_BYTES],
-                               size_t *p_footer_len) const;
+  void createFrameHeaderFooter(Opcode opcode, bool mask, size_t payloadSize,
+                               int32_t maskingKey,
+                               char pHeaderData[MAX_HEADER_BYTES],
+                               size_t *pHeaderLen,
+                               char pFooterData[MAX_FOOTER_BYTES],
+                               size_t *pFooterLen) const;
 
   void read(const char *data, size_t len);
 };
@@ -131,69 +131,83 @@ enum WSConnState {
 
 class WebSocketConnectionCallbacks {
 public:
-  virtual void on_wsmessage(bool binary, const char *data, size_t len) = 0;
-  virtual void on_wsclose(int code) = 0;
+  virtual void onWSMessage(bool binary, const char *data, size_t len) = 0;
+  virtual void onWSClose(int code) = 0;
   // Implementers MUST copy data
-  virtual void send_wsframe(const char *header_data, size_t header_length,
-                           const char *p_data, size_t data_length,
-                           const char *footer_data, size_t footer_length) = 0;
-  virtual void close_wssocket() = 0;
+  virtual void sendWSFrame(const char *headerData, size_t headerLength,
+                           const char *pData, size_t dataLength,
+                           const char *footerData, size_t footerLength,
+                           std::function<void(void)> onSent) = 0;
+  virtual void closeWSSocket() = 0;
 };
 
-void ping_timer_callback(uv_timer_t *handle);
+void pingTimerCallback(uv_timer_t *handle);
 
 class WebSocketConnection : WSParserCallbacks, NoCopy {
-  uv_loop_t *_p_loop;
-  WSConnState _conn_state;
-  std::shared_ptr<WebSocketConnectionCallbacks> _p_callbacks;
-  WSParser *_p_parser;
-  WSFrameHeaderInfo _incomplete_content_header;
+  uv_loop_t *_pLoop;
+  WSConnState _connState;
+  std::shared_ptr<WebSocketConnectionCallbacks> _pCallbacks;
+  WSParser *_pParser;
+  WSFrameHeaderInfo _incompleteContentHeader;
   WSFrameHeaderInfo _header;
-  std::vector<char> _incomplete_content_payload;
+  std::vector<char> _incompleteContentPayload;
   std::vector<char> _payload;
-  uv_timer_t *_p_ping_timer;
+  uv_timer_t *_pPingTimer;
+  bool _closeFrameSent;
+  bool _closeFrameReceived;
+
+  void closeWSSocketIfReady() {
+    if (_closeFrameSent && _closeFrameReceived)
+      _pCallbacks->closeWSSocket();
+  }
+
+  void onCloseFrameSent() {
+    _closeFrameSent = true;
+    closeWSSocketIfReady();
+  }
 
 public:
-  WebSocketConnection(uv_loop_t *p_loop,
+  WebSocketConnection(uv_loop_t *pLoop,
                       std::shared_ptr<WebSocketConnectionCallbacks> callbacks)
-      : _p_loop(p_loop), _conn_state(WS_OPEN), _p_callbacks(callbacks),
-        _p_parser(NULL) {
+      : _pLoop(pLoop), _connState(WS_OPEN), _pCallbacks(callbacks),
+        _pParser(NULL), _closeFrameSent(false), _closeFrameReceived(false) {
     ASSERT_BACKGROUND_THREAD()
     debug_log("WebSocketConnection::WebSocketConnection", LOG_DEBUG);
 
-    _p_ping_timer = static_cast<uv_timer_t *>(malloc(sizeof(uv_timer_t)));
-    uv_timer_init(_p_loop, _p_ping_timer);
-    _p_ping_timer->data = this;
+    _pPingTimer = static_cast<uv_timer_t *>(malloc(sizeof(uv_timer_t)));
+    uv_timer_init(_pLoop, _pPingTimer);
+    _pPingTimer->data = this;
   }
 
   virtual ~WebSocketConnection() {
     ASSERT_BACKGROUND_THREAD()
     debug_log("WebSocketConnection::~WebSocketConnection", LOG_DEBUG);
     // calling uv_close() on a timer implicitly calls uv_timer_stop()
-    uv_close(to_handle(_p_ping_timer), free_after_close);
+    uv_close(toHandle(_pPingTimer), freeAfterClose);
     try {
-      delete _p_parser;
+      delete _pParser;
     } catch (...) {
     }
   }
 
-  bool accept(const RequestHeaders &request_headers, const char *p_data,
+  bool accept(const RequestHeaders &requestHeaders, const char *pData,
               size_t len);
-  void handshake(const std::string &url, const RequestHeaders &request_headers,
-                 char **pp_data, size_t *p_len, ResponseHeaders *p_response_headers,
-                 std::vector<uint8_t> *p_response);
+  void handshake(const std::string &url, const RequestHeaders &requestHeaders,
+                 char **ppData, size_t *pLen, ResponseHeaders *pResponseHeaders,
+                 std::vector<uint8_t> *pResponse);
 
-  void send_ws_message(Opcode opcode, const char *p_data, size_t length);
-  void send_ping();
-  void close_ws(uint16_t code = 1000, std::string reason = "");
+  void sendWSMessage(Opcode opcode, const char *pData, size_t length,
+                     std::function<void(void)> onSent = std::function<void(void)>());
+  void sendPing();
+  void closeWS(uint16_t code = 1000, std::string reason = "");
   void read(const char *data, size_t len);
-  void mark_closed();
-  void start_ping_timer();
+  void markClosed();
+  void startPingTimer();
 
 protected:
-  void on_header_complete(const WSFrameHeaderInfo &header);
-  void on_payload(const char *data, size_t len);
-  void on_frame_complete();
+  void onHeaderComplete(const WSFrameHeaderInfo &header);
+  void onPayload(const char *data, size_t len);
+  void onFrameComplete();
 };
 
 #endif
