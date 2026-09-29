@@ -2,8 +2,8 @@
 % Please edit documentation in httpserver-package.R
 \name{httpserver-package}
 \alias{httpserver-package}
-\title{HTTP and WebSocket Server Library}
+\title{http and web_socket server library}
 \description{
-Provides low-level socket and protocol support for handling HTTP and WebSocket requests directly from within R. It is primarily intended as a building block for other packages, rather than making it particularly easy to create complete web applications using httpuv alone.  httpuv is built on top of the libuv and http-parser C libraries, both of which were developed by Joyent, Inc. Derived from the 'httpuv' package with a focus on minimal dependencies. See the LICENSE file for libuv and http-parser license information.
+Provides low-level socket and protocol support for handling HTTP and WebSocket requests. It is primarily intended as a building block for other packages, rather than making it particularly easy to create complete web applications using 'httpserver' alone. 'httpserver' is built on top of the 'libuv' and 'http-parser' C libraries, both of which were developed by "Joyent Inc".
 }
 

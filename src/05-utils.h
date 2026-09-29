@@ -77,14 +77,14 @@ inline std::string to_lower(const std::string &str) {
   return lowered;
 }
 
-template <typename T> std::string toString(T x) {
+template <typename T> std::string to_string(T x) {
   std::stringstream ss;
   ss << x;
   return ss.str();
 }
 
 // This is used for converting a named R vector (T2) to a std::map.
-template <typename T1, typename T2> std::map<std::string, T1> toMap(T2 x) {
+template <typename T1, typename T2> std::map<std::string, T1> to_map(T2 x) {
   ASSERT_MAIN_THREAD()
 
   std::map<std::string, T1> strmap;
@@ -348,10 +348,10 @@ void debug_log(const std::string &msg, LogLevel level) {
 // @param input The istream to parse from
 // @param digits The exact number of digits to parse; if this number of digits
 //   is not available, false is returned.
-// @param pOut If true is returned, the integer value of the parsed value. If
-//   false returned, pOut is untouched.
+// @param p_out If true is returned, the integer value of the parsed value. If
+//   false returned, p_out is untouched.
 // @return true if successful, false if parsing fails for any reason
-bool str_read_int(std::istream *input, size_t digits, int *pOut) {
+bool str_read_int(std::istream *input, size_t digits, int *p_out) {
   if (digits <= 0) {
     return false;
   }
@@ -371,7 +371,7 @@ bool str_read_int(std::istream *input, size_t digits, int *pOut) {
     int v = c - '0';
     tmp = (tmp * 10) + v;
   }
-  *pOut = tmp;
+  *p_out = tmp;
   return true;
 }
 
@@ -379,12 +379,12 @@ bool str_read_int(std::istream *input, size_t digits, int *pOut) {
 // @param bytes The exact number of bytes to read from the input. If this many
 //   bytes are not available, false is returned.
 // @param values Vector where each element is a string to be matched against.
-// @param pRes If true is returned, then this will be set to the index of the
+// @param p_res If true is returned, then this will be set to the index of the
 //   element in `values` that matched the input. If false is returned, then res
 //   will be untouched.
 // @return true if successful, false if reading failed or no match found
 bool str_read_lookup(std::istream *input, size_t bytes,
-                     const std::vector<std::string> &values, int *pRes) {
+                     const std::vector<std::string> &values, int *p_res) {
   std::vector<char> buf;
   buf.resize(bytes + 1);
 
@@ -397,7 +397,7 @@ bool str_read_lookup(std::istream *input, size_t bytes,
   if (pos == values.end()) {
     return false;
   }
-  *pRes = pos - values.begin();
+  *p_res = pos - values.begin();
   return true;
 }
 

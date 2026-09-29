@@ -7,7 +7,7 @@ typedef struct {
     uv_tcp_t tcp;
     uv_pipe_t pipe;
   };
-  bool isTcp;
+  bool is_tcp;
 } VariantHandle;
 
 struct Address {
@@ -19,27 +19,27 @@ struct Address {
 
 class Socket;
 
-uv_stream_t *createPipeServer(uv_loop_t *loop, const std::string &name,
+uv_stream_t *create_pipe_server(uv_loop_t *loop, const std::string &name,
                               int mask,
-                              std::shared_ptr<WebApplication> pWebApplication);
+                              std::shared_ptr<WebApplication> p_web_application);
 
-uv_stream_t *createTcpServer(uv_loop_t *loop, const std::string &host, int port,
-                             std::shared_ptr<WebApplication> pWebApplication);
+uv_stream_t *create_tcp_server(uv_loop_t *loop, const std::string &host, int port,
+                             std::shared_ptr<WebApplication> p_web_application);
 
-void createPipeServerSync(uv_loop_t *loop, const std::string &name, int mask,
-                          std::shared_ptr<WebApplication> pWebApplication,
+void create_pipe_server_sync(uv_loop_t *loop, const std::string &name, int mask,
+                          std::shared_ptr<WebApplication> p_web_application,
                           bool quiet, CallbackQueue *background_queue,
-                          uv_stream_t **pServer,
+                          uv_stream_t **p_server,
                           std::shared_ptr<Barrier> blocker);
 
-void createTcpServerSync(uv_loop_t *loop, const std::string &host, int port,
-                         std::shared_ptr<WebApplication> pWebApplication,
+void create_tcp_server_sync(uv_loop_t *loop, const std::string &host, int port,
+                         std::shared_ptr<WebApplication> p_web_application,
                          bool quiet, CallbackQueue *background_queue,
-                         uv_stream_t **pServer,
+                         uv_stream_t **p_server,
                          std::shared_ptr<Barrier> blocker);
 
-void freeServer(uv_stream_t *pServer);
-bool runNonBlocking(uv_loop_t *loop);
+void free_server(uv_stream_t *p_server);
+bool run_non_blocking(uv_loop_t *loop);
 
 // externalize_shared_ptr is used to pass a shared_ptr to R, and have its
 // lifetime be tied to the R external pointer object. This function creates a
@@ -66,14 +66,14 @@ externalize_shared_ptr(std::shared_ptr<WebSocketConnection> obj) {
       obj_copy, true, true);
 }
 
-template <typename T> std::string externalize_str(T *pServer) {
+template <typename T> std::string externalize_str(T *p_server) {
   std::ostringstream os;
-  os << reinterpret_cast<uintptr_t>(pServer);
+  os << reinterpret_cast<uintptr_t>(p_server);
   return os.str();
 }
 
-template <typename T> T *internalize_str(std::string serverHandle) {
-  std::istringstream is(serverHandle);
+template <typename T> T *internalize_str(std::string server_handle) {
+  std::istringstream is(server_handle);
   uintptr_t result;
   is >> result;
   return reinterpret_cast<T *>(result);

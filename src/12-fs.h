@@ -39,7 +39,7 @@ std::string basename(const std::string &path) {
 bool is_directory(const std::string &filename) {
 #ifdef _WIN32
 
-  DWORD file_attr = GetFileAttributesW(utf8ToWide(filename).data());
+  DWORD file_attr = GetFileAttributesW(utf8_to_wide(filename).data());
   if (file_attr == INVALID_FILE_ATTRIBUTES) {
     return false;
   }

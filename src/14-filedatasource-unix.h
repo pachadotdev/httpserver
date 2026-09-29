@@ -15,14 +15,14 @@ FileDataSourceResult FileDataSource::initialize(const std::string &path,
       return FDS_NOT_EXIST;
     } else {
       _lastErrorMessage =
-          "Error opening file " + path + ": " + toString(errno) + "\n";
+          "Error opening file " + path + ": " + to_string(errno) + "\n";
       return FDS_ERROR;
     }
   } else {
     struct stat info = {};
     if (fstat(_fd, &info)) {
       _lastErrorMessage =
-          "Error opening path " + path + ": " + toString(errno) + "\n";
+          "Error opening path " + path + ": " + to_string(errno) + "\n";
       ::close(_fd);
       return FDS_ERROR;
     }
@@ -48,29 +48,29 @@ FileDataSourceResult FileDataSource::initialize(const std::string &path,
 
 uint64_t FileDataSource::size() const { return _length; }
 
-uv_buf_t FileDataSource::getData(size_t bytesDesired) {
+uv_buf_t FileDataSource::get_data(size_t bytes_desired) {
   ASSERT_BACKGROUND_THREAD()
-  if (bytesDesired == 0)
+  if (bytes_desired == 0)
     return uv_buf_init(NULL, 0);
 
-  char *buffer = (char *)malloc(bytesDesired);
+  char *buffer = (char *)malloc(bytes_desired);
   if (!buffer) {
     throw std::runtime_error("Couldn't allocate buffer");
   }
 
-  ssize_t bytesRead = read(_fd, buffer, bytesDesired);
-  if (bytesRead == -1) {
+  ssize_t bytes_read = read(_fd, buffer, bytes_desired);
+  if (bytes_read == -1) {
     err_printf("Error reading: %d\n", errno);
     free(buffer);
     throw std::runtime_error("File read failed");
   }
 
-  return uv_buf_init(buffer, bytesRead);
+  return uv_buf_init(buffer, bytes_read);
 }
 
-void FileDataSource::freeData(uv_buf_t buffer) { free(buffer.base); }
+void FileDataSource::free_data(uv_buf_t buffer) { free(buffer.base); }
 
-time_t FileDataSource::getMtime() {
+time_t FileDataSource::get_mtime() {
   struct stat res;
   int retval = fstat(_fd, &res);
   if (retval == -1) {
@@ -85,7 +85,7 @@ void FileDataSource::close() {
   _fd = -1;
 }
 
-std::string FileDataSource::lastErrorMessage() const {
+std::string FileDataSource::last_error_message() const {
   return _lastErrorMessage;
 }
 

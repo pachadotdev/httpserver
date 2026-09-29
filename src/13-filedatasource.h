@@ -11,7 +11,7 @@ enum FileDataSourceResult {
 
 class FileDataSource : public DataSource {
 #ifdef _WIN32
-  HANDLE _hFile;
+  HANDLE _h_file;
   LARGE_INTEGER _length;
 #else
   int _fd;
@@ -26,12 +26,12 @@ public:
 
   FileDataSourceResult initialize(const std::string &path, bool owned);
   uint64_t size() const;
-  uv_buf_t getData(size_t bytesDesired);
-  void freeData(uv_buf_t buffer);
+  uv_buf_t get_data(size_t bytes_desired);
+  void free_data(uv_buf_t buffer);
   // Get the mtime of the file. If there's an error, return 0.
-  time_t getMtime();
+  time_t get_mtime();
   void close();
-  std::string lastErrorMessage() const;
+  std::string last_error_message() const;
 };
 
 #endif

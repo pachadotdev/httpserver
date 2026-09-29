@@ -32,8 +32,7 @@ Authors@R: c(
 Description: Provides low-level socket and protocol support for handling HTTP and WebSocket requests.
     It is primarily intended as a building block for other packages, rather than making it particularly easy to create
     complete web applications using 'httpserver' alone. 'httpserver' is built on top of the 'libuv' and 'http-parser' C
-    libraries, both of which were developed by "Joyent Inc." Derived from the 'httpuv' package with a focus on minimal
-    dependencies.
+    libraries, both of which were developed by "Joyent Inc".
 License: Apache License 2.0
 URL: https://github.com/pachadotdev/httpserver
 BugReports: https://github.com/pachadotdev/httpserver/issues

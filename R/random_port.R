@@ -1,30 +1,30 @@
-#' Find an open TCP port
+#' find an open tcp port
 #'
-#' Finds a random available TCP port for listening on, within a specified range
-#' of ports. The default range of ports to check is 1024 to 49151, which is the
-#' set of TCP User Ports. This function automatically excludes some ports which
+#' finds a random available tcp port for listening on, within a specified range
+#' of ports. the default range of ports to check is 1024 to 49151, which is the
+#' set of tcp user ports. this function automatically excludes some ports which
 #' are considered unsafe by web browsers.
 #'
-#' @inheritParams runServer
-#' @param min Minimum port number.
-#' @param max Maximum port number.
-#' @param n Number of ports to try before giving up.
+#' @inheritParams run_server
+#' @param min minimum port number.
+#' @param max maximum port number.
+#' @param n number of ports to try before giving up.
 #'
-#' @return A port that is available to listen on.
+#' @return a port that is available to listen on.
 #'
 #' @examples
-#' s <- startServer("127.0.0.1", randomPort(), list())
-#' paste0("http://127.0.0.1:", s$getPort())
+#' s <- start_server("127.0.0.1", random_port(), list())
+#' paste0("http://127.0.0.1:", s$get_port())
 #' s$stop()
 #'
 #' @export
-randomPort <- function(min = 1024L, max = 49151L, host = "127.0.0.1", n = 20) {
+random_port <- function(min = 1024L, max = 49151L, host = "127.0.0.1", n = 20) {
   min <- max(1L, min)
   max <- min(max, 65535L)
   valid_ports <- setdiff(seq.int(min, max), unsafe_ports)
 
   n <- min(n, length(valid_ports))
-  # Try up to n ports
+  # try up to n ports
   try_ports <- if (n < 2) valid_ports else sample(valid_ports, n)
 
   for (port in try_ports) {
@@ -39,7 +39,7 @@ randomPort <- function(min = 1024L, max = 49151L, host = "127.0.0.1", n = 20) {
 is_port_available <- function(port, host = "127.0.0.1") {
   tryCatch(
     {
-      s <- startServer(host, port, list(), quiet = TRUE)
+      s <- start_server(host, port, list(), quiet = TRUE)
       s$stop()
       TRUE
     },
@@ -47,7 +47,7 @@ is_port_available <- function(port, host = "127.0.0.1") {
   )
 }
 
-error_unavailable_port <- function(message = "Cannot find an available port.") {
+error_unavailable_port <- function(message = "cannot find an available port.") {
   stop(
     structure(
       list(message = message, call = sys.call(-1)),
@@ -56,7 +56,7 @@ error_unavailable_port <- function(message = "Cannot find an available port.") {
   )
 }
 
-# Ports that are considered unsafe by Chrome
+# ports that are considered unsafe by chrome
 # http://superuser.com/questions/188058/which-ports-are-considered-unsafe-on-chrome
 # https://github.com/rstudio/shiny/issues/1784
 unsafe_ports <- c(

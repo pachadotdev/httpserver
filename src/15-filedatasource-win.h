@@ -16,12 +16,12 @@ FileDataSourceResult FileDataSource::initialize(const std::string &path,
   if (owned)
     flags |= FILE_FLAG_DELETE_ON_CLOSE;
 
-  _hFile = CreateFileW(utf8ToWide(path).data(), GENERIC_READ,
+  _h_file = CreateFileW(utf8_to_wide(path).data(), GENERIC_READ,
                        FILE_SHARE_READ, // allow other processes to read
                        NULL,            // security attributes
                        OPEN_EXISTING, flags, NULL);
 
-  if (_hFile == INVALID_HANDLE_VALUE) {
+  if (_h_file == INVALID_HANDLE_VALUE) {
     if (GetLastError() == ERROR_FILE_NOT_FOUND ||
         GetLastError() == ERROR_PATH_NOT_FOUND) {
       _lastErrorMessage = "File does not exist: " + path + "\n";
@@ -40,16 +40,16 @@ FileDataSourceResult FileDataSource::initialize(const std::string &path,
 
     } else {
       _lastErrorMessage =
-          "Error opening file " + path + ": " + toString(GetLastError()) + "\n";
+          "Error opening file " + path + ": " + to_string(GetLastError()) + "\n";
       return FDS_ERROR;
     }
   }
 
-  if (!GetFileSizeEx(_hFile, &_length)) {
-    CloseHandle(_hFile);
-    _hFile = INVALID_HANDLE_VALUE;
+  if (!GetFileSizeEx(_h_file, &_length)) {
+    CloseHandle(_h_file);
+    _h_file = INVALID_HANDLE_VALUE;
     _lastErrorMessage = "Error retrieving file size for " + path + ": " +
-                        toString(GetLastError()) + "\n";
+                        to_string(GetLastError()) + "\n";
     return FDS_ERROR;
   }
 
@@ -58,28 +58,28 @@ FileDataSourceResult FileDataSource::initialize(const std::string &path,
 
 uint64_t FileDataSource::size() const { return _length.QuadPart; }
 
-uv_buf_t FileDataSource::getData(size_t bytesDesired) {
+uv_buf_t FileDataSource::get_data(size_t bytes_desired) {
   ASSERT_BACKGROUND_THREAD()
-  if (bytesDesired == 0)
+  if (bytes_desired == 0)
     return uv_buf_init(NULL, 0);
 
-  char *buffer = (char *)malloc(bytesDesired);
+  char *buffer = (char *)malloc(bytes_desired);
   if (!buffer) {
     throw std::runtime_error("Couldn't allocate buffer");
   }
 
-  DWORD bytesRead;
-  if (!ReadFile(_hFile, buffer, bytesDesired, &bytesRead, NULL)) {
+  DWORD bytes_read;
+  if (!ReadFile(_h_file, buffer, bytes_desired, &bytes_read, NULL)) {
 
     err_printf("Error reading: %d\n", GetLastError());
     free(buffer);
     throw std::runtime_error("File read failed");
   }
 
-  return uv_buf_init(buffer, bytesRead);
+  return uv_buf_init(buffer, bytes_read);
 }
 
-void FileDataSource::freeData(uv_buf_t buffer) { free(buffer.base); }
+void FileDataSource::free_data(uv_buf_t buffer) { free(buffer.base); }
 
 time_t FileTimeToTimeT(const FILETIME &ft) {
   ULARGE_INTEGER ull;
@@ -88,24 +88,24 @@ time_t FileTimeToTimeT(const FILETIME &ft) {
   return ull.QuadPart / 10000000ULL - 11644473600ULL;
 }
 
-time_t FileDataSource::getMtime() {
-  FILETIME ftWrite;
+time_t FileDataSource::get_mtime() {
+  FILETIME ft_write;
 
-  if (!GetFileTime(_hFile, NULL, NULL, &ftWrite)) {
+  if (!GetFileTime(_h_file, NULL, NULL, &ft_write)) {
     return 0;
   }
 
-  return FileTimeToTimeT(ftWrite);
+  return FileTimeToTimeT(ft_write);
 }
 
 void FileDataSource::close() {
-  if (_hFile != INVALID_HANDLE_VALUE) {
-    CloseHandle(_hFile);
-    _hFile = INVALID_HANDLE_VALUE;
+  if (_h_file != INVALID_HANDLE_VALUE) {
+    CloseHandle(_h_file);
+    _h_file = INVALID_HANDLE_VALUE;
   }
 }
 
-std::string FileDataSource::lastErrorMessage() const {
+std::string FileDataSource::last_error_message() const {
   return _lastErrorMessage;
 }
 

@@ -7,28 +7,28 @@ public:
   WebSocketProto_HyBi03() {}
   virtual ~WebSocketProto_HyBi03() {}
 
-  bool canHandle(const RequestHeaders &requestHeaders, const char *pData,
+  bool can_handle(const RequestHeaders &request_headers, const char *p_data,
                  size_t len) const;
 
-  void handshake(const std::string &url, const RequestHeaders &requestHeaders,
-                 char **ppData, size_t *pLen, ResponseHeaders *pResponseHeaders,
-                 std::vector<uint8_t> *pResponse) const;
+  void handshake(const std::string &url, const RequestHeaders &request_headers,
+                 char **pp_data, size_t *p_len, ResponseHeaders *p_response_headers,
+                 std::vector<uint8_t> *p_response) const;
 
-  void createFrameHeader(Opcode opcode, bool mask, size_t payloadSize,
-                         int32_t maskingKey, char pData[MAX_HEADER_BYTES],
-                         size_t *pLen) const;
+  void create_frame_header(Opcode opcode, bool mask, size_t payload_size,
+                         int32_t masking_key, char p_data[MAX_HEADER_BYTES],
+                         size_t *p_len) const;
 
-  bool isFin(uint8_t firstBit) const;
-  uint8_t toFin(bool isFin) const;
-  Opcode decodeOpcode(uint8_t rawCode) const;
-  uint8_t encodeOpcode(Opcode opcode) const;
+  bool is_fin(uint8_t first_bit) const;
+  uint8_t to_fin(bool is_fin) const;
+  Opcode decode_opcode(uint8_t raw_code) const;
+  uint8_t encode_opcode(Opcode opcode) const;
 };
 
 extern "C" {
 }
 
 
-bool calculateKeyValue(const std::string &key, uint32_t *pResult = NULL) {
+bool calculate_key_value(const std::string &key, uint32_t *p_result = NULL) {
   std::string trimmed = trim(key);
   uint32_t value = 0;
   uint32_t spaces = 0;
@@ -43,87 +43,87 @@ bool calculateKeyValue(const std::string &key, uint32_t *pResult = NULL) {
   }
   if (spaces == 0)
     return false;
-  if (pResult)
-    *pResult = value / spaces;
+  if (p_result)
+    *p_result = value / spaces;
   return true;
 }
 
-bool WebSocketProto_HyBi03::canHandle(const RequestHeaders &requestHeaders,
+bool WebSocketProto_HyBi03::can_handle(const RequestHeaders &request_headers,
                                       const char *, size_t len) const {
 
   if (len != 8)
     return false;
-  if (requestHeaders.find("sec-websocket-key1") == requestHeaders.end())
+  if (request_headers.find("sec-websocket-key1") == request_headers.end())
     return false;
-  if (requestHeaders.find("sec-websocket-key2") == requestHeaders.end())
+  if (request_headers.find("sec-websocket-key2") == request_headers.end())
     return false;
-  if (!calculateKeyValue(requestHeaders.at("sec-websocket-key1")) ||
-      !calculateKeyValue(requestHeaders.at("sec-websocket-key2"))) {
+  if (!calculate_key_value(request_headers.at("sec-websocket-key1")) ||
+      !calculate_key_value(request_headers.at("sec-websocket-key2"))) {
     return false;
   }
-  if (requestHeaders.find("host") == requestHeaders.end())
+  if (request_headers.find("host") == request_headers.end())
     return false;
 
-  return requestHeaders.find("upgrade") != requestHeaders.end() &&
-         strcasecmp(requestHeaders.at("upgrade").c_str(), "websocket") == 0;
+  return request_headers.find("upgrade") != request_headers.end() &&
+         strcasecmp(request_headers.at("upgrade").c_str(), "websocket") == 0;
 }
 
 void WebSocketProto_HyBi03::handshake(const std::string &url,
-                                      const RequestHeaders &requestHeaders,
-                                      char **ppData, size_t *pLen,
-                                      ResponseHeaders *pResponseHeaders,
-                                      std::vector<uint8_t> *pResponse) const {
+                                      const RequestHeaders &request_headers,
+                                      char **pp_data, size_t *p_len,
+                                      ResponseHeaders *p_response_headers,
+                                      std::vector<uint8_t> *p_response) const {
 
-  assert(*pLen >= 8);
+  assert(*p_len >= 8);
 
   uint32_t key1, key2;
-  calculateKeyValue(requestHeaders.at("sec-websocket-key1"), &key1);
-  calculateKeyValue(requestHeaders.at("sec-websocket-key2"), &key2);
+  calculate_key_value(request_headers.at("sec-websocket-key1"), &key1);
+  calculate_key_value(request_headers.at("sec-websocket-key2"), &key2);
 
   uint8_t handshake[16];
   *reinterpret_cast<uint32_t *>(handshake) = key1;
   *reinterpret_cast<uint32_t *>(handshake + 4) = key2;
-  if (!isBigEndian()) {
-    swapByteOrder(handshake, handshake + 4);
-    swapByteOrder(handshake + 4, handshake + 8);
+  if (!is_big_endian()) {
+    swap_byte_order(handshake, handshake + 4);
+    swap_byte_order(handshake + 4, handshake + 8);
   }
-  memcpy(handshake + 8, *ppData, 8);
-  *ppData += 8;
-  *pLen -= 8;
+  memcpy(handshake + 8, *pp_data, 8);
+  *pp_data += 8;
+  *p_len -= 8;
 
   MD5_CTX ctx;
   MD5_Init(&ctx);
 
   MD5_Update(&ctx, handshake, 16);
 
-  pResponse->resize(16, 0);
-  MD5_Final(safe_vec_addr(*pResponse), &ctx);
+  p_response->resize(16, 0);
+  MD5_Final(safe_vec_addr(*p_response), &ctx);
 
   std::string origin;
-  if (requestHeaders.find("sec-websocket-origin") != requestHeaders.end())
-    origin = requestHeaders.at("sec-websocket-origin");
-  else if (requestHeaders.find("origin") != requestHeaders.end())
-    origin = requestHeaders.at("origin");
+  if (request_headers.find("sec-websocket-origin") != request_headers.end())
+    origin = request_headers.at("sec-websocket-origin");
+  else if (request_headers.find("origin") != request_headers.end())
+    origin = request_headers.at("origin");
 
   std::string location("ws://");
-  location += requestHeaders.at("host");
+  location += request_headers.at("host");
   location += url;
 
-  pResponseHeaders->push_back(std::make_pair("Connection", "Upgrade"));
-  pResponseHeaders->push_back(std::make_pair("Upgrade", "WebSocket"));
-  pResponseHeaders->push_back(std::make_pair("Sec-WebSocket-Origin", origin));
-  pResponseHeaders->push_back(
+  p_response_headers->push_back(std::make_pair("Connection", "Upgrade"));
+  p_response_headers->push_back(std::make_pair("Upgrade", "WebSocket"));
+  p_response_headers->push_back(std::make_pair("Sec-WebSocket-Origin", origin));
+  p_response_headers->push_back(
       std::make_pair("Sec-WebSocket-Location", location));
 }
 
-bool WebSocketProto_HyBi03::isFin(uint8_t firstBit) const {
-  return firstBit == 0;
+bool WebSocketProto_HyBi03::is_fin(uint8_t first_bit) const {
+  return first_bit == 0;
 }
 
-uint8_t WebSocketProto_HyBi03::toFin(bool isFin) const { return isFin ? 0 : 1; }
+uint8_t WebSocketProto_HyBi03::to_fin(bool is_fin) const { return is_fin ? 0 : 1; }
 
-Opcode WebSocketProto_HyBi03::decodeOpcode(uint8_t rawCode) const {
-  switch (rawCode) {
+Opcode WebSocketProto_HyBi03::decode_opcode(uint8_t raw_code) const {
+  switch (raw_code) {
   case 0:
     return Continuation;
   case 1:
@@ -141,7 +141,7 @@ Opcode WebSocketProto_HyBi03::decodeOpcode(uint8_t rawCode) const {
   }
 }
 
-uint8_t WebSocketProto_HyBi03::encodeOpcode(Opcode opcode) const {
+uint8_t WebSocketProto_HyBi03::encode_opcode(Opcode opcode) const {
   switch (opcode) {
   case Continuation:
     return 0;

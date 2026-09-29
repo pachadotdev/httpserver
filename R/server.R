@@ -1,122 +1,122 @@
-# Note that the methods listed for the base server object, WebServer, and
-# PipeServer were copied and pasted among all three, with a few additional
-# methods added to WebServer and PipeServer. When changes are made in the
+# note that the methods listed for the base server object, web_server, and
+# pipe_server were copied and pasted among all three, with a few additional
+# methods added to web_server and pipe_server. when changes are made in the
 # future, make sure that they're duplicated among all three.
 #
-# These server objects used to be implemented with R6, but are now plain
-# environments used as reference-semantics objects, to avoid the R6
-# dependency (and its Suggests, e.g. testthat). Each constructor creates a
+# these server objects used to be implemented with r6, but are now plain
+# environments used as reference-semantics objects, to avoid the r6
+# dependency (and its suggests, e.g. testthat). each constructor creates a
 # `private` environment to hold internal state, and a `self` environment
 # whose elements are closures over `private` (and, for methods that need to
-# refer back to the object itself, over `self`). This mirrors what R6 does
+# refer back to the object itself, over `self`). this mirrors what r6 does
 # internally, just without the extra package.
 
-# Build the set of methods shared by WebServer and PipeServer. `private` is
+# build the set of methods shared by web_server and pipe_server. `private` is
 # an environment that must already contain (or will later contain) the
-# fields `appWrapper`, `handle`, and `running`. Returns the `self`
+# fields `app_wrapper`, `handle`, and `running`. returns the `self`
 # environment; callers add their own additional fields/methods and a class
-# attribute (the class vector should always include "Server").
+# attribute (the class vector should always include "server").
 new_server <- function(private) {
   self <- new.env(parent = emptyenv())
 
-  # Stop a running server
+  # stop a running server
   self$stop <- function() {
     if (!private$running) {
       return(invisible())
     }
 
-    stopServer_(private$handle)
+    stop_server_(private$handle)
     private$running <- FALSE
-    deregisterServer(self)
+    deregister_server(self)
     invisible()
   }
 
-  # Check if the server is running.
-  # This doesn't map exactly to whether the app is running, since the
-  # server's uv_loop runs on the background thread. This could be changed
-  # to something that queries the C++ side about what's running.
-  self$isRunning <- function() {
+  # check if the server is running.
+  # this doesn't map exactly to whether the app is running, since the
+  # server's uv_loop runs on the background thread. this could be changed
+  # to something that queries the c++ side about what's running.
+  self$is_running <- function() {
     private$running
   }
 
-  # Get the static paths for the server, as a list of staticPath() objects
-  self$getStaticPaths <- function() {
+  # get the static paths for the server, as a list of static_path() objects
+  self$get_static_paths <- function() {
     if (!private$running) {
       return(NULL)
     }
 
-    getStaticPaths_(private$handle)
+    get_static_paths_(private$handle)
   }
 
-  # Set a static path for the server. `...`/`.list` are named arguments
+  # set a static path for the server. `...`/`.list` are named arguments
   # where each name is the name of the static path and the value is the
-  # path to the directory to serve. If there already exists a static path
+  # path to the directory to serve. if there already exists a static path
   # with the same name, it will be replaced.
-  self$setStaticPath <- function(..., .list = NULL) {
+  self$set_static_path <- function(..., .list = NULL) {
     if (!private$running) {
       return(invisible())
     }
 
     paths <- c(list(...), .list)
-    paths <- normalizeStaticPaths(paths)
-    invisible(setStaticPaths_(private$handle, paths))
+    paths <- normalize_static_paths(paths)
+    invisible(set_static_paths_(private$handle, paths))
   }
 
-  # Remove a static path by name
-  self$removeStaticPath <- function(path) {
+  # remove a static path by name
+  self$remove_static_path <- function(path) {
     if (!private$running) {
       return(invisible())
     }
 
     path <- as.character(path)
-    invisible(removeStaticPaths_(private$handle, path))
+    invisible(remove_static_paths_(private$handle, path))
   }
 
-  # Get the static path options for the server: a list of default
-  # `staticPathOptions` for the current server. Each static path will use
+  # get the static path options for the server: a list of default
+  # `static_path_options` for the current server. each static path will use
   # these options by default, but they can be overridden for each static
   # path.
-  self$getStaticPathOptions <- function() {
+  self$get_static_path_options <- function() {
     if (!private$running) {
       return(NULL)
     }
 
-    getStaticPathOptions_(private$handle)
+    get_static_path_options_(private$handle)
   }
 
-  # Set one or more static path options. `...`/`.list` are named arguments
+  # set one or more static path options. `...`/`.list` are named arguments
   # where each name is the name of the static path option and the value is
   # the value to set for that option.
-  self$setStaticPathOption <- function(..., .list = NULL) {
+  self$set_static_path_option <- function(..., .list = NULL) {
     if (!private$running) {
       return(invisible())
     }
 
     opts <- c(list(...), .list)
     opts <- drop_duplicate_names(opts)
-    opts <- normalizeStaticPathOptions(opts)
+    opts <- normalize_static_path_options(opts)
 
-    unknown_opt_idx <- !(names(opts) %in% names(formals(staticPathOptions)))
+    unknown_opt_idx <- !(names(opts) %in% names(formals(static_path_options)))
     if (any(unknown_opt_idx)) {
-      stop("Unknown options: ", paste(names(opts)[unknown_opt_idx], ", "))
+      stop("unknown options: ", paste(names(opts)[unknown_opt_idx], ", "))
     }
 
-    invisible(setStaticPathOptions_(private$handle, opts))
+    invisible(set_static_path_options_(private$handle, opts))
   }
 
   self
 }
 
-# This represents a web server running one application. Multiple servers
+# this represents a web server running one application. multiple servers
 # can be running at the same time.
 #
-# `host` is the host name or IP address to bind the server to. `port` is
+# `host` is the host name or ip address to bind the server to. `port` is
 # the port number to bind the server to. `app` is an httpserver application
-# object as described in startServer(). `quiet`, if TRUE, suppresses output
+# object as described in start_server(). `quiet`, if TRUE, suppresses output
 # from the server.
-WebServer <- function(host, port, app, quiet = FALSE) {
+web_server <- function(host, port, app, quiet = FALSE) {
   private <- new.env(parent = emptyenv())
-  private$appWrapper <- NULL
+  private$app_wrapper <- NULL
   private$handle <- NULL
   private$running <- FALSE
   private$host <- host
@@ -124,58 +124,58 @@ WebServer <- function(host, port, app, quiet = FALSE) {
 
   self <- new_server(private)
 
-  private$appWrapper <- AppWrapper(app)
+  private$app_wrapper <- app_wrapper(app)
 
-  private$handle <- makeTcpServer(
+  private$handle <- make_tcp_server(
     host,
     port,
-    private$appWrapper$onHeaders,
-    private$appWrapper$onBodyData,
-    private$appWrapper$call,
-    private$appWrapper$onWSOpen,
-    private$appWrapper$onWSMessage,
-    private$appWrapper$onWSClose,
-    private$appWrapper$staticPaths,
-    private$appWrapper$staticPathOptions,
+    private$app_wrapper$on_headers,
+    private$app_wrapper$on_body_data,
+    private$app_wrapper$call,
+    private$app_wrapper$on_wsopen,
+    private$app_wrapper$on_wsmessage,
+    private$app_wrapper$on_wsclose,
+    private$app_wrapper$static_paths,
+    private$app_wrapper$static_path_options,
     quiet
   )
 
   if (is.null(private$handle)) {
-    stop("Failed to create server")
+    stop("failed to create server")
   }
 
   private$running <- TRUE
 
-  # Get the host name or IP address of the server
-  self$getHost <- function() {
+  # get the host name or ip address of the server
+  self$get_host <- function() {
     private$host
   }
 
-  # Get the port number of the server
-  self$getPort <- function() {
+  # get the port number of the server
+  self$get_port <- function() {
     private$port
   }
 
-  class(self) <- c("WebServer", "Server")
-  registerServer(self)
+  class(self) <- c("web_server", "server")
+  register_server(self)
 
   self
 }
 
-# This represents a server running one application that listens on a named
+# this represents a server running one application that listens on a named
 # pipe.
 #
 # `name` is the name of the named pipe to bind the server to. `mask` is the
 # mask for the named pipe (if NULL, it defaults to -1). `app` is an
-# httpserver application object as described in startServer(). `quiet`, if
+# httpserver application object as described in start_server(). `quiet`, if
 # TRUE, suppresses output from the server.
-PipeServer <- function(name, mask, app, quiet = FALSE) {
+pipe_server <- function(name, mask, app, quiet = FALSE) {
   if (is.null(mask)) {
     mask <- -1
   }
 
   private <- new.env(parent = emptyenv())
-  private$appWrapper <- NULL
+  private$app_wrapper <- NULL
   private$handle <- NULL
   private$running <- FALSE
   private$name <- NULL
@@ -183,79 +183,79 @@ PipeServer <- function(name, mask, app, quiet = FALSE) {
 
   self <- new_server(private)
 
-  private$appWrapper <- AppWrapper(app)
+  private$app_wrapper <- app_wrapper(app)
 
-  private$handle <- makePipeServer(
+  private$handle <- make_pipe_server(
     name,
     mask,
-    private$appWrapper$onHeaders,
-    private$appWrapper$onBodyData,
-    private$appWrapper$call,
-    private$appWrapper$onWSOpen,
-    private$appWrapper$onWSMessage,
-    private$appWrapper$onWSClose,
-    private$appWrapper$staticPaths,
-    private$appWrapper$staticPathOptions,
+    private$app_wrapper$on_headers,
+    private$app_wrapper$on_body_data,
+    private$app_wrapper$call,
+    private$app_wrapper$on_wsopen,
+    private$app_wrapper$on_wsmessage,
+    private$app_wrapper$on_wsclose,
+    private$app_wrapper$static_paths,
+    private$app_wrapper$static_path_options,
     quiet
   )
 
-  # Save the full path. normalizePath must be called after makePipeServer
+  # save the full path. normalizePath must be called after make_pipe_server
   private$name <- normalizePath(name)
 
   if (is.null(private$handle)) {
-    stop("Failed to create server")
+    stop("failed to create server")
   }
 
-  # Get the name of the named pipe
-  self$getName <- function() {
+  # get the name of the named pipe
+  self$get_name <- function() {
     private$name
   }
 
-  # Get the mask for the named pipe
-  self$getMask <- function() {
+  # get the mask for the named pipe
+  self$get_mask <- function() {
     private$mask
   }
 
-  class(self) <- c("PipeServer", "Server")
+  class(self) <- c("pipe_server", "server")
 
   self
 }
 
 
-#' Stop a server
+#' stop a server
 #'
-#' Given a server object that was returned from a previous invocation of
-#' [startServer()] or [startPipeServer()], this closes all
+#' given a server object that was returned from a previous invocation of
+#' [start_server()] or [start_pipe_server()], this closes all
 #' open connections for that server and unbinds the port.
 #'
-#' @param server A server object that was previously returned from
-#'   [startServer()] or [startPipeServer()].
+#' @param server a server object that was previously returned from
+#'   [start_server()] or [start_pipe_server()].
 #'
-#' @return No return value, called for its side effect of stopping the server.
+#' @return no return value, called for its side effect of stopping the server.
 #'
-#' @seealso [stopAllServers()] to stop all servers.
+#' @seealso [stop_all_servers()] to stop all servers.
 #'
 #' @export
-stopServer <- function(server) {
-  if (!inherits(server, "Server")) {
-    stop("Object must be an object of class Server.")
+stop_server <- function(server) {
+  if (!inherits(server, "server")) {
+    stop("object must be an object of class server.")
   }
   server$stop()
 }
 
 
-#' Stop all servers
+#' stop all servers
 #'
-#' This will stop all applications which were created by
-#' [startServer()] or [startPipeServer()].
+#' this will stop all applications which were created by
+#' [start_server()] or [start_pipe_server()].
 #'
-#' @return No return value, called for its side effect of stopping all running
+#' @return no return value, called for its side effect of stopping all running
 #'   servers.
 #'
-#' @seealso [stopServer()] to stop a specific server.
+#' @seealso [stop_server()] to stop a specific server.
 #'
 #' @export
-stopAllServers <- function() {
+stop_all_servers <- function() {
   lapply(.globals$servers, function(server) {
     server$stop()
   })
@@ -265,23 +265,23 @@ stopAllServers <- function() {
 
 .globals$servers <- list()
 
-#' List all running httpserver servers
+#' list all running httpserver servers
 #'
-#' This returns a list of all running httpserver server applications.
+#' this returns a list of all running httpserver server applications.
 #'
-#' @return A list of currently running server objects. The list is empty when
+#' @return a list of currently running server objects. the list is empty when
 #'   no servers are running.
 #'
 #' @export
-listServers <- function() {
+list_servers <- function() {
   .globals$servers
 }
 
-registerServer <- function(server) {
+register_server <- function(server) {
   .globals$servers[[length(.globals$servers) + 1]] <- server
 }
 
-deregisterServer <- function(server) {
+deregister_server <- function(server) {
   for (i in seq_along(.globals$servers)) {
     if (identical(server, .globals$servers[[i]])) {
       .globals$servers[[i]] <- NULL
@@ -290,6 +290,6 @@ deregisterServer <- function(server) {
   }
 
   warning(
-    "Unable to deregister server: server not found in list of running servers."
+    "unable to deregister server: server not found in list of running servers."
   )
 }

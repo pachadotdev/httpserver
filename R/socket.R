@@ -1,9 +1,9 @@
-# Implementation of Rook input stream.
+# implementation of rook input stream.
 #
-# These streams used to be implemented with R6, but are now plain
-# environments used as reference-semantics objects, to avoid the R6
-# dependency (and its Suggests, e.g. testthat).
-InputStream <- function(conn, length) {
+# these streams used to be implemented with r6, but are now plain
+# environments used as reference-semantics objects, to avoid the r6
+# dependency (and its suggests, e.g. testthat).
+input_stream <- function(conn, length) {
   private <- new.env(parent = emptyenv())
   private$conn <- conn
   private$length <- length
@@ -32,11 +32,11 @@ InputStream <- function(conn, length) {
     seek(private$conn, 0)
   }
 
-  class(self) <- "InputStream"
+  class(self) <- "input_stream"
   self
 }
 
-NullInputStream <- function() {
+null_input_stream <- function() {
   self <- new.env(parent = emptyenv())
 
   self$read_lines <- function(n = -1L) {
@@ -48,13 +48,13 @@ NullInputStream <- function() {
   self$rewind <- function() invisible()
   self$close <- function() invisible()
 
-  class(self) <- "NullInputStream"
+  class(self) <- "null_input_stream"
   self
 }
-nullInputStream <- NullInputStream()
+null_input_stream <- null_input_stream()
 
-# Implementation of Rook error stream
-ErrorStream <- function() {
+# implementation of rook error stream
+error_stream <- function() {
   self <- new.env(parent = emptyenv())
 
   self$cat <- function(..., sep = " ", fill = FALSE, labels = NULL) {
@@ -64,33 +64,33 @@ ErrorStream <- function() {
     base::flush(stderr())
   }
 
-  class(self) <- "ErrorStream"
+  class(self) <- "error_stream"
   self
 }
-stdErrStream <- ErrorStream()
+std_err_stream <- error_stream()
 
-rookCall <- function(func, req, data = NULL, dataLength = -1) {
-  # Break the processing into two parts: first, the computation with func();
+rook_call <- function(func, req, data = NULL, data_length = -1L) {
+  # break the processing into two parts: first, the computation with func();
   # second, the preparation of the response object.
   compute <- function() {
-    inputStream <- if (is.null(data)) {
-      nullInputStream
+    input_stream <- if (is.null(data)) {
+      null_input_stream
     } else {
-      InputStream(data, dataLength)
+      input_stream(data, data_length)
     }
 
-    req$rook.input <- inputStream
+    req$rook.input <- input_stream
 
-    req$rook.errors <- stdErrStream
+    req$rook.errors <- std_err_stream
 
     req$httpserver.version <- httpserver_version()
 
-    # These appear to be required for Rook multipart parsing to work
-    if (!is.null(req$HTTP_CONTENT_TYPE)) {
-      req$CONTENT_TYPE <- req$HTTP_CONTENT_TYPE
+    # these appear to be required for rook multipart parsing to work
+    if (!is.null(req$http_content_type)) {
+      req$content_type <- req$http_content_type
     }
-    if (!is.null(req$HTTP_CONTENT_LENGTH)) {
-      req$CONTENT_LENGTH <- req$HTTP_CONTENT_LENGTH
+    if (!is.null(req$http_content_length)) {
+      req$content_length <- req$http_content_length
     }
 
     # func() may return a regular value or a promise.
@@ -102,8 +102,8 @@ rookCall <- function(func, req, data = NULL, dataLength = -1) {
       return(NULL)
     }
 
-    # If headers is an empty unnamed list, convert to named list so that
-    # the C++ code won't error.
+    # if headers is an empty unnamed list, convert to named list so that
+    # the c++ code won't error.
     if (
       is.null(resp$headers) ||
         (length(resp$headers) == 0 && is.null(names(resp$headers)))
@@ -111,7 +111,7 @@ rookCall <- function(func, req, data = NULL, dataLength = -1) {
       resp$headers <- named_list()
     }
 
-    # Coerce all headers to character
+    # coerce all headers to character
     resp$headers <- lapply(resp$headers, paste)
 
     if ("file" %in% names(resp$body)) {
@@ -122,8 +122,8 @@ rookCall <- function(func, req, data = NULL, dataLength = -1) {
       }
 
       resp$body <- NULL
-      resp$bodyFile <- filename
-      resp$bodyFileOwned <- owned
+      resp$body_file <- filename
+      resp$body_file_owned <- owned
     }
     resp
   }
@@ -132,17 +132,17 @@ rookCall <- function(func, req, data = NULL, dataLength = -1) {
     list(
       status = 500L,
       headers = list(
-        "Content-Type" = "text/plain; charset=UTF-8"
+        "content-type" = "text/plain; charset=utf-8"
       ),
       body = charToRaw(enc2utf8(
-        paste("ERROR:", conditionMessage(e), collapse = "\n")
+        paste("error:", conditionMessage(e), collapse = "\n")
       ))
     )
   }
 
-  # First, run the compute function. If it errored, return error response.
-  # Then check if it returned a promise. If so, promisify the next step.
-  # If not, run the next step immediately.
+  # first, run the compute function. if it errored, return error response.
+  # then check if it returned a promise. if so, promisify the next step.
+  # if not, run the next step immediately.
   compute_error <- NULL
   response <- tryCatch(
     compute(),
@@ -159,15 +159,15 @@ rookCall <- function(func, req, data = NULL, dataLength = -1) {
   }
 }
 
-AppWrapper <- function(app) {
+app_wrapper <- function(app) {
   private <- new.env(parent = emptyenv())
-  private$app <- NULL # List defining app
-  private$wsconns <- NULL # An environment containing websocket connections
-  private$supportsOnHeaders <- NULL # Logical
+  private$app <- NULL # list defining app
+  private$wsconns <- NULL # an environment containing websocket connections
+  private$supports_on_headers <- NULL # logical
 
   self <- new.env(parent = emptyenv())
-  self$staticPaths <- NULL # List of static paths
-  self$staticPathOptions <- NULL # StaticPathOptions object
+  self$static_paths <- NULL # list of static paths
+  self$static_path_options <- NULL # static_path_options object
 
   if (is.function(app)) {
     private$app <- list(call = app)
@@ -175,178 +175,178 @@ AppWrapper <- function(app) {
     private$app <- app
   }
 
-  # private$app$onHeaders can error (e.g. if private$app is a reference class)
-  private$supportsOnHeaders <- isTRUE(try(
-    !is.null(private$app$onHeaders),
+  # private$app$on_headers can error (e.g. if private$app is a reference class)
+  private$supports_on_headers <- isTRUE(try(
+    !is.null(private$app$on_headers),
     silent = TRUE
   ))
 
-  # staticPaths are saved in a field on this object, because they are read
-  # from the app object only during initialization. This is the only time
+  # static_paths are saved in a field on this object, because they are read
+  # from the app object only during initialization. this is the only time
   # it makes sense to read them from the app object, since they're
   # subsequently used on the background thread, and for performance
-  # reasons it can't call back into R. Note that if the app object is a
-  # reference object and app$staticPaths is changed later, it will have no
+  # reasons it can't call back into r. note that if the app object is a
+  # reference object and app$static_paths is changed later, it will have no
   # effect on the behavior of the application.
   #
-  # If private$app is a reference class, accessing private$app$staticPaths
-  # can error if not present. Saving here in a separate var because R CMD
+  # if private$app is a reference class, accessing private$app$static_paths
+  # can error if not present. saving here in a separate var because r cmd
   # check complains if you compare class(x) with a string.
-  try_obj_class <- class(try(private$app$staticPaths, silent = TRUE))
-  if (try_obj_class == "try-error" || is.null(private$app$staticPaths)) {
-    self$staticPaths <- list()
+  try_obj_class <- class(try(private$app$static_paths, silent = TRUE))
+  if (try_obj_class == "try-error" || is.null(private$app$static_paths)) {
+    self$static_paths <- list()
   } else {
-    self$staticPaths <- normalizeStaticPaths(private$app$staticPaths)
+    self$static_paths <- normalize_static_paths(private$app$static_paths)
   }
 
-  try_obj_class <- class(try(private$app$staticPathOptions, silent = TRUE))
+  try_obj_class <- class(try(private$app$static_path_options, silent = TRUE))
   if (
-    try_obj_class == "try-error" || is.null(private$app$staticPathOptions)
+    try_obj_class == "try-error" || is.null(private$app$static_path_options)
   ) {
-    # Use defaults
-    self$staticPathOptions <- staticPathOptions()
-  } else if (inherits(private$app$staticPathOptions, "staticPathOptions")) {
-    self$staticPathOptions <- normalizeStaticPathOptions(
-      private$app$staticPathOptions
+    # use defaults
+    self$static_path_options <- static_path_options()
+  } else if (inherits(private$app$static_path_options, "static_path_options")) {
+    self$static_path_options <- normalize_static_path_options(
+      private$app$static_path_options
     )
   } else {
-    stop("staticPathOptions must be an object of class staticPathOptions.")
+    stop("static_path_options must be an object of class static_path_options.")
   }
 
   private$wsconns <- new.env(parent = emptyenv())
 
-  self$onHeaders <- function(req) {
-    if (!private$supportsOnHeaders) {
+  self$on_headers <- function(req) {
+    if (!private$supports_on_headers) {
       return(NULL)
     }
 
-    rookCall(private$app$onHeaders, req)
+    rook_call(private$app$on_headers, req)
   }
 
-  self$onBodyData <- function(req, bytes) {
-    if (is.null(req$.bodyData)) {
-      req$.bodyData <- file(open = "w+b", encoding = "UTF-8")
+  self$on_body_data <- function(req, bytes) {
+    if (is.null(req$.body_data)) {
+      req$.body_data <- file(open = "w+b", encoding = "utf-8")
     }
-    writeBin(bytes, req$.bodyData)
+    writeBin(bytes, req$.body_data)
   }
 
   self$call <- function(req, cpp_callback) {
-    # The cpp_callback is an external pointer to a C++ function that writes
+    # the cpp_callback is an external pointer to a c++ function that writes
     # the response.
 
     resp <- if (is.null(private$app$call)) {
       list(
         status = 404L,
         headers = list(
-          "Content-Type" = "text/plain"
+          "content-type" = "text/plain"
         ),
-        body = "404 Not Found\n"
+        body = "404 not found\n"
       )
     } else {
-      rookCall(private$app$call, req, req$.bodyData, seek(req$.bodyData))
+      rook_call(private$app$call, req, req$.body_data, seek(req$.body_data))
     }
-    # Note: rookCall() should never throw error because all the work is
+    # note: rook_call() should never throw error because all the work is
     # wrapped in tryCatch().
 
     clean_up <- function() {
-      if (!is.null(req$.bodyData)) {
-        close(req$.bodyData)
+      if (!is.null(req$.body_data)) {
+        close(req$.body_data)
       }
-      req$.bodyData <- NULL
+      req$.body_data <- NULL
     }
 
     if (is.promise(resp)) {
-      # Slower path if resp is a promise
-      resp <- then(resp, function(value) invokeCppCallback(value, cpp_callback))
+      # slower path if resp is a promise
+      resp <- then(resp, function(value) invoke_cpp_callback(value, cpp_callback))
       finally(resp, clean_up)
     } else {
-      # Fast path if resp is a regular value
+      # fast path if resp is a regular value
       on.exit(clean_up())
-      invokeCppCallback(resp, cpp_callback)
+      invoke_cpp_callback(resp, cpp_callback)
     }
 
     invisible()
   }
 
-  self$onWSOpen <- function(handle, req) {
-    ws <- WebSocket(handle, req)
+  self$on_wsopen <- function(handle, req) {
+    ws <- web_socket(handle, req)
     private$wsconns[[wsconn_address(handle)]] <- ws
-    result <- try(private$app$onWSOpen(ws))
+    result <- try(private$app$on_wsopen(ws))
 
-    # If an unexpected error happened, just close up
+    # if an unexpected error happened, just close up
     if (inherits(result, "try-error")) {
-      ws$close(1011, "Error in onWSOpen")
+      ws$close(1011, "error in on_wsopen")
     }
   }
 
-  self$onWSMessage <- function(handle, binary, message) {
+  self$on_wsmessage <- function(handle, binary, message) {
     for (handler in private$wsconns[[wsconn_address(
       handle
-    )]]$messageCallbacks) {
+    )]]$message_callbacks) {
       result <- try(handler(binary, message))
       if (inherits(result, "try-error")) {
         private$wsconns[[wsconn_address(handle)]]$close(
           1011,
-          "Error executing onWSMessage"
+          "error executing on_wsmessage"
         )
         return()
       }
     }
   }
 
-  self$onWSClose <- function(handle) {
+  self$on_wsclose <- function(handle) {
     ws <- private$wsconns[[wsconn_address(handle)]]
     ws$handle <- NULL
     rm(list = wsconn_address(handle), envir = private$wsconns)
 
-    for (handler in ws$closeCallbacks) {
+    for (handler in ws$close_callbacks) {
       handler()
     }
   }
 
-  class(self) <- "AppWrapper"
+  class(self) <- "app_wrapper"
   self
 }
 
-#' @title WebSocket class
+#' @title web_socket class
 #' @description
-#' A `WebSocket` object represents a single WebSocket connection. The
+#' a `web_socket` object represents a single web_socket connection. the
 #' object can be used to send messages and close the connection, and to receive
 #' notifications when messages are received or the connection is closed.
 #'
 #' @details
-#' Note that this WebSocket class is different from the one provided by the
-#' package named websocket. This class is meant to be used on the server side,
-#' whereas the one in the websocket package is to be used as a client. The
-#' WebSocket class in httpserver has an older API than the one in the websocket
+#' note that this web_socket class is different from the one provided by the
+#' package named websocket. this class is meant to be used on the server side,
+#' whereas the one in the websocket package is to be used as a client. the
+#' web_socket class in httpserver has an older api than the one in the websocket
 #' package.
 #'
-#' WebSocket objects should never be created directly. They are obtained by
-#' passing an `onWSOpen` function to [startServer()].
+#' web_socket objects should never be created directly. they are obtained by
+#' passing an `on_wsopen` function to [start_server()].
 #'
-#' @return An environment of class `WebSocket` containing the connection
+#' @return an environment of class `web_socket` containing the connection
 #'   handle, request information, callback registries, and methods for sending
 #'   messages or closing the connection.
 #'
 #' @export
 #' @examples
-#' # A WebSocket echo server that listens on port 8080
-#' s <- startServer(
+#' # a web_socket echo server that listens on port 8080
+#' s <- start_server(
 #'   "0.0.0.0", 8080,
 #'   list(
-#'     onHeaders = function(req) {
-#'       # Print connection headers
+#'     on_headers = function(req) {
+#'       # print connection headers
 #'       cat(capture.output(str(as.list(req))), sep = "\n")
 #'     },
-#'     onWSOpen = function(ws) {
-#'       cat("Connection opened.\n")
+#'     on_wsopen = function(ws) {
+#'       cat("connection opened.\n")
 #'
-#'       ws$onMessage(function(binary, message) {
-#'         cat("Server received message:", message, "\n")
+#'       ws$on_message(function(binary, message) {
+#'         cat("server received message:", message, "\n")
 #'         ws$send(message)
 #'       })
-#'       ws$onClose(function() {
-#'         cat("Connection closed.\n")
+#'       ws$on_close(function() {
+#'         cat("connection closed.\n")
 #'       })
 #'     }
 #'   )
@@ -354,48 +354,48 @@ AppWrapper <- function(app) {
 #'
 #' s$stop()
 #'
-#' @param handle An C++ WebSocket handle.
-#' @param req The Rook request environment that opened the connection.
+#' @param handle an c++ web_socket handle.
+#' @param req the rook request environment that opened the connection.
 #'
 #' @details
-#' The returned object has the following fields and methods:
+#' the returned object has the following fields and methods:
 #' * `handle`: the server handle.
-#' * `request`: the Rook request environment that opened the connection.
-#'   This can be used to inspect HTTP headers, for example.
-#' * `messageCallbacks`: a list of callback functions that will be invoked
+#' * `request`: the rook request environment that opened the connection.
+#'   this can be used to inspect http headers, for example.
+#' * `message_callbacks`: a list of callback functions that will be invoked
 #'   when a message is received on this connection.
-#' * `closeCallbacks`: a list of callback functions that will be invoked when
+#' * `close_callbacks`: a list of callback functions that will be invoked when
 #'   the connection is closed.
-#' * `onMessage(func)`: registers a callback function that will be invoked
-#'   whenever a message is received on this connection. The callback
+#' * `on_message(func)`: registers a callback function that will be invoked
+#'   whenever a message is received on this connection. the callback
 #'   function will be invoked with two arguments: the first is `TRUE` if the
 #'   message is binary and `FALSE` if it is text; the second is either a raw
 #'   vector (if the message is binary) or a character vector.
-#' * `onClose(func)`: registers a callback function that will be invoked when
+#' * `on_close(func)`: registers a callback function that will be invoked when
 #'   the connection is closed.
 #' * `send(message)`: begins sending the given message over the websocket.
 #'   `message` is either a raw vector, or a single-element character vector
-#'   that is encoded in UTF-8.
+#'   that is encoded in utf-8.
 #' * `close(code = 1000L, reason = "")`: closes the websocket connection.
-#'   `code` is an integer that indicates the WebSocket close code
-#'   (https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/close#code).
+#'   `code` is an integer that indicates the web_socket close code
+#'   (https://developer.mozilla.org/en-us/docs/web/api/web_socket/close#code).
 #'   `reason` is a concise human-readable prose explanation for the closure
-#'   (https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/close#reason).
+#'   (https://developer.mozilla.org/en-us/docs/web/api/web_socket/close#reason).
 #' @export
-WebSocket <- function(handle, req) {
+web_socket <- function(handle, req) {
   self <- new.env(parent = emptyenv())
 
   self$handle <- handle
   self$request <- req
-  self$messageCallbacks <- list()
-  self$closeCallbacks <- list()
+  self$message_callbacks <- list()
+  self$close_callbacks <- list()
 
-  self$onMessage <- function(func) {
-    self$messageCallbacks <- c(self$messageCallbacks, func)
+  self$on_message <- function(func) {
+    self$message_callbacks <- c(self$message_callbacks, func)
   }
 
-  self$onClose <- function(func) {
-    self$closeCallbacks <- c(self$closeCallbacks, func)
+  self$on_close <- function(func) {
+    self$close_callbacks <- c(self$close_callbacks, func)
   }
 
   self$send <- function(message) {
@@ -404,10 +404,10 @@ WebSocket <- function(handle, req) {
     }
 
     if (is.raw(message)) {
-      sendWSMessage(self$handle, TRUE, message)
+      send_ws_message(self$handle, TRUE, message)
     } else {
-      # TODO: Ensure that message is UTF-8 encoded
-      sendWSMessage(self$handle, FALSE, as.character(message))
+      # todo: ensure that message is utf-8 encoded
+      send_ws_message(self$handle, FALSE, as.character(message))
     }
   }
 
@@ -416,141 +416,140 @@ WebSocket <- function(handle, req) {
       return()
     }
 
-    # Make sure the code will fit in a short int (2 bytes); if not just use
-    # "Going Away" error code.
+    # make sure the code will fit in a short int (2 bytes); if not just use
+    # "going away" error code.
     code <- as.integer(code)
     if (code < 0 || code > 2^16 - 1) {
-      warning("Invalid websocket error code: ", code)
+      warning("invalid websocket error code: ", code)
       code <- 1001L
     }
-    reason <- iconv(reason, to = "UTF-8")
+    reason <- iconv(reason, to = "utf-8")
 
-    closeWS(self$handle, code, reason)
+    close_ws(self$handle, code, reason)
     self$handle <- NULL
   }
 
-  class(self) <- "WebSocket"
+  class(self) <- "web_socket"
   self
 }
 
-#' Create an HTTP/WebSocket server
+#' create an http/web_socket server
 #'
-#' Creates an HTTP/WebSocket server on the specified host and port.
+#' creates an http/web_socket server on the specified host and port.
 #'
-#' @param host A string that is a valid IPv4 address that is owned by this
-#'   server, or `"0.0.0.0"` to listen on all IP addresses.
-#' @param port A number or integer that indicates the server port that should be
-#'   listened on. Note that on most Unix-like systems including Linux and macOS,
+#' @param host a string that is a valid ipv4 address that is owned by this
+#'   server, or `"0.0.0.0"` to listen on all ip addresses.
+#' @param port a number or integer that indicates the server port that should be
+#'   listened on. note that on most unix-like systems including linux and mac_os,
 #'   port numbers smaller than 1024 require root privileges.
-#' @param app A collection of functions that define your application. See
-#'   Details.
-#' @param quiet If `TRUE`, suppress error messages from starting app.
-#' @return A handle for this server that can be passed to
-#'   [stopServer()] to shut the server down.
+#' @param app a collection of functions that define your application. see
+#'   details.
+#' @param quiet if `TRUE`, suppress error messages from starting app.
+#' @return a handle for this server that can be passed to
+#'   [stop_server()] to shut the server down.
 #'
-#' @details `startServer` binds the specified port and listens for
-#'   connections on an thread running in the background. This background thread
-#'   handles the I/O, and when it receives a HTTP request, it will schedule a
-#'   call to the user-defined R functions in `app` to handle the request.
-#'   This scheduling is done with [later2::later()]. When the R call
-#'   stack is empty -- in other words, when an interactive R session is sitting
-#'   idle at the command prompt -- R will automatically run the scheduled calls.
-#'   However, if the call stack is not empty -- if R is evaluating other R code
+#' @details `start_server` binds the specified port and listens for
+#'   connections on an thread running in the background. this background thread
+#'   handles the i/o, and when it receives a http request, it will schedule a
+#'   call to the user-defined r functions in `app` to handle the request.
+#'   this scheduling is done with [later2::later()]. when the r call
+#'   stack is empty -- in other words, when an interactive r session is sitting
+#'   idle at the command prompt -- r will automatically run the scheduled calls.
+#'   however, if the call stack is not empty -- if r is evaluating other r code
 #'   -- then the callbacks will not execute until either the call stack is
-#'   empty, or the [later2::run_now()] function is called. This
-#'   function tells R to execute any callbacks that have been scheduled by
-#'   [later2::later()]. The [service()] function is
+#'   empty, or the [later2::run_now()] function is called. this
+#'   function tells r to execute any callbacks that have been scheduled by
+#'   [later2::later()]. the [service()] function is
 #'   essentially a wrapper for [later2::run_now()].
 #'
-#'   In older versions of httpuv (1.3.5 and below), it did not use a background
-#'   thread for I/O, and when this function was called, it did not accept
-#'   connections immediately. It was necessary to call [service()]
+#'   in older versions of httpuv (1.3.5 and below), it did not use a background
+#'   thread for i/o, and when this function was called, it did not accept
+#'   connections immediately. it was necessary to call [service()]
 #'   repeatedly in order to actually accept and handle connections.
 #'
-#'   If the port cannot be bound (most likely due to permissions or because it
+#'   if the port cannot be bound (most likely due to permissions or because it
 #'   is already bound), an error is raised.
 #'
-#'   The application can also specify paths on the filesystem which will be
+#'   the application can also specify paths on the filesystem which will be
 #'   served from the background thread, without invoking `$call()` or
-#'   `$onHeaders()`. Files served this way will be only use a C++ code,
-#'   which is faster than going through R, and will not be blocked when R code
-#'   is executing. This can greatly improve performance when serving static
+#'   `$on_headers()`. files served this way will be only use a c++ code,
+#'   which is faster than going through r, and will not be blocked when r code
+#'   is executing. this can greatly improve performance when serving static
 #'   assets.
 #'
-#'   The `app` parameter is where your application logic will be provided
-#'   to the server. This can be a list, environment, or reference class that
+#'   the `app` parameter is where your application logic will be provided
+#'   to the server. this can be a list, environment, or reference class that
 #'   contains the following methods and fields:
 #'
 #'   \describe{
-#'     \item{`call(req)`}{Process the given HTTP request, and return an
-#'     HTTP response (see Response Values). This method should be implemented in
-#'     accordance with the
-#'     [Rook](https://github.com/jeffreyhorner/Rook/blob/a5e45f751/README.md)
-#'     specification. Note that httpuv augments `req` with an additional
-#'     item, `req$HEADERS`, which is a named character vector of request
+#'     \item{`call(req)`}{process the given http request, and return an
+#'     http response (see response values). this method should be implemented in
+#'     accordance with the [rook](https://github.com/jeffreyhorner/rook/)
+#'     specification. note that httpuv augments `req` with an additional
+#'     item, `req$headers`, which is a named character vector of request
 #'     headers.}
-#'     \item{`onHeaders(req)`}{Optional. Similar to `call`, but occurs
-#'     when headers are received. Return `NULL` to continue normal
-#'     processing of the request, or a Rook response to send that response,
+#'     \item{`on_headers(req)`}{optional. similar to `call`, but occurs
+#'     when headers are received. return `NULL` to continue normal
+#'     processing of the request, or a rook response to send that response,
 #'     stop processing the request, and ask the client to close the connection.
-#'     (This can be used to implement upload size limits, for example.)}
-#'     \item{`onWSOpen(ws)`}{Called back when a WebSocket connection is established.
-#'     The given object can be used to be notified when a message is received from
-#'     the client, to send messages to the client, etc. See [WebSocket()].}
-#'     \item{`staticPaths`}{
-#'       A named list of paths that will be served without invoking
-#'       `call()` or `onHeaders`. The name of each one is the URL
+#'     (this can be used to implement upload size limits, for example.)}
+#'     \item{`on_wsopen(ws)`}{called back when a web_socket connection is established.
+#'     the given object can be used to be notified when a message is received from
+#'     the client, to send messages to the client, etc. see [web_socket()].}
+#'     \item{`static_paths`}{
+#'       a named list of paths that will be served without invoking
+#'       `call()` or `on_headers`. the name of each one is the url
 #'       path, and the value is either a string referring to a local path, or an
-#'       object created by the [staticPath()] function.
+#'       object created by the [static_path()] function.
 #'     }
-#'     \item{`staticPathOptions`}{
-#'       A set of default options to use when serving static paths. If
+#'     \item{`static_path_options`}{
+#'       a set of default options to use when serving static paths. if
 #'       not set or `NULL`, then it will use the result from calling
-#'       [staticPathOptions()] with no arguments.
+#'       [static_path_options()] with no arguments.
 #'     }
 #'   }
 #'
-#'   The `startPipeServer` variant can be used instead of
-#'   `startServer` to listen on a Unix domain socket or named pipe rather
-#'   than a TCP socket (this is not common).
+#'   the `start_pipe_server` variant can be used instead of
+#'   `start_server` to listen on a unix domain socket or named pipe rather
+#'   than a tcp socket (this is not common).
 #'
-#' @section Response Values:
+#' @section response values:
 #'
-#' The `call` function is expected to return a list containing the
-#' following, which are converted to an HTTP response and sent to the client:
+#' the `call` function is expected to return a list containing the
+#' following, which are converted to an http response and sent to the client:
 #'
 #' \describe{
-#'   \item{`status`}{A numeric HTTP status code, e.g. `200` or
+#'   \item{`status`}{a numeric http status code, e.g. `200` or
 #'     `404L`.}
 #'
-#'   \item{`headers`}{A named list of HTTP headers and their values, as
-#'     strings. This can also be missing, an empty list, or `NULL`, in which
-#'     case no headers (other than the `Date` and `Content-Length`
+#'   \item{`headers`}{a named list of http headers and their values, as
+#'     strings. this can also be missing, an empty list, or `NULL`, in which
+#'     case no headers (other than the `date` and `content-length`
 #'     headers, as required) will be added.}
 #'
-#'   \item{`body`}{A string (or `raw` vector) to be sent as the body
-#'     of the HTTP response. This can also be omitted or set to `NULL` to
-#'     avoid sending any body, which is useful for HTTP `1xx`, `204`,
-#'     and `304` responses, as well as responses to `HEAD` requests.}
+#'   \item{`body`}{a string (or `raw` vector) to be sent as the body
+#'     of the http response. this can also be omitted or set to `NULL` to
+#'     avoid sending any body, which is useful for http `1xx`, `204`,
+#'     and `304` responses, as well as responses to `head` requests.}
 #' }
 #'
-#' @return A [WebServer()] or [PipeServer()] object.
+#' @return a [web_server()] or [pipe_server()] object.
 #'
-#' @seealso [stopServer()], [runServer()],
-#'   [listServers()], [stopAllServers()].
-#' @aliases startPipeServer
+#' @seealso [stop_server()], [run_server()],
+#'   [list_servers()], [stop_all_servers()].
+#' @aliases start_pipe_server
 #'
 #' @examples
-#' s <- startServer(
+#' s <- start_server(
 #'   "0.0.0.0", 5000,
 #'   list(
 #'     call = function(req) {
 #'       list(
 #'         status = 200L,
 #'         headers = list(
-#'           "Content-Type" = "text/html"
+#'           "content-type" = "text/html"
 #'         ),
-#'         body = "Hello world!"
+#'         body = "hello world!"
 #'       )
 #'     }
 #'   )
@@ -558,35 +557,35 @@ WebSocket <- function(handle, req) {
 #'
 #' s$stop()
 #'
-#' # An application that serves static assets at the URL paths /assets and /lib
+#' # an application that serves static assets at the url paths /assets and /lib
 #' content_dir <- tempfile("httpserver-content-")
 #' dir.create(file.path(content_dir, "assets"), recursive = TRUE)
 #' dir.create(file.path(content_dir, "lib"), recursive = TRUE)
 #' on.exit(unlink(content_dir, recursive = TRUE), add = TRUE)
 #'
-#' s <- startServer(
-#'   "0.0.0.0", randomPort(),
+#' s <- start_server(
+#'   "0.0.0.0", random_port(),
 #'   list(
 #'     call = function(req) {
 #'       list(
 #'         status = 200L,
 #'         headers = list(
-#'           "Content-Type" = "text/html"
+#'           "content-type" = "text/html"
 #'         ),
-#'         body = "Hello world!"
+#'         body = "hello world!"
 #'       )
 #'     },
-#'     staticPaths = list(
+#'     static_paths = list(
 #'       "/assets" = file.path(content_dir, "assets"),
-#'       "/lib" = staticPath(
+#'       "/lib" = static_path(
 #'         file.path(content_dir, "lib"),
-#'         indexhtml = FALSE
+#'         index_html = FALSE
 #'       ),
-#'       # This subdirectory of /lib should always be handled by the R code path
-#'       "/lib/dynamic" = excludeStaticPath()
+#'       # this subdirectory of /lib should always be handled by the r code path
+#'       "/lib/dynamic" = exclude_static_path()
 #'     ),
-#'     staticPathOptions = staticPathOptions(
-#'       indexhtml = TRUE
+#'     static_path_options = static_path_options(
+#'       index_html = TRUE
 #'     )
 #'   )
 #' )
@@ -594,144 +593,144 @@ WebSocket <- function(handle, req) {
 #' s$stop()
 #'
 #' @export
-startServer <- function(host, port, app, quiet = FALSE) {
-  WebServer(host, port, app, quiet)
+start_server <- function(host, port, app, quiet = FALSE) {
+  web_server(host, port, app, quiet)
 }
 
-#' @param name A string that indicates the path for the domain socket (on
-#'   Unix-like systems) or the name of the named pipe (on Windows).
-#' @param mask If non-`NULL` and non-negative, this numeric value is used
+#' @param name a string that indicates the path for the domain socket (on
+#'   unix-like systems) or the name of the named pipe (on windows).
+#' @param mask if non-`NULL` and non-negative, this numeric value is used
 #'   to temporarily modify the process's umask while the domain socket is being
-#'   created. To ensure that only root can access the domain socket, use
+#'   created. to ensure that only root can access the domain socket, use
 #'   `strtoi("777", 8)`; or to allow owner and group read/write access, use
-#'   `strtoi("117", 8)`. If the value is `NULL` then the process's
-#'   umask is left unchanged. (This parameter has no effect on Windows.)
-#' @rdname startServer
+#'   `strtoi("117", 8)`. if the value is `NULL` then the process's
+#'   umask is left unchanged. (this parameter has no effect on windows.)
+#' @rdname start_server
 #' @export
-startPipeServer <- function(name, mask, app, quiet = FALSE) {
-  PipeServer(name, mask, app, quiet)
+start_pipe_server <- function(name, mask, app, quiet = FALSE) {
+  pipe_server(name, mask, app, quiet)
 }
 
-#' Process requests
+#' process requests
 #'
-#' Process HTTP requests and WebSocket messages. If there is nothing on R's call
-#' stack -- if R is sitting idle at the command prompt -- it is not necessary to
-#' call this function, because requests will be handled automatically. However,
-#' if R is executing code, then requests will not be handled until either the
+#' process http requests and web_socket messages. if there is nothing on r's call
+#' stack -- if r is sitting idle at the command prompt -- it is not necessary to
+#' call this function, because requests will be handled automatically. however,
+#' if r is executing code, then requests will not be handled until either the
 #' call stack is empty, or this function is called (or alternatively,
 #' [later2::run_now()] is called).
 #'
-#' In previous versions of httpuv (1.3.5 and below), even if a server created by
-#' [startServer()] exists, no requests were serviced unless and until
+#' in previous versions of httpuv (1.3.5 and below), even if a server created by
+#' [start_server()] exists, no requests were serviced unless and until
 #' `service` was called.
 #'
-#' This function simply calls [later2::run_now()], so if your
+#' this function simply calls [later2::run_now()], so if your
 #' application schedules any [later2::later()] callbacks, they will be
 #' invoked.
 #'
-#' @return The logical value `TRUE`, invisibly, after processing requests for
+#' @return the logical value `TRUE`, invisibly, after processing requests for
 #'   the requested interval.
 #'
-#' @param timeoutMs Approximate number of milliseconds to run before returning.
-#'   It will return this duration has elapsed. If 0 or Inf, then the function
+#' @param timeout_ms approximate number of milliseconds to run before returning.
+#'   it will return this duration has elapsed. if 0 or inf, then the function
 #'   will continually process requests without returning unless an error occurs.
-#'   If NA, performs a non-blocking run without waiting.
+#'   if na, performs a non-blocking run without waiting.
 #'
 #' @examples
 #' service(1)
 #'
 #' @export
-service <- function(timeoutMs = ifelse(interactive(), 100, 1000)) {
-  # In all cases, call `run_now` with `all = FALSE` so that if there is a lot of
+service <- function(timeout_ms = ifelse(interactive(), 100, 1000)) {
+  # in all cases, call `run_now` with `all = FALSE` so that if there is a lot of
   # incoming traffic (relative to the time it takes to process it) we give the
   # owning event loop opportunities to do housekeeping in between httpuv related
   # callbacks.
 
-  if (is.na(timeoutMs)) {
-    # NA means to run non-blocking
+  if (is.na(timeout_ms)) {
+    # na means to run non-blocking
     run_now(0, all = FALSE)
-  } else if (timeoutMs == 0 || timeoutMs == Inf) {
+  } else if (timeout_ms == 0 || timeout_ms == Inf) {
     .globals$paused <- FALSE
-    # In interactive sessions, wait for a max of 0.1 seconds for better
-    # responsiveness when the user sends an interrupt (like Esc in RStudio.)
+    # in interactive sessions, wait for a max of 0.1 seconds for better
+    # responsiveness when the user sends an interrupt (like esc in rstudio.)
     check_time <- if (interactive()) 0.1 else Inf
     while (!.globals$paused) {
       run_now(check_time, all = FALSE)
     }
   } else {
-    # No need to check for .globals$paused because if run_now() executes
+    # no need to check for .globals$paused because if run_now() executes
     # anything, it will return immediately.
-    run_now(timeoutMs / 1000, all = FALSE)
+    run_now(timeout_ms / 1000, all = FALSE)
   }
 
-  # Some code expects service() to return TRUE (#123)
+  # some code expects service() to return TRUE (#123)
   TRUE
 }
 
-#' Run a server
+#' run a server
 #'
-#' This is a convenience function that provides a simple way to call
-#' [startServer()], [service()], and
-#' [stopServer()] in the correct sequence. It does not return unless
+#' this is a convenience function that provides a simple way to call
+#' [start_server()], [service()], and
+#' [stop_server()] in the correct sequence. it does not return unless
 #' interrupted or an error occurs.
 #'
-#' If you have multiple hosts and/or ports to listen on, call the individual
-#' functions instead of `runServer`.
+#' if you have multiple hosts and/or ports to listen on, call the individual
+#' functions instead of `run_server`.
 #'
-#' @param host A string that is a valid IPv4 or IPv6 address that is owned by
+#' @param host a string that is a valid ipv4 or ipv6 address that is owned by
 #'   this server, which the application will listen on. `"0.0.0.0"`
-#'   represents all IPv4 addresses and `"::/0"` represents all IPv6
+#'   represents all ipv4 addresses and `"::/0"` represents all ipv6
 #'   addresses.
-#' @param port A number or integer that indicates the server port that should be
-#'   listened on. Note that on most Unix-like systems including Linux and macOS,
+#' @param port a number or integer that indicates the server port that should be
+#'   listened on. note that on most unix-like systems including linux and mac_os,
 #'   port numbers smaller than 1024 require root privileges.
-#' @param app A collection of functions that define your application. See
-#'   [startServer()].
-#' @param interruptIntervalMs Deprecated (last used in httpuv 1.3.5).
+#' @param app a collection of functions that define your application. see
+#'   [start_server()].
+#' @param interrupt_interval_ms deprecated (last used in httpuv 1.3.5).
 #'
-#' @return Normally does not return; after interruption, returns the logical
-#'   value `TRUE` from [service()]. The server is stopped as an exit side effect.
+#' @return normally does not return; after interruption, returns the logical
+#'   value `TRUE` from [service()]. the server is stopped as an exit side effect.
 #'
-#' @seealso [startServer()], [service()],
-#'   [stopServer()]
+#' @seealso [start_server()], [service()],
+#'   [stop_server()]
 #'
 #' @examples
-#' # A very basic application. runServer() blocks until interrupted, so
+#' # a very basic application. run_server() blocks until interrupted, so
 #' # schedule an interrupt() call to let this example return.
 #' later2::later(interrupt, delay = 1)
-#' runServer(
+#' run_server(
 #'   "0.0.0.0", 5000,
 #'   list(
 #'     call = function(req) {
 #'       list(
 #'         status = 200L,
 #'         headers = list(
-#'           "Content-Type" = "text/html"
+#'           "content-type" = "text/html"
 #'         ),
-#'         body = "Hello world!"
+#'         body = "hello world!"
 #'       )
 #'     }
 #'   )
 #' )
 #'
 #' @export
-runServer <- function(host, port, app, interruptIntervalMs = NULL) {
-  server <- startServer(host, port, app)
-  on.exit(stopServer(server))
+run_server <- function(host, port, app, interrupt_interval_ms = NULL) {
+  server <- start_server(host, port, app)
+  on.exit(stop_server(server))
 
-  # TODO: in the future, add deprecation message to interruptIntervalMs.
+  # todo: in the future, add deprecation message to interrupt_interval_ms.
   service(0)
 }
 
-#' Interrupt httpuv runloop
+#' interrupt httpuv runloop
 #'
-#' Interrupts the currently running httpuv runloop, meaning
-#' [runServer()] or [service()] will return control back to
+#' interrupts the currently running httpuv runloop, meaning
+#' [run_server()] or [service()] will return control back to
 #' the caller and no further tasks will be processed until those methods are
-#' called again. Note that this may cause in-process uploads or downloads to be
+#' called again. note that this may cause in-process uploads or downloads to be
 #' interrupted in mid-request.
 #'
-#' @return No return value, called for its side effect of pausing the request
+#' @return no return value, called for its side effect of pausing the request
 #'   processing loop.
 #'
 #' @export
@@ -739,22 +738,22 @@ interrupt <- function() {
   .globals$paused <- TRUE
 }
 
-#' Convert raw vector to Base64-encoded string
+#' convert raw vector to base64-encoded string
 #'
-#' Converts a raw vector to its Base64 encoding as a single-element character
+#' converts a raw vector to its base64 encoding as a single-element character
 #' vector.
 #'
-#' @param x A raw vector.
+#' @param x a raw vector.
 #'
-#' @return A single-element character vector containing the Base64 encoding of
+#' @return a single-element character vector containing the base64 encoding of
 #'   `x`.
 #'
 #' @examples
 #' set.seed(100)
-#' result <- rawToBase64(as.raw(runif(19, min = 0, max = 256)))
+#' result <- raw_to_base64(as.raw(runif(19, min = 0, max = 256)))
 #' stopifnot(identical(result, "TkGNDnd7z16LK5/hR2bDqzRbXA=="))
 #'
 #' @export
-rawToBase64 <- function(x) {
-  base64encode(x)
+raw_to_base64 <- function(x) {
+  base64_encode(x)
 }

@@ -14,54 +14,54 @@ enum Hixie76State {
   // bit is set to 1, then the next byte is also part of the frame length
   // info.
   H76_IN_BINARY_FRAME_LENGTH,
-  // We are in the binary payload, with _bytesLeft to go.
+  // We are in the binary payload, with _bytes_left to go.
   H76_IN_BINARY_FRAME
 };
 
 class WSHixie76Parser : public WSParser {
 private:
-  WSParserCallbacks *_pCallbacks;
+  WSParserCallbacks *_p_callbacks;
   WebSocketProto_HyBi03 _hybi03;
   int _state;
-  size_t _bytesLeft;
+  size_t _bytes_left;
 
 public:
-  WSHixie76Parser(WSParserCallbacks *pCallbacks)
-      : _pCallbacks(pCallbacks), _state(H76_START) {}
+  WSHixie76Parser(WSParserCallbacks *p_callbacks)
+      : _p_callbacks(p_callbacks), _state(H76_START) {}
   ~WSHixie76Parser() {}
 
-  void handshake(const std::string &url, const RequestHeaders &requestHeaders,
-                 char **ppData, size_t *pLen, ResponseHeaders *responseHeaders,
-                 std::vector<uint8_t> *pResponse) const;
+  void handshake(const std::string &url, const RequestHeaders &request_headers,
+                 char **pp_data, size_t *p_len, ResponseHeaders *response_headers,
+                 std::vector<uint8_t> *p_response) const;
 
-  void createFrameHeaderFooter(Opcode opcode, bool mask, size_t payloadSize,
-                               int32_t maskingKey,
-                               char pHeaderData[MAX_HEADER_BYTES],
-                               size_t *pHeaderLen,
-                               char pFooterData[MAX_FOOTER_BYTES],
-                               size_t *pFooterLen) const;
+  void create_frame_header_footer(Opcode opcode, bool mask, size_t payload_size,
+                               int32_t masking_key,
+                               char p_header_data[MAX_HEADER_BYTES],
+                               size_t *p_header_len,
+                               char p_footer_data[MAX_FOOTER_BYTES],
+                               size_t *p_footer_len) const;
 
   void read(const char *data, size_t len);
 };
 
 void WSHixie76Parser::handshake(const std::string &url,
-                                const RequestHeaders &requestHeaders,
-                                char **ppData, size_t *pLen,
-                                ResponseHeaders *responseHeaders,
-                                std::vector<uint8_t> *pResponse) const {
-  _hybi03.handshake(url, requestHeaders, ppData, pLen, responseHeaders,
-                    pResponse);
+                                const RequestHeaders &request_headers,
+                                char **pp_data, size_t *p_len,
+                                ResponseHeaders *response_headers,
+                                std::vector<uint8_t> *p_response) const {
+  _hybi03.handshake(url, request_headers, pp_data, p_len, response_headers,
+                    p_response);
 }
 
-void WSHixie76Parser::createFrameHeaderFooter(
+void WSHixie76Parser::create_frame_header_footer(
     Opcode, bool, size_t, int32_t,
-    char pHeaderData[MAX_HEADER_BYTES], size_t *pHeaderLen,
-    char pFooterData[MAX_FOOTER_BYTES], size_t *pFooterLen) const {
-  pHeaderData[0] = 0;
-  *pHeaderLen = 1;
+    char p_header_data[MAX_HEADER_BYTES], size_t *p_header_len,
+    char p_footer_data[MAX_FOOTER_BYTES], size_t *p_footer_len) const {
+  p_header_data[0] = 0;
+  *p_header_len = 1;
 
-  pFooterData[0] = static_cast<char>(0xFF);
-  *pFooterLen = 1;
+  p_footer_data[0] = static_cast<char>(0xFF);
+  *p_footer_len = 1;
 }
 
 void WSHixie76Parser::read(const char *data, size_t len) {
@@ -71,7 +71,7 @@ void WSHixie76Parser::read(const char *data, size_t len) {
     uint8_t b = *pos;
 
     if (_state == H76_START) {
-      _bytesLeft = 0;
+      _bytes_left = 0;
 
       if (b == 0xFF) {
         _state = H76_IN_BINARY_OR_CLOSE_FRAME_LENGTH;
@@ -83,8 +83,8 @@ void WSHixie76Parser::read(const char *data, size_t len) {
         info.opcode = Text;
         info.masked = false;
         info.hasLength = false;
-        info.payloadLength = 0;
-        _pCallbacks->onHeaderComplete(info);
+        info.payload_length = 0;
+        _p_callbacks->on_header_complete(info);
 
       } else {
         _state = H76_IN_BINARY_FRAME_LENGTH;
@@ -92,27 +92,27 @@ void WSHixie76Parser::read(const char *data, size_t len) {
 
     } else if (_state == H76_IN_TEXT_FRAME) {
 
-      const char *endMarker = pos;
-      while (endMarker < (data + len) && *endMarker != (char)0xFF) {
-        endMarker++;
+      const char *end_marker = pos;
+      while (end_marker < (data + len) && *end_marker != (char)0xFF) {
+        end_marker++;
       }
 
-      // endMarker is either on an end marker, or past the end of
+      // end_marker is either on an end marker, or past the end of
       // the data that has been given to us.
 
       // In either case, pass the data (if any) to the callbacks.
-      if (pos != endMarker) {
-        _pCallbacks->onPayload(pos, endMarker - pos);
+      if (pos != end_marker) {
+        _p_callbacks->on_payload(pos, end_marker - pos);
       }
 
-      if (endMarker < (data + len)) {
-        assert(*endMarker == (char)0xFF);
+      if (end_marker < (data + len)) {
+        assert(*end_marker == (char)0xFF);
         // We encountered a marker, all done.
         _state = H76_START;
-        _pCallbacks->onFrameComplete();
+        _p_callbacks->on_frame_complete();
 
         // Make sure to skip over what we read
-        pos = endMarker;
+        pos = end_marker;
       } else {
         // We didn't encounter a marker, just consumed all the data.
         return;
@@ -127,9 +127,9 @@ void WSHixie76Parser::read(const char *data, size_t len) {
         info.opcode = Close;
         info.masked = false;
         info.hasLength = true;
-        info.payloadLength = 0;
-        _pCallbacks->onHeaderComplete(info);
-        _pCallbacks->onFrameComplete();
+        info.payload_length = 0;
+        _p_callbacks->on_header_complete(info);
+        _p_callbacks->on_frame_complete();
       } else {
         // Take another look at this byte, now that we know it's not
         // a close directive.
@@ -140,8 +140,8 @@ void WSHixie76Parser::read(const char *data, size_t len) {
     } else if (_state == H76_IN_BINARY_FRAME_LENGTH) {
 
       // Add the 7 lower bits to the accumulator
-      _bytesLeft *= 128;
-      _bytesLeft += (b & 0x7F);
+      _bytes_left *= 128;
+      _bytes_left += (b & 0x7F);
 
       // TODO: Detect pathologically large lengths
 
@@ -155,28 +155,28 @@ void WSHixie76Parser::read(const char *data, size_t len) {
         info.opcode = Binary;
         info.masked = false;
         info.hasLength = true;
-        info.payloadLength = _bytesLeft;
-        _pCallbacks->onHeaderComplete(info);
+        info.payload_length = _bytes_left;
+        _p_callbacks->on_header_complete(info);
 
-        if (_bytesLeft == 0) {
-          _pCallbacks->onFrameComplete();
+        if (_bytes_left == 0) {
+          _p_callbacks->on_frame_complete();
           _state = H76_START;
         }
       }
 
     } else if (_state == H76_IN_BINARY_FRAME) {
 
-      size_t bytesToRead = len - (pos - data);
-      if (bytesToRead > _bytesLeft)
-        bytesToRead = _bytesLeft;
+      size_t bytes_to_read = len - (pos - data);
+      if (bytes_to_read > _bytes_left)
+        bytes_to_read = _bytes_left;
 
-      _bytesLeft -= bytesToRead;
-      _pCallbacks->onPayload(pos, bytesToRead);
+      _bytes_left -= bytes_to_read;
+      _p_callbacks->on_payload(pos, bytes_to_read);
 
-      pos += bytesToRead - 1; // -1 is to compensate for pos++ in for loop
+      pos += bytes_to_read - 1; // -1 is to compensate for pos++ in for loop
 
-      if (_bytesLeft == 0) {
-        _pCallbacks->onFrameComplete();
+      if (_bytes_left == 0) {
+        _p_callbacks->on_frame_complete();
         _state = H76_START;
       }
     }
