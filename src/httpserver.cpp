@@ -275,8 +275,7 @@ void ensure_io_thread() {
 
   std::function<void(void)> cb(std::bind(&WebSocketConnection::send_ws_message,
                                          wsc, mode, safe_vec_addr(*str),
-                                         str->size(),
-                                         std::function<void(void)>()));
+                                         str->size()));
 
   background_queue->push(cb);
   // Free str after data is written

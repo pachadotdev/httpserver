@@ -20,6 +20,7 @@ Authors@R: c(
     person("Trantor Standard Systems", role = "cph", comment = "base64 implementation"),
     person("Posit, PBC", role = "cph", comment = "original 'httpuv' functions")
   )
+Maintainer: Mauricio Vargas Sepulveda <m.vargas.sepulveda@gmail.com>
 Description: Low-level socket and protocol support for handling HTTP and WebSocket requests. It is primarily intended as
     a building block for other packages such as 'tabler' and hopefully future packages in the 'CRAN Task View: Web
     Technologies and Services'.
