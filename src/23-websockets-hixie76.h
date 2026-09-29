@@ -14,64 +14,66 @@ enum Hixie76State {
   // bit is set to 1, then the next byte is also part of the frame length
   // info.
   H76_IN_BINARY_FRAME_LENGTH,
-  // We are in the binary payload, with _bytes_left to go.
-  H76_IN_BINARY_FRAME
+  // We are in the binary payload, with _bytesLeft to go.
+  H76_IN_BINARY_FRAME,
+  // The frame length overflowed size_t and the connection must be closed.
+  H76_INVALID
 };
 
 class WSHixie76Parser : public WSParser {
 private:
-  WSParserCallbacks *_p_callbacks;
+  WSParserCallbacks *_pCallbacks;
   WebSocketProto_HyBi03 _hybi03;
   int _state;
-  size_t _bytes_left;
+  size_t _bytesLeft;
 
 public:
-  WSHixie76Parser(WSParserCallbacks *p_callbacks)
-      : _p_callbacks(p_callbacks), _state(H76_START) {}
+  WSHixie76Parser(WSParserCallbacks *pCallbacks)
+      : _pCallbacks(pCallbacks), _state(H76_START) {}
   ~WSHixie76Parser() {}
 
-  void handshake(const std::string &url, const RequestHeaders &request_headers,
-                 char **pp_data, size_t *p_len, ResponseHeaders *response_headers,
-                 std::vector<uint8_t> *p_response) const;
+  void handshake(const std::string &url, const RequestHeaders &requestHeaders,
+                 char **ppData, size_t *pLen, ResponseHeaders *responseHeaders,
+                 std::vector<uint8_t> *pResponse) const;
 
-  void create_frame_header_footer(Opcode opcode, bool mask, size_t payload_size,
-                               int32_t masking_key,
-                               char p_header_data[MAX_HEADER_BYTES],
-                               size_t *p_header_len,
-                               char p_footer_data[MAX_FOOTER_BYTES],
-                               size_t *p_footer_len) const;
+  void createFrameHeaderFooter(Opcode opcode, bool mask, size_t payloadSize,
+                               int32_t maskingKey,
+                               char pHeaderData[MAX_HEADER_BYTES],
+                               size_t *pHeaderLen,
+                               char pFooterData[MAX_FOOTER_BYTES],
+                               size_t *pFooterLen) const;
 
   void read(const char *data, size_t len);
 };
 
 void WSHixie76Parser::handshake(const std::string &url,
-                                const RequestHeaders &request_headers,
-                                char **pp_data, size_t *p_len,
-                                ResponseHeaders *response_headers,
-                                std::vector<uint8_t> *p_response) const {
-  _hybi03.handshake(url, request_headers, pp_data, p_len, response_headers,
-                    p_response);
+                                const RequestHeaders &requestHeaders,
+                                char **ppData, size_t *pLen,
+                                ResponseHeaders *responseHeaders,
+                                std::vector<uint8_t> *pResponse) const {
+  _hybi03.handshake(url, requestHeaders, ppData, pLen, responseHeaders,
+                    pResponse);
 }
 
-void WSHixie76Parser::create_frame_header_footer(
-    Opcode, bool, size_t, int32_t,
-    char p_header_data[MAX_HEADER_BYTES], size_t *p_header_len,
-    char p_footer_data[MAX_FOOTER_BYTES], size_t *p_footer_len) const {
-  p_header_data[0] = 0;
-  *p_header_len = 1;
+void WSHixie76Parser::createFrameHeaderFooter(
+    Opcode, bool, size_t, int32_t, char pHeaderData[MAX_HEADER_BYTES],
+    size_t *pHeaderLen, char pFooterData[MAX_FOOTER_BYTES],
+    size_t *pFooterLen) const {
+  pHeaderData[0] = 0;
+  *pHeaderLen = 1;
 
-  p_footer_data[0] = static_cast<char>(0xFF);
-  *p_footer_len = 1;
+  pFooterData[0] = static_cast<char>(0xFF);
+  *pFooterLen = 1;
 }
 
 void WSHixie76Parser::read(const char *data, size_t len) {
-  if (len == 0)
+  if (len == 0 || _state == H76_INVALID)
     return;
   for (const char *pos = data; pos < data + len; pos++) {
     uint8_t b = *pos;
 
     if (_state == H76_START) {
-      _bytes_left = 0;
+      _bytesLeft = 0;
 
       if (b == 0xFF) {
         _state = H76_IN_BINARY_OR_CLOSE_FRAME_LENGTH;
@@ -83,8 +85,8 @@ void WSHixie76Parser::read(const char *data, size_t len) {
         info.opcode = Text;
         info.masked = false;
         info.hasLength = false;
-        info.payload_length = 0;
-        _p_callbacks->on_header_complete(info);
+        info.payloadLength = 0;
+        _pCallbacks->onHeaderComplete(info);
 
       } else {
         _state = H76_IN_BINARY_FRAME_LENGTH;
@@ -92,27 +94,27 @@ void WSHixie76Parser::read(const char *data, size_t len) {
 
     } else if (_state == H76_IN_TEXT_FRAME) {
 
-      const char *end_marker = pos;
-      while (end_marker < (data + len) && *end_marker != (char)0xFF) {
-        end_marker++;
+      const char *endMarker = pos;
+      while (endMarker < (data + len) && *endMarker != (char)0xFF) {
+        endMarker++;
       }
 
-      // end_marker is either on an end marker, or past the end of
+      // endMarker is either on an end marker, or past the end of
       // the data that has been given to us.
 
       // In either case, pass the data (if any) to the callbacks.
-      if (pos != end_marker) {
-        _p_callbacks->on_payload(pos, end_marker - pos);
+      if (pos != endMarker) {
+        _pCallbacks->onPayload(pos, endMarker - pos);
       }
 
-      if (end_marker < (data + len)) {
-        assert(*end_marker == (char)0xFF);
+      if (endMarker < (data + len)) {
+        assert(*endMarker == (char)0xFF);
         // We encountered a marker, all done.
         _state = H76_START;
-        _p_callbacks->on_frame_complete();
+        _pCallbacks->onFrameComplete();
 
         // Make sure to skip over what we read
-        pos = end_marker;
+        pos = endMarker;
       } else {
         // We didn't encounter a marker, just consumed all the data.
         return;
@@ -127,9 +129,9 @@ void WSHixie76Parser::read(const char *data, size_t len) {
         info.opcode = Close;
         info.masked = false;
         info.hasLength = true;
-        info.payload_length = 0;
-        _p_callbacks->on_header_complete(info);
-        _p_callbacks->on_frame_complete();
+        info.payloadLength = 0;
+        _pCallbacks->onHeaderComplete(info);
+        _pCallbacks->onFrameComplete();
       } else {
         // Take another look at this byte, now that we know it's not
         // a close directive.
@@ -139,11 +141,26 @@ void WSHixie76Parser::read(const char *data, size_t len) {
 
     } else if (_state == H76_IN_BINARY_FRAME_LENGTH) {
 
-      // Add the 7 lower bits to the accumulator
-      _bytes_left *= 128;
-      _bytes_left += (b & 0x7F);
-
-      // TODO: Detect pathologically large lengths
+      // Add the 7 lower bits to the accumulator. Reject lengths that cannot
+      // be represented by size_t before multiplying, rather than wrapping
+      // around and treating the frame as smaller than declared.
+      size_t lengthPart = b & 0x7F;
+      const size_t maxSize = static_cast<size_t>(-1);
+      if (_bytesLeft > (maxSize - lengthPart) / 128) {
+        debug_log("WebSocket Hixie-76 frame length is too large", LOG_WARN);
+        WSFrameHeaderInfo info;
+        info.fin = true;
+        info.opcode = Reserved;
+        info.masked = false;
+        info.hasLength = true;
+        info.payloadLength = 0;
+        _pCallbacks->onHeaderComplete(info);
+        _pCallbacks->onFrameComplete();
+        _state = H76_INVALID;
+        return;
+      }
+      _bytesLeft *= 128;
+      _bytesLeft += lengthPart;
 
       // If high-order bit is set, don't continue
       if ((b & 0x80) == 0) {
@@ -155,28 +172,28 @@ void WSHixie76Parser::read(const char *data, size_t len) {
         info.opcode = Binary;
         info.masked = false;
         info.hasLength = true;
-        info.payload_length = _bytes_left;
-        _p_callbacks->on_header_complete(info);
+        info.payloadLength = _bytesLeft;
+        _pCallbacks->onHeaderComplete(info);
 
-        if (_bytes_left == 0) {
-          _p_callbacks->on_frame_complete();
+        if (_bytesLeft == 0) {
+          _pCallbacks->onFrameComplete();
           _state = H76_START;
         }
       }
 
     } else if (_state == H76_IN_BINARY_FRAME) {
 
-      size_t bytes_to_read = len - (pos - data);
-      if (bytes_to_read > _bytes_left)
-        bytes_to_read = _bytes_left;
+      size_t bytesToRead = len - (pos - data);
+      if (bytesToRead > _bytesLeft)
+        bytesToRead = _bytesLeft;
 
-      _bytes_left -= bytes_to_read;
-      _p_callbacks->on_payload(pos, bytes_to_read);
+      _bytesLeft -= bytesToRead;
+      _pCallbacks->onPayload(pos, bytesToRead);
 
-      pos += bytes_to_read - 1; // -1 is to compensate for pos++ in for loop
+      pos += bytesToRead - 1; // -1 is to compensate for pos++ in for loop
 
-      if (_bytes_left == 0) {
-        _p_callbacks->on_frame_complete();
+      if (_bytesLeft == 0) {
+        _pCallbacks->onFrameComplete();
         _state = H76_START;
       }
     }
