@@ -4181,14 +4181,14 @@ typedef struct _REPARSE_DATA_BUFFER {
       ULONG StringCount;
       WCHAR StringList[1];
     } AppExecLinkReparseBuffer;
-  } u;
+  };
 } REPARSE_DATA_BUFFER, *PREPARSE_DATA_BUFFER;
 
 typedef struct _IO_STATUS_BLOCK {
   union {
     NTSTATUS Status;
     PVOID Pointer;
-  } u;
+  };
   ULONG_PTR Information;
 } IO_STATUS_BLOCK, *PIO_STATUS_BLOCK;
 
@@ -4785,6 +4785,9 @@ typedef struct _TCP_INITIAL_RTO_PARAMETERS {
   UCHAR  MaxSynRetransmissions;
 } TCP_INITIAL_RTO_PARAMETERS, *PTCP_INITIAL_RTO_PARAMETERS;
 
+#ifndef TCP_INITIAL_RTO_DEFAULT_RTT
+# define TCP_INITIAL_RTO_DEFAULT_RTT 0
+#endif
 #ifndef TCP_INITIAL_RTO_NO_SYN_RETRANSMISSIONS
 # define TCP_INITIAL_RTO_NO_SYN_RETRANSMISSIONS ((UCHAR) -2)
 #endif

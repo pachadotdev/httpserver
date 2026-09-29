@@ -2,7 +2,7 @@
 ## DO NOT EDIT - This file generated from ./build-aux/ltmain.in
 ##               by inline-source v2019-02-19.15
 
-# libtool (GNU libtool) 2.6.0.23-b08cb
+# libtool (GNU libtool) 2.6.2
 # Provide generalized library-building support services.
 # Written by Gordon Matzigkeit <gord@gnu.ai.mit.edu>, 1996
 
@@ -26,13 +26,13 @@
 # General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
 PROGRAM=libtool
 PACKAGE=libtool
-VERSION=2.6.0.23-b08cb
-package_revision=2.6.0.23
+VERSION=2.6.2
+package_revision=2.6.2
 
 
 ## ------ ##
@@ -2215,7 +2215,7 @@ func_version ()
 # End:
 
 # Set a version string.
-scriptversion='(GNU libtool) 2.6.0.23-b08cb'
+scriptversion='(GNU libtool) 2.6.2'
 
 # func_version
 # ------------
@@ -2737,8 +2737,8 @@ libtool_validate_options ()
     test : = "$debug_cmd" || func_append preserve_args " --debug"
 
     case $host_os in
-      # Solaris2 added to fix http://debbugs.gnu.org/cgi/bugreport.cgi?bug=16452
-      # see also: http://gcc.gnu.org/bugzilla/show_bug.cgi?id=59788
+      # Solaris2 added to fix https://debbugs.gnu.org/cgi/bugreport.cgi?bug=16452
+      # see also: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=59788
       cygwin* | mingw* | windows* | pw32* | cegcc* | solaris2* | os2* | *linux*)
         # don't eliminate duplications in $postdeps and $predeps
         opt_duplicate_compiler_generated_deps=:
@@ -7966,7 +7966,6 @@ func_mode_link ()
       *.$libext|*.so)
 	# An archive or an explicit shared library.
 	func_append deplibs " $arg"
-	func_append old_deplibs " $arg"
 	continue
 	;;
 
@@ -8365,6 +8364,8 @@ func_mode_link ()
 	  if test conv = "$pass"; then
 	    deplibs="$deplib $deplibs"
 	    continue
+	  else
+	    func_append old_deplibs " $deplib"
 	  fi
 	  case $linkmode in
 	  lib)
@@ -8395,7 +8396,9 @@ func_mode_link ()
 		;;
 	      esac
 	      if $valid_a_lib; then
-		func_warning "Linking the shared library $output against the static library $deplib is not portable!"
+		if test yes != "$build_old_libs"; then
+		  func_warning "Linking the shared library $output against the static library $deplib is not portable!"
+		fi
 		deplibs="$deplib $deplibs"
 	      else
 		func_warning "Trying to link with static lib archive $deplib."
@@ -8497,19 +8500,19 @@ func_mode_link ()
 	    # It is a libtool convenience library, so add in its objects.
 	    func_append convenience " $ladir/$objdir/$old_library"
 	    func_append old_convenience " $ladir/$objdir/$old_library"
+	    tmp_libs=
+	    for deplib in $dependency_libs; do
+	      deplibs="$deplib $deplibs"
+	      if $opt_preserve_dup_deps; then
+	        case "$tmp_libs " in
+	          *" $deplib "*) func_append specialdeplibs " $deplib" ;;
+	        esac
+	      fi
+	      func_append tmp_libs " $deplib"
+	    done
 	  elif test prog != "$linkmode" && test lib != "$linkmode"; then
 	    func_fatal_error "'$lib' is not a convenience library"
 	  fi
-	  tmp_libs=
-	  for deplib in $dependency_libs; do
-	    deplibs="$deplib $deplibs"
-	    if $opt_preserve_dup_deps; then
-	      case "$tmp_libs " in
-	      *" $deplib "*) func_append specialdeplibs " $deplib" ;;
-	      esac
-	    fi
-	    func_append tmp_libs " $deplib"
-	  done
 	  continue
 	fi # $pass = conv
 
@@ -9334,7 +9337,6 @@ func_mode_link ()
       # Now set the variables for building old libraries.
       build_libtool_libs=no
       oldlibs=$output
-      func_append objs "$old_deplibs"
       ;;
 
     lib)
@@ -11057,7 +11059,13 @@ func_mode_link ()
 	    # compiling, it, like the target executable, must be
 	    # executed on the $host or under an emulation environment.
 	    $opt_dry_run || {
-	      $LTCC $LTCFLAGS -o $cwrapper $cwrappersource
+	      func_cc_basename "$LTCC"
+	      case $func_cc_basename_result in
+		cl|cl.exe)
+		  $LTCC $LTCFLAGS -Fe$cwrapper $cwrappersource ;;
+		*)
+		  $LTCC $LTCFLAGS -o $cwrapper $cwrappersource ;;
+	      esac
 	      $STRIP $cwrapper
 	    }
 
@@ -11102,7 +11110,11 @@ func_mode_link ()
 	  build_libtool_libs=no
           ;;
 	*)
-	  oldobjs="$old_deplibs $non_pic_objects"
+	  oldobjs=$non_pic_objects
+	  # This is not correct to add old_deplibs creating an archive
+	  # so append them only when creating an executable or a shared
+	  # library.
+	  test yes != "$build_old_libs" && oldobjs="$oldobjs $old_deplibs"
 	  $preload && test -f "$symfileobj" \
 	    && func_append oldobjs " $symfileobj"
 	  addlibs=$old_convenience
@@ -11362,6 +11374,20 @@ func_mode_link ()
 	      func_append newdlprefiles " $abs"
 	    done
 	    dlprefiles=$newdlprefiles
+	  fi
+
+	  # Forward old library dependencies only when no shared
+	  # library is being built. When building the shared library,
+	  # the linker uses $deplibs to link the archives into it, but
+	  # then we don't want to add it as transitive dependency.
+	  if test -z "$library_names"; then
+	    for lib in $old_deplibs; do
+	      case $lib in
+		[\\/]* | [A-Za-z]:[\\/]*) abs=$lib ;;
+		*) abs=`pwd`"/$lib" ;;
+	      esac
+	      func_append dependency_libs " $abs"
+	    done
 	  fi
 	  $RM $output
 	  # place dlname in correct position for cygwin

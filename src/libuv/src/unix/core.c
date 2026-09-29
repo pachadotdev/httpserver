@@ -599,8 +599,8 @@ int uv__accept(int sockfd) {
  */
 int uv__close_nocancel(int fd) {
 #if defined(__APPLE__)
-# pragma GCC diagnostic push
-# pragma GCC diagnostic ignored "-Wdollar-in-identifier-extension"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdollar-in-identifier-extension"
 #if defined(__LP64__) || TARGET_OS_IPHONE
   extern int close$NOCANCEL(int);
   return close$NOCANCEL(fd);
@@ -608,7 +608,7 @@ int uv__close_nocancel(int fd) {
   extern int close$NOCANCEL$UNIX2003(int);
   return close$NOCANCEL$UNIX2003(fd);
 #endif
-# pragma GCC diagnostic pop
+#pragma GCC diagnostic pop
 #elif defined(__linux__) && defined(__SANITIZE_THREAD__) && defined(__clang__)
   long rc;
   __sanitizer_syscall_pre_close(fd);
@@ -1027,8 +1027,22 @@ void uv__io_stop(uv_loop_t* loop, uv__io_t* w, unsigned int events) {
       loop->watchers[w->fd] = NULL;
       loop->nfds--;
     }
+    return;
   }
-  else if (uv__queue_empty(&w->watcher_queue))
+
+#if !defined(__sun)
+  /* Short-circuit if the event mask is unchanged, like uv__io_start() does.
+   * Without this, stopping an event that was never started (e.g. the
+   * uv__io_stop(POLLOUT) in uv__drain() after a write that completed
+   * synchronously) needlessly re-registers the file descriptor with the
+   * kernel on the next loop iteration and makes uv_backend_timeout() report
+   * zero in the meantime.
+   */
+  if (w->events == w->pevents)
+    return;
+#endif
+
+  if (uv__queue_empty(&w->watcher_queue))
     uv__queue_insert_tail(&loop->watcher_queue, &w->watcher_queue);
 }
 
