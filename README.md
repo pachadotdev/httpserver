@@ -134,3 +134,7 @@ PKG_CPPFLAGS += -DDEBUG_TRACE
 ### Updating libuv
 
 Run `make update-libuv VERSION=1.53.0` or another version listed at https://github.com/libuv/libuv/releases.
+
+### Full testing
+
+Requires the Apache suite (e.g., `sudo pacman -S apache`).

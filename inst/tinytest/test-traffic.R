@@ -1,7 +1,7 @@
 # `skip()` is a testthat function and isn't available under tinytest, so
 # this returns TRUE/FALSE and callers do `if (skip_if_not_possible()) return(NULL)`.
 skip_if_not_possible <- function() {
-  # @pachadotdev: run sudo pacman -s apache
+  # @pachadotdev: run sudo pacman -S apache
   # this is to run all tests for the web_technologies view
 
   if (Sys.which("ab")[[1]] == "") {
@@ -15,7 +15,7 @@ skip_if_not_possible <- function() {
 parse_ab_output <- function(p) {
   text <- readLines(p$get_output_file())
 
-  if (!any(grepl("^complete requests:\\s+", text))) {
+  if (!any(grepl("^complete requests:\\s+", text, ignore.case = TRUE))) {
     return(list(
       completed = NULL,
       failed = NULL,
@@ -29,18 +29,20 @@ parse_ab_output <- function(p) {
     text = text
   )
 
-  line <- text[grepl("^complete requests:\\s+", text)]
+  line <- text[grepl("^complete requests:\\s+", text, ignore.case = TRUE)]
   results$completed <- as.integer(sub(
     "^complete requests:\\s+(\\d+).*",
     "\\1",
-    line
+    line,
+    ignore.case = TRUE
   ))
 
-  line <- text[grepl("^failed requests:\\s+", text)]
+  line <- text[grepl("^failed requests:\\s+", text, ignore.case = TRUE)]
   results$failed <- as.integer(sub(
     "^failed requests:\\s+(\\d+).*",
     "\\1",
-    line
+    line,
+    ignore.case = TRUE
   ))
 
   results
