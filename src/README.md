@@ -1,91 +1,23 @@
 Build notes
 ===========
 
-
 ## libuv
 
 The contents of the libuv/ directory are the canonical libuv sources, with changes as described below.
 
 ### Step-by-step instructions
 
-To update libuv to a new version, do the following:
-
-* Edit `tools/update_libuv.R` so that `version` is the new version number, then add it to git.
+To update libuv to a new version, run the update script from the repository root:
 
     ```
-    git add tools/update_libuv.R
+    make update-libuv VERSION=1.53.0
     ```
 
-* Run that script, then do a `git add src/libuv`.
-
-    ```
-    tools/update_libuv.R
-    git add src/libuv
-    ```
-
-* On Linux or Mac, run libuv's `autogen.sh`, and commit the files.
-
-    ```
-    cd src/libuv
-    ./autogen.sh
-    mv m4/lt~obsolete.m4 m4/lt_obsolete.m4
-
-    # Add these generated files. -f is needed because they are listed in src/libuv/.gitignore.
-    git add -f Makefile.in
-    git add -f aclocal.m4
-    git add -f ar-lib
-    git add -f compile
-    git add -f config.guess
-    git add -f config.sub
-    git add -f configure
-    git add -f depcomp
-    git add -f install-sh
-    git add -f ltmain.sh
-    git add -f m4/libtool.m4
-    git add -f m4/libuv-extra-automake-flags.m4
-    git add -f m4/lt_obsolete.m4
-    git add -f m4/ltoptions.m4
-    git add -f m4/ltsugar.m4
-    git add -f m4/ltversion.m4
-    git add -f missing
-
-    git commit -m "Update to libuv [VERSION]"
-    ```
-
-* Cherry-pick some fixes:
-
-    ```
-    # Fixes for unnamed structs on MinGW
-    git cherry-pick 7106577
-    git cherry-pick 4bea58e
-    # Fix for incompatible pointer type on MinGW
-    git cherry-pick ef944cf
-    # Fix for empty translation unit warning on Windows with -pedantic
-    git cherry-pick 8ab31ef
-    # Fix for Solaris
-    git cherry-pick 1898a29
-    # Workaround for pragma NOTE
-    git cherry-pick 421f092
-    # Avoid "ISO C90 forbids mixed declarations and code" warning
-    git cherry-pick 1431d4f
-    ```
-
-* If the cherry-picked commits needed any modification, update this README to refer to the new cherry-picked commits, then commit.
-
-* Check for any C files that have a "#pragma" with "diagnostic ignored". If any are found, replace `#pragma` with `# pragma` and add it to the set of commits to cherry-pick.
-
-    ```
-    find src/ -name "*.c" -exec grep -ri "#pragma.*diagnostic ignored" {} \;
-    ```
+The script applies the required httpuv compatibility fixes, regenerates the
+autotools files, stages the update, and creates the update commit. It also
+checks for any remaining `#pragma diagnostic ignored` directives.
 
 ### Details
-
-#### Makefile-libuv.mingw
-
-Prior to libuv 1.21.0, it included a Makefile.mingw, for use on MinGW platforms like the one that R uses in Windows. As of libuv 1.21.0, the Makefile.mingw was removed, and the recommended build method on MinGW is to use the configure script. However, the configure script will not run from  `R CMD INSTALL`, because it will try to execute the configure script using cmd.exe, and it will not even be able to find basic things like /bin/sh.
-
-Because it's not possible to run the configure script from `R CMD INSTALL`, httpuv includes a custom Makefile for libuv. The original version of this resides at tools/Makefile-libuv.mingw, and when the `tools/update_libuv.R` script is run, it copies it to src/libuv/Makefile-libuv.mingw.
-
 
 #### MinGW and unnamed structs
 

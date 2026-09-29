@@ -83,8 +83,14 @@ check-cran-extra:
 
 clang_format=`which clang-format`
 
-format: $(shell find . -name '*.h') $(shell find . -name '*.hpp') $(shell find . -name '*.cxx')
+format: $(shell find . -type d -path './src/*' -prune -o \( -name '*.h' -o -name '*.hpp' -o -name '*.cxx' \) -type f -print)
 	@${clang_format} -i $?
+
+update-libuv:
+ifndef VERSION
+	$(error VERSION is required, e.g. make update-libuv VERSION=1.53.0)
+endif
+	@./scripts/update_libuv.sh $(VERSION)
 
 build-r-devel:
 	@echo "Building R-devel from source"

@@ -120,11 +120,17 @@ s <- start_server("127.0.0.1", 8080,
 )
 ```
 
-## Debugging builds
+## Development
 
-httpserver can be built with debugging options enabled. This can be done by uncommenting these lines in src/Makevars, and then installing. The first one enables thread assertions, to ensure that code is running on the correct thread; if not. The second one enables tracing statements: httpserver will print lots of messages when various events occur.
+### Debugging
+
+`httpserver` can be built with debugging options enabled. This can be done by uncommenting these lines in src/Makevars, and then installing. The first one enables thread assertions, to ensure that code is running on the correct thread; if not. The second one enables tracing statements: httpserver will print lots of messages when various events occur.
 
 ```
 PKG_CPPFLAGS += -DDEBUG_THREAD -UNDEBUG
 PKG_CPPFLAGS += -DDEBUG_TRACE
 ```
+
+### Updating libuv
+
+Run `make update-libuv VERSION=1.53.0` or another version listed at https://github.com/libuv/libuv/releases.

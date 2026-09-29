@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Usage: dev/update_libuv.sh <version>
-# Example: dev/update_libuv.sh 1.52.1
+# Usage: scripts/update_libuv.sh <version>
+# Example: scripts/update_libuv.sh 1.52.1
 #
 # Automates the libuv update steps documented in dev/build-notes.md.
 # Must be run from the repository root.
@@ -26,16 +26,13 @@ UNIX="$LIBUV/src/unix"
 echo "==> Updating libuv to $VERSION"
 
 # ---------------------------------------------------------------------------
-# 2. Update the version in tools/update_libuv.R, then download and unpack
-#    libuv directly (inlined from tools/update_libuv.R so the whole update
-#    runs as a single script, without shelling out to Rscript)
+# 2. Download and unpack libuv directly.
 # ---------------------------------------------------------------------------
-UPDATE_SCRIPT="tools/update_libuv.R"
-sed -i "s/^version <- \"[^\"]*\"/version <- \"$VERSION\"/" "$UPDATE_SCRIPT"
-git add "$UPDATE_SCRIPT"
-
 TAG="v$VERSION"
 DEST_FILE="$(mktemp -t "libuv-${VERSION}-XXXXXX.tar.gz")"
+MINGW_MAKEFILE="$(mktemp -t "libuv-makefile-mingw-XXXXXX")"
+cp "$LIBUV/Makefile-libuv.mingw" "$MINGW_MAKEFILE"
+trap 'rm -f "$DEST_FILE" "$MINGW_MAKEFILE"' EXIT
 URL="https://github.com/libuv/libuv/archive/${TAG}.tar.gz"
 
 echo "==> Downloading $URL"
@@ -47,10 +44,9 @@ tar -xzf "$DEST_FILE" -C src/
 # Remove old libuv and replace with the freshly downloaded one
 rm -rf "$LIBUV"
 mv "src/libuv-${VERSION}" "$LIBUV"
-rm -f "$DEST_FILE"
 
-# Copy over Makefile for mingw
-cp "tools/Makefile-libuv.mingw" "$LIBUV/"
+# Preserve the custom Makefile for mingw across the libuv replacement.
+cp "$MINGW_MAKEFILE" "$LIBUV/Makefile-libuv.mingw"
 
 git add "$LIBUV"
 
