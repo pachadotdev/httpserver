@@ -67,42 +67,42 @@ bool is_directory(const std::string &filename) {
 
 #endif
 
-bool path_exists(const std::string &filename) {
+  bool path_exists(const std::string &filename) {
 #ifdef _WIN32
-  return GetFileAttributesW(utf8_to_wide(filename).data()) !=
-         INVALID_FILE_ATTRIBUTES;
+    return GetFileAttributesW(utf8_to_wide(filename).data()) !=
+           INVALID_FILE_ATTRIBUTES;
 #else
   struct stat sb;
   return stat(filename.c_str(), &sb) == 0;
 #endif
-}
+  }
 
-bool is_path_within(const std::string &root, const std::string &candidate) {
+  bool is_path_within(const std::string &root, const std::string &candidate) {
 #ifdef _WIN32
-  char root_buf[MAX_PATH];
-  char candidate_buf[MAX_PATH];
-  DWORD root_len = GetFullPathNameA(root.c_str(), MAX_PATH, root_buf, NULL);
-  DWORD candidate_len =
-      GetFullPathNameA(candidate.c_str(), MAX_PATH, candidate_buf, NULL);
-  if (root_len == 0 || candidate_len == 0 || root_len >= MAX_PATH ||
-      candidate_len >= MAX_PATH) {
-    return false;
-  }
+    char root_buf[MAX_PATH];
+    char candidate_buf[MAX_PATH];
+    DWORD root_len = GetFullPathNameA(root.c_str(), MAX_PATH, root_buf, NULL);
+    DWORD candidate_len =
+        GetFullPathNameA(candidate.c_str(), MAX_PATH, candidate_buf, NULL);
+    if (root_len == 0 || candidate_len == 0 || root_len >= MAX_PATH ||
+        candidate_len >= MAX_PATH) {
+      return false;
+    }
 
-  std::string root_path(root_buf, root_len);
-  std::string candidate_path(candidate_buf, candidate_len);
-  while (root_path.size() > 1 &&
-         (root_path.back() == '/' || root_path.back() == '\\')) {
-    root_path.pop_back();
-  }
-  if (candidate_path.size() < root_path.size() ||
-      _strnicmp(candidate_path.c_str(), root_path.c_str(), root_path.size()) !=
-          0) {
-    return false;
-  }
-  return candidate_path.size() == root_path.size() ||
-         candidate_path[root_path.size()] == '/' ||
-         candidate_path[root_path.size()] == '\\';
+    std::string root_path(root_buf, root_len);
+    std::string candidate_path(candidate_buf, candidate_len);
+    while (root_path.size() > 1 &&
+           (root_path.back() == '/' || root_path.back() == '\\')) {
+      root_path.pop_back();
+    }
+    if (candidate_path.size() < root_path.size() ||
+        _strnicmp(candidate_path.c_str(), root_path.c_str(),
+                  root_path.size()) != 0) {
+      return false;
+    }
+    return candidate_path.size() == root_path.size() ||
+           candidate_path[root_path.size()] == '/' ||
+           candidate_path[root_path.size()] == '\\';
 #else
   char root_buf[PATH_MAX];
   char candidate_buf[PATH_MAX];
@@ -120,6 +120,6 @@ bool is_path_within(const std::string &root, const std::string &candidate) {
   return candidate_path.size() == root_path.size() ||
          candidate_path[root_path.size()] == '/';
 #endif
-}
+  }
 
 #endif

@@ -335,11 +335,11 @@ void RWebApplication::dispatch_complete(
     try {
       _on_request(p_request->env(), callback_xptr);
 
-      // On the R side, the application's call() function will catch errors that happen
-      // in the user-defined call() function, but if an error happens outside of
-      // that scope, or if another uncaught exception happens (like an interrupt
-      // if Ctrl-C is pressed), then it will bubble up to here, where we'll
-      // catch it and deal with it.
+      // On the R side, the application's call() function will catch errors that
+      // happen in the user-defined call() function, but if an error happens
+      // outside of that scope, or if another uncaught exception happens (like
+      // an interrupt if Ctrl-C is pressed), then it will bubble up to here,
+      // where we'll catch it and deal with it.
 
     } catch (unwind_exception &e) {
       debug_log("Interrupt occurred in _on_request", LOG_INFO);

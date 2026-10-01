@@ -269,8 +269,7 @@ StaticPathManager::StaticPathManager(const list &path_list,
   ASSERT_MAIN_THREAD()
   uv_mutex_init(&snapshot_mutex);
   this->options = StaticPathOptions(options_list);
-  std::shared_ptr<RouteSnapshot> initial =
-      std::make_shared<RouteSnapshot>();
+  std::shared_ptr<RouteSnapshot> initial = std::make_shared<RouteSnapshot>();
   initial->defaults = this->options;
 
   if (path_list.size() == 0) {

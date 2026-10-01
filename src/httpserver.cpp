@@ -1,8 +1,8 @@
 #define _FILE_OFFSET_BITS 64
 
 #include <algorithm>
-#include <atomic>
 #include <assert.h>
+#include <atomic>
 #include <cassert>
 #include <cctype>
 #include <cstdint>
@@ -10,22 +10,22 @@
 #include <ctime>
 #include <errno.h>
 #include <functional>
-#include <iomanip>
 #include <initializer_list>
-#include <limits.h>
+#include <iomanip>
 #include <iostream>
+#include <limits.h>
 #include <map>
 #include <memory>
 #include <queue>
 #include <signal.h>
 #include <sstream>
 #include <stdarg.h>
+#include <stdexcept>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdexcept>
-#include <string>
 #include <string.h>
+#include <string>
 #include <strings.h>
 #include <sys/types.h>
 #include <time.h>
@@ -50,10 +50,10 @@ extern "C" {
 #include "md5/md5.h"
 }
 #include "sha1/sha1.h"
-#include <later2_api.h>
 #include <R.h>
 #include <Rinternals.h>
 #include <Rmath.h>
+#include <later2_api.h>
 
 using namespace cpp4r;
 
@@ -94,7 +94,7 @@ using namespace cpp4r;
 #include "34-webapplication.h"
 
 void throw_error(int err, const std::string &prefix = std::string(),
-                const std::string &suffix = std::string()) {
+                 const std::string &suffix = std::string()) {
   ASSERT_MAIN_THREAD()
   std::string msg = prefix + uv_strerror(err) + suffix;
   stop(msg);
@@ -171,7 +171,8 @@ void block_sigpipe() {
   sigaddset(&set, SIGPIPE);
   result = pthread_sigmask(SIG_BLOCK, &set, NULL);
   if (result) {
-    err_printf("Error blocking SIGPIPE on the HTTP server background thread.\n");
+    err_printf(
+        "Error blocking SIGPIPE on the HTTP server background thread.\n");
   }
 }
 #endif
@@ -285,7 +286,8 @@ void ensure_io_thread() {
   background_queue->push(std::bind(deleter_background<std::vector<char>>, str));
 }
 
-[[cpp4r::register]] void close_ws(SEXP conn, uint16_t code, std::string reason) {
+[[cpp4r::register]] void close_ws(SEXP conn, uint16_t code,
+                                  std::string reason) {
   ASSERT_MAIN_THREAD()
   debug_log("close_ws", LOG_DEBUG);
   external_pointer<
@@ -304,12 +306,11 @@ void ensure_io_thread() {
 // Create/stop servers
 // ============================================================================
 
-[[cpp4r::register]] SEXP make_tcp_server(const std::string &host, int port,
-                                       sexp on_headers, function on_body_data,
-                                       function on_request, function on_wsopen,
-                                       function on_wsmessage, function on_wsclose,
-                                       list static_paths, list static_path_options,
-                                       bool quiet) {
+[[cpp4r::register]] SEXP
+make_tcp_server(const std::string &host, int port, sexp on_headers,
+                function on_body_data, function on_request, function on_wsopen,
+                function on_wsmessage, function on_wsclose, list static_paths,
+                list static_path_options, bool quiet) {
 
   register_main_thread();
 
@@ -356,12 +357,11 @@ void ensure_io_thread() {
   return as_sexp(externalize_str<uv_stream_t>(p_server));
 }
 
-[[cpp4r::register]] SEXP make_pipe_server(const std::string &name, int mask,
-                                        sexp on_headers, function on_body_data,
-                                        function on_request, function on_wsopen,
-                                        function on_wsmessage,
-                                        function on_wsclose, list static_paths,
-                                        list static_path_options, bool quiet) {
+[[cpp4r::register]] SEXP
+make_pipe_server(const std::string &name, int mask, sexp on_headers,
+                 function on_body_data, function on_request, function on_wsopen,
+                 function on_wsmessage, function on_wsclose, list static_paths,
+                 list static_path_options, bool quiet) {
 
   register_main_thread();
 
@@ -446,7 +446,9 @@ std::shared_ptr<WebApplication> get_p_web_application(std::string handle) {
 
 [[cpp4r::register]] list get_static_paths_(std::string handle) {
   ASSERT_MAIN_THREAD()
-  return get_p_web_application(handle)->get_static_path_manager().paths_as_robject();
+  return get_p_web_application(handle)
+      ->get_static_path_manager()
+      .paths_as_robject();
 }
 
 [[cpp4r::register]] list set_static_paths_(std::string handle, list sp) {
@@ -455,7 +457,8 @@ std::shared_ptr<WebApplication> get_p_web_application(std::string handle) {
   return get_static_paths_(handle);
 }
 
-[[cpp4r::register]] list remove_static_paths_(std::string handle, strings paths) {
+[[cpp4r::register]] list remove_static_paths_(std::string handle,
+                                              strings paths) {
   ASSERT_MAIN_THREAD()
   get_p_web_application(handle)->get_static_path_manager().remove(paths);
   return get_static_paths_(handle);
@@ -469,7 +472,8 @@ std::shared_ptr<WebApplication> get_p_web_application(std::string handle) {
       .as_robject();
 }
 
-[[cpp4r::register]] list set_static_path_options_(std::string handle, list opts) {
+[[cpp4r::register]] list set_static_path_options_(std::string handle,
+                                                  list opts) {
   ASSERT_MAIN_THREAD()
   get_p_web_application(handle)->get_static_path_manager().set_options(opts);
   return get_static_path_options_(handle);
@@ -550,16 +554,17 @@ std::string do_encode_uri(std::string value, bool encode_reserved) {
 /* roxygen
 @title URI encoding/decoding
 
-@description Encodes/decodes strings using URI encoding/decoding in the same way that web
- browsers do. The precise behaviors of these functions can be found at developer.mozilla.org:
+@description Encodes/decodes strings using URI encoding/decoding in the same way
+that web browsers do. The precise behaviors of these functions can be found at
+developer.mozilla.org:
  \href{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encode_uri}{encode_uri},
  \href{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encode_uri_component}{encode_uri_component},
  \href{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decode_uri}{decode_uri},
  \href{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decode_uricomponent}{decode_uricomponent}
 
- Intended as a faster replacement for [utils::URLencode()] and [utils::URLdecode()].
- encode_uri differs from encode_uri_component in that the former will not encode
- reserved characters: \code{;,/?:@@&=+$}
+ Intended as a faster replacement for [utils::URLencode()] and
+[utils::URLdecode()]. encode_uri differs from encode_uri_component in that the
+former will not encode reserved characters: \code{;,/?:@@&=+$}
 
  decode_uri differs from decode_uricomponent in that it will refuse to decode
  encoded sequences that decode to a reserved character. (If in doubt, use
@@ -734,11 +739,13 @@ std::string do_decode_uri(std::string value, bool component) {
 /* roxygen
 @title Check whether an address is IPv4 or IPv6
 
-@description Given an IP address, this checks whether it is an IPv4 or IPv6 address.
+@description Given an IP address, this checks whether it is an IPv4 or IPv6
+address.
 
 @param ip A single string representing an IP address.
 
-@return For IPv4 addresses, \code{4}; for IPv6 addresses, \code{6}. If the address is neither, \code{-1}.
+@return For IPv4 addresses, \code{4}; for IPv6 addresses, \code{6}. If the
+address is neither, \code{-1}.
 
 @examples
  ip_family("127.0.0.1")   # 4

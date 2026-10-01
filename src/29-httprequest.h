@@ -564,8 +564,8 @@ int HttpRequest::_on_headers_complete(http_parser *) {
   // thread. That stage in turn
   // calls this->_schedule_on_headers_complete_complete.
   invoke_later(std::bind(&RequestDispatcher::dispatch_headers,
-                         _p_web_application,
-                         shared_from_this(), schedule_bg_callback));
+                         _p_web_application, shared_from_this(),
+                         schedule_bg_callback));
 
   return 0;
 }
@@ -662,8 +662,7 @@ int HttpRequest::_on_body(http_parser *, const char *p_at, size_t length) {
 
   // Schedule on main thread:
   // Hand the body chunk to the dispatcher on the main thread.
-  invoke_later(std::bind(&RequestDispatcher::dispatch_body,
-                         _p_web_application,
+  invoke_later(std::bind(&RequestDispatcher::dispatch_body, _p_web_application,
                          shared_from_this(), buf, schedule_bg_callback));
 
   return 0;
@@ -713,8 +712,8 @@ int HttpRequest::_on_message_complete(http_parser *) {
   // in turn
   // calls this->_schedule_on_message_complete_complete.
   invoke_later(std::bind(&RequestDispatcher::dispatch_complete,
-                         _p_web_application,
-                         shared_from_this(), schedule_bg_callback));
+                         _p_web_application, shared_from_this(),
+                         schedule_bg_callback));
 
   return 0;
 }
@@ -785,8 +784,8 @@ void HttpRequest::on_wsmessage(bool binary, const char *data, size_t len) {
   // Schedule:
   // Dispatch the WebSocket message on the main thread.
   invoke_later(std::bind(&RequestDispatcher::dispatch_wsmessage,
-                         _p_web_application,
-                         p_wsc, binary, buf, error_callback));
+                         _p_web_application, p_wsc, binary, buf,
+                         error_callback));
 }
 
 void HttpRequest::on_wsclose(int) {
@@ -900,9 +899,8 @@ void HttpRequest::close() {
   if (p_wsc && _protocol == WebSockets) {
     // Schedule:
     // Dispatch the WebSocket close event on the main thread.
-    invoke_later(
-        std::bind(&RequestDispatcher::dispatch_wsclose, _p_web_application,
-                  p_wsc));
+    invoke_later(std::bind(&RequestDispatcher::dispatch_wsclose,
+                           _p_web_application, p_wsc));
   }
 
   _p_socket->remove_connection(shared_from_this());
