@@ -509,7 +509,7 @@ int HttpRequest::_on_header_value(http_parser *, const char *p_at,
 
 // This is called after the headers are complete. We don't want to set the
 // upgrade status before all the headers have been processed.
-// https://github.com/rstudio/httpuv/issues/161
+// Preserve the parser's handling of incomplete request bodies.
 void HttpRequest::update_upgrade_status() {
   ASSERT_BACKGROUND_THREAD()
   // Normally this should just be _parser.upgrade. But we also want to allow

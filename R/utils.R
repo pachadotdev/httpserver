@@ -1,7 +1,4 @@
-# A memoized wrapper for packageVersion(), because it is a fairly slow function
-# which is called often. we can't get the version at build time because the
-# package won't have been installed yet. instead, we'll get it at run time and
-# cache it.
+# Memoize the package version because it is queried for every Rook request.
 httpserver_version <- local({
   version <- NULL
 
@@ -13,26 +10,25 @@ httpserver_version <- local({
   }
 })
 
-# given a vector/list, return TRUE if any elements are unnamed, FALSE otherwise.
+# Return TRUE when any element is unnamed.
 any_unnamed <- function(x) {
-  # zero-length vector
+  # A zero-length object has no unnamed elements.
   if (length(x) == 0) {
     return(FALSE)
   }
 
   nms <- names(x)
 
-  # list with no name attribute
+  # A list without a names attribute is unnamed.
   if (is.null(nms)) {
     return(TRUE)
   }
 
-  # list with name attribute; check for any ""
+  # An empty name is also considered unnamed.
   any(!nzchar(nms))
 }
 
-# given a vector with multiple keys with the same name, drop any duplicated
-# names. for example, with an input like list(a=1, a=2), returns list(a=1).
+# Keep the first value for each name.
 drop_duplicate_names <- function(x) {
   if (any_unnamed(x)) {
     stop("all items must be named.")
@@ -67,7 +63,7 @@ log_level <- function(level = NULL) {
   }
 }
 
-# create an empty named list
+# Create an empty named list.
 named_list <- function() {
   list(a = 1)[0]
 }

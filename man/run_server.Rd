@@ -13,7 +13,6 @@ run_server(host, port, app)
 \item{port}{a number or integer that indicates the server port that should be listened on. note that on most unix-like systems including linux and mac_os, port numbers smaller than 1024 require root privileges.}
 
 \item{app}{a collection of functions that define your application. see \code{\link[=start_server]{start_server()}}.}
-
 }
 
 \value{
@@ -51,3 +50,4 @@ run_server(
   )
 )
 }
+

@@ -51,10 +51,10 @@ cp "$MINGW_MAKEFILE" "$LIBUV/Makefile-libuv.mingw"
 git add "$LIBUV"
 
 # ---------------------------------------------------------------------------
-# 3. Apply httpuv fixes to source files (before autogen so it runs once)
+# 3. Apply package portability fixes to source files (before autogen)
 # ---------------------------------------------------------------------------
 
-# --- Fix: unnamed structs on MinGW (httpuv commits 7106577, 4bea58e) -------
+# --- Fix: unnamed structs on MinGW -----------------------------------------
 # winapi.h: name the anonymous outer union in REPARSE_DATA_BUFFER as 'u',
 # and the anonymous union in IO_STATUS_BLOCK as 'u'.
 WINAPI="$WIN/winapi.h"
@@ -96,7 +96,7 @@ else
   echo "    [skip] winsock.c iosb refs already updated"
 fi
 
-# --- Fix: incompatible pointer type on MinGW (httpuv commit ef944cf) -------
+# --- Fix: incompatible pointer type on MinGW -------------------------------
 UDP="$WIN/udp.c"
 if grep -q 'connect(handle->socket, &addr,' "$UDP"; then
   echo "==> Fix: casting sockaddr in udp.c (ef944cf)"
@@ -105,7 +105,7 @@ else
   echo "    [skip] udp.c sockaddr cast already present"
 fi
 
-# --- Fix: empty translation unit warning (httpuv commit 8ab31ef) -----------
+# --- Fix: empty translation unit warning ------------------------------------
 SNPRINTF="$WIN/snprintf.c"
 if ! grep -q 'make_iso_compilers_happy' "$SNPRINTF"; then
   echo "==> Fix: adding dummy typedef to snprintf.c (8ab31ef)"
@@ -114,7 +114,7 @@ else
   echo "    [skip] snprintf.c dummy typedef already present"
 fi
 
-# --- Fix: pragma NOTE (httpuv commit 421f092) --------------------------------
+# --- Fix: pragma NOTE -------------------------------------------------------
 CORE="$UNIX/core.c"
 if grep -q '^#pragma GCC diagnostic' "$CORE"; then
   echo "==> Fix: replacing #pragma with # pragma in core.c (421f092)"
@@ -127,7 +127,7 @@ else
   echo "    [skip] core.c pragma already workaround-ed"
 fi
 
-# --- Fix: ISO C90 mixed declarations warning (httpuv commit 1431d4f) --------
+# --- Fix: ISO C90 mixed declarations warning --------------------------------
 CONFIGURE_AC="$LIBUV/configure.ac"
 if ! grep -q 'Wno-declaration-after-statement' "$CONFIGURE_AC"; then
   echo "==> Fix: adding -Wno-declaration-after-statement to configure.ac (1431d4f)"
@@ -172,7 +172,7 @@ git add -f \
   "$LIBUV/m4/ltversion.m4" \
   "$LIBUV/missing"
 
-git commit -m "Update to libuv $VERSION with httpuv fixes"
+git commit -m "Update bundled libuv to $VERSION"
 
 # ---------------------------------------------------------------------------
 # 5. Check for any remaining #pragma diagnostic ignored in C files

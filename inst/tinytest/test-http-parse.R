@@ -5,9 +5,7 @@ local({
 
   if (!requireNamespace("curl")) { return(NULL) }
 
-  # this is a test for https://github.com/rstudio/httpuv/issues/275
-  # when there is a very large header, it may span multiple tcp messages.
-  # previously, these headers would get truncated.
+  # Large headers may span multiple TCP messages and must not be truncated.
   s <- httpserver::start_server(
     "0.0.0.0",
     random_port(),
@@ -82,8 +80,7 @@ local({
 
   if (!requireNamespace("curl", quietly = TRUE)) { return (NULL) }
 
-  # also for https://github.com/rstudio/httpuv/issues/275
-  # this tests for field names that are split across messages.
+  # Field names may also be split across messages.
   headers_received <- NULL
   s <- httpserver::start_server(
     "0.0.0.0",

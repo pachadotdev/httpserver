@@ -18,7 +18,7 @@ start_example_server <- function(port) {
   r <- callr::r_bg(
     function(port) {
       ex <- system.file("example-static-site", package = "httpserver")
-      httpuv::run_static_server(
+      httpserver::run_static_server(
         ex,
         port = port,
         background = FALSE,

@@ -1,15 +1,5 @@
-# note that the methods listed for the base server object, web_server, and
-# pipe_server were copied and pasted among all three, with a few additional
-# methods added to web_server and pipe_server. when changes are made in the
-# future, make sure that they're duplicated among all three.
-#
-# these server objects used to be implemented with r6, but are now plain
-# environments used as reference-semantics objects, to avoid the r6
-# dependency (and its suggests, e.g. testthat). each constructor creates a
-# `private` environment to hold internal state, and a `self` environment
-# whose elements are closures over `private` (and, for methods that need to
-# refer back to the object itself, over `self`). this mirrors what r6 does
-# internally, just without the extra package.
+# Server objects are environments with closures over a private state
+# environment. This provides reference semantics without a class dependency.
 
 # build the set of methods shared by web_server and pipe_server. `private` is
 # an environment that must already contain (or will later contain) the
@@ -200,11 +190,12 @@ pipe_server <- function(name, mask, app, quiet = FALSE) {
   )
 
   # save the full path. normalizePath must be called after make_pipe_server
-  private$name <- normalizePath(name)
-
   if (is.null(private$handle)) {
     stop("failed to create server")
   }
+
+  private$name <- normalizePath(name)
+  private$running <- TRUE
 
   # get the name of the named pipe
   self$get_name <- function() {
@@ -217,6 +208,7 @@ pipe_server <- function(name, mask, app, quiet = FALSE) {
   }
 
   class(self) <- c("pipe_server", "server")
+  register_server(self)
 
   self
 }

@@ -91,8 +91,7 @@ extract <- function(promise) {
 # make an http request using curl.
 fetch <- function(url, handle = curl::new_handle(), gzip = TRUE) {
   if (!gzip) {
-    # disable gzip; this is often needed only because the unit tests predate
-    # gzip support in httpuv
+    # Disable compression when the test compares the exact response bytes.
     curl::handle_setopt(handle, accept_encoding = NULL)
   }
 

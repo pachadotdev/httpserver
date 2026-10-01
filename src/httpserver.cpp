@@ -169,7 +169,7 @@ void block_sigpipe() {
   sigaddset(&set, SIGPIPE);
   result = pthread_sigmask(SIG_BLOCK, &set, NULL);
   if (result) {
-    err_printf("Error blocking SIGPIPE on httpuv background thread.\n");
+    err_printf("Error blocking SIGPIPE on the HTTP server background thread.\n");
   }
 }
 #endif
@@ -194,7 +194,7 @@ void io_thread(void *data) {
   blocker->wait();
 
   // Must ignore SIGPIPE for libuv code; otherwise unexpectedly closed
-  // connections kill us. https://github.com/rstudio/httpuv/issues/168
+  // connections kill us.
 #ifndef _WIN32
   block_sigpipe();
 #endif

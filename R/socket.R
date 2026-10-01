@@ -1,8 +1,4 @@
-# implementation of rook input stream.
-#
-# these streams used to be implemented with r6, but are now plain
-# environments used as reference-semantics objects, to avoid the r6
-# dependency (and its suggests, e.g. testthat).
+# Rook-compatible request input and error streams.
 input_stream <- function(conn, length) {
   private <- new.env(parent = emptyenv())
   private$conn <- conn
@@ -273,7 +269,8 @@ app_wrapper <- function(app) {
     private$wsconns[[wsconn_address(handle)]] <- ws
     result <- try(private$app$on_wsopen(ws))
 
-    # if an unexpected error happened, just close up
+    # An unexpected callback error cannot be returned to the native event
+    # loop, so close the connection with an internal-error status.
     if (inherits(result, "try-error")) {
       ws$close(1011, "error in on_wsopen")
     }
@@ -315,11 +312,8 @@ app_wrapper <- function(app) {
 #' notifications when messages are received or the connection is closed.
 #'
 #' @details
-#' note that this web_socket class is different from the one provided by the
-#' package named websocket. this class is meant to be used on the server side,
-#' whereas the one in the websocket package is to be used as a client. the
-#' web_socket class in httpserver has an older api than the one in the websocket
-#' package.
+#' This server-side class is different from the client-side connection
+#' provided by the package named `websocket`.
 #'
 #' web_socket objects should never be created directly. they are obtained by
 #' passing an `on_wsopen` function to [start_server()].
@@ -405,9 +399,15 @@ web_socket <- function(handle, req) {
 
     if (is.raw(message)) {
       send_ws_message(self$handle, TRUE, message)
-    } else {
-      send_ws_message(self$handle, FALSE, enc2utf8(as.character(message)))
+      return(invisible())
     }
+
+    if (!is.character(message) || length(message) != 1L || is.na(message)) {
+      stop("`message` must be a raw vector or a single non-NA character string.")
+    }
+
+    send_ws_message(self$handle, FALSE, enc2utf8(message))
+    invisible()
   }
 
   self$close <- function(code = 1000L, reason = "") {
@@ -415,14 +415,30 @@ web_socket <- function(handle, req) {
       return()
     }
 
-    # make sure the code will fit in a short int (2 bytes); if not just use
-    # "going away" error code.
+    # Keep the close code within the unsigned 16-bit wire representation.
+    if (
+      !is.numeric(code) ||
+        length(code) != 1L ||
+        is.na(code) ||
+        !is.finite(code)
+    ) {
+      stop("`code` must be a single non-NA number.")
+    }
     code <- as.integer(code)
     if (code < 0 || code > 2^16 - 1) {
       warning("invalid websocket error code: ", code)
       code <- 1001L
     }
+    if (!is.character(reason) || length(reason) != 1L || is.na(reason)) {
+      stop("`reason` must be a single non-NA character string.")
+    }
     reason <- iconv(reason, to = "utf-8")
+    if (is.na(reason)) {
+      stop("`reason` must be valid UTF-8.")
+    }
+    if (nchar(reason, type = "bytes") > 123L) {
+      stop("`reason` must be at most 123 bytes in UTF-8.")
+    }
 
     close_ws(self$handle, code, reason)
     self$handle <- NULL

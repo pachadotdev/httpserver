@@ -22,7 +22,7 @@ a \code{web_socket} object represents a single web_socket connection. the object
 }
 
 \details{
-note that this web_socket class is different from the one provided by the package named websocket. this class is meant to be used on the server side, whereas the one in the websocket package is to be used as a client. the web_socket class in httpserver has an older api than the one in the websocket package.
+This server-side class is different from the client-side connection provided by the package named \code{websocket}.
 
 web_socket objects should never be created directly. they are obtained by passing an \code{on_wsopen} function to \code{\link[=start_server]{start_server()}}.
 }

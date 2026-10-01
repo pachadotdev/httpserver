@@ -39,7 +39,7 @@ starts a server on the specified host and port. by default the server runs in th
 }
 
 \seealso{
-\code{\link[=run_server]{run_server()}} provides a similar interface for running a dynamic app server. both \code{run_static_server()} and \code{\link[=run_server]{run_server()}} are built on top of \code{\link[=start_server]{start_server()}}, \code{\link[=service]{service()}} and \code{\link[=stop_server]{stop_server()}}. learn more about httpuv servers in \code{\link[=start_server]{start_server()}}.
+\code{\link[=run_server]{run_server()}} provides a similar interface for running a dynamic app server. both \code{run_static_server()} and \code{\link[=run_server]{run_server()}} are built on top of \code{\link[=start_server]{start_server()}}, \code{\link[=service]{service()}} and \code{\link[=stop_server]{stop_server()}}. learn more about httpserver servers in \code{\link[=start_server]{start_server()}}.
 }
 
 \examples{

@@ -2,7 +2,7 @@
 % Please edit documentation in socket.R
 \name{interrupt}
 \alias{interrupt}
-\title{interrupt httpuv runloop}
+\title{interrupt httpserver runloop}
 \usage{
 interrupt()
 }
@@ -12,6 +12,6 @@ no return value, called for its side effect of pausing the request processing lo
 }
 
 \description{
-interrupts the currently running httpuv runloop, meaning \code{\link[=run_server]{run_server()}} or \code{\link[=service]{service()}} will return control back to the caller and no further tasks will be processed until those methods are called again. note that this may cause in-process uploads or downloads to be interrupted in mid-request.
+interrupts the currently running httpserver runloop, meaning \code{\link[=run_server]{run_server()}} or \code{\link[=service]{service()}} will return control back to the caller and no further tasks will be processed until those methods are called again. note that this may cause in-process uploads or downloads to be interrupted in mid-request.
 }
 

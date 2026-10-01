@@ -382,6 +382,10 @@ StaticPathManager::match_static_path(const std::string &url_path) const {
 
   std::string path = url_path;
 
+  // Keep one lock for the complete lookup. Acquiring it once per path
+  // component makes deep URLs unnecessarily expensive.
+  guard guard(mutex);
+
   std::string pre_slash;
   std::string post_slash;
 
@@ -403,10 +407,13 @@ StaticPathManager::match_static_path(const std::string &url_path) const {
   // split on.
   while (true) {
     // Check if the part before the split-on '/' is a static_path.
-    std::experimental::optional<StaticPath> sp = this->get(pre_slash);
+    std::map<std::string, StaticPath>::const_iterator it =
+        path_map.find(pre_slash);
 
-    if (sp) {
-      return std::pair<StaticPath, std::string>(*sp, post_slash);
+    if (it != path_map.end()) {
+      StaticPath sp = it->second;
+      sp.options = StaticPathOptions::merge(sp.options, options);
+      return std::pair<StaticPath, std::string>(sp, post_slash);
     }
 
     if (found_idx == 0) {

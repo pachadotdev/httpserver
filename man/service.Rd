@@ -20,8 +20,6 @@ process http requests and web_socket messages. if there is nothing on r's call s
 }
 
 \details{
-in previous versions of httpuv (1.3.5 and below), even if a server created by \code{\link[=start_server]{start_server()}} exists, no requests were serviced unless and until \code{service} was called.
-
 this function simply calls \code{\link[later2:run_now]{later2::run_now()}}, so if your application schedules any \code{\link[later2:later]{later2::later()}} callbacks, they will be invoked.
 }
 

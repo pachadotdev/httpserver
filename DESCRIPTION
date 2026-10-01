@@ -18,7 +18,7 @@ Authors@R: c(
     person("Sony Mobile Communications AB", role = "cph", comment = "libuv library, see src/libuv/AUTHORS"),
     person("Berkeley Software Design Inc.", role = "cph", comment = "libuv library, see src/libuv/AUTHORS"),
     person("Trantor Standard Systems", role = "cph", comment = "base64 implementation"),
-    person("Posit, PBC", role = "cph", comment = "original 'httpuv' functions")
+    person("Posit, PBC", role = "cph", comment = "upstream implementation components")
   )
 Maintainer: Mauricio Vargas Sepulveda <m.vargas.sepulveda@gmail.com>
 Description: Low-level socket and protocol support for handling HTTP and WebSocket requests. It is primarily intended as
@@ -42,3 +42,4 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 SystemRequirements: GNU make, zlib
 Config/tinyroxygen/markdown: TRUE
+Language: en-US

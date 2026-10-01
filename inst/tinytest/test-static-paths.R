@@ -573,7 +573,7 @@ local({
   if (!requireNamespace("curl", quietly = TRUE)) { return (NULL) }
 
   # need to create files with weird names
-  static_dir <- tempfile("httpuv_test")
+  static_dir <- tempfile("httpserver_test")
   dir.create(static_dir)
   # use write_bin() instead of cat() because in windows, cat() will convert "\n"
   # to "\r\n".
@@ -882,7 +882,7 @@ local({
 
   if (!requireNamespace("curl", quietly = TRUE)) { return (NULL) }
 
-  # workaround for https://github.com/rstudio/httpuv/issues/264
+  # Keep this request within the platform-independent path handling cases.
   # on unix platforms that are using a non-utf-8 locale, don't do these tests.
   if (.Platform$OS.type == "unix" && !l10n_info()[["UTF-8"]]) {
     return(NULL)

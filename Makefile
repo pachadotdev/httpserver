@@ -11,7 +11,6 @@ check:
 	@Rscript -e 'tinydev::pkg_install("../cpp4r");'
 	@Rscript -e 'tinydev::pkg_install("../later2");'
 	@Rscript -e 'tinydev::pkg_check(".");'
-	@Rscript -e 'tinydev::pkg_install(".");'
 
 site:
 	@Rscript -e 'tinydev::pkg_document(".");'

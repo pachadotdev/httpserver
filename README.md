@@ -1,119 +1,94 @@
-# tinywebsocket: HTTP and WebSocket server library for R
+[![BuyMeACoffee](https://raw.githubusercontent.com/pachadotdev/buymeacoffee-badges/main/bmc-yellow.svg)](https://buymeacoffee.com/pacha)
 
-  <!-- badges: start -->
-  [![BuyMeACoffee](https://raw.githubusercontent.com/pachadotdev/buymeacoffee-badges/main/bmc-yellow.svg)](https://buymeacoffee.com/pacha)
-  <!-- badges: end -->
+# httpserver: HTTP and WebSocket server library for R
 
-httpserver provides low-level socket and protocol support for handling HTTP and WebSocket requests directly from within R. It uses a multithreaded architecture, where I/O is handled on one thread, and the R callbacks are handled on another. This is derived from [httpuv](https://github.com/rstudio/httpuv) with a focus on reducing dependencies and streamlining the build process.
+`httpserver` provides low-level HTTP, WebSocket, and socket support for R
+applications. Network I/O runs on a background thread while application
+callbacks are scheduled on R's event loop. Static files are served directly
+from the I/O thread, so they do not wait for R callbacks.
 
-It is primarily intended as a building block for other packages, rather than making it particularly easy to create complete web applications using httpserver alone. httpserver is built on top of the [libuv](https://github.com/libuv/libuv) and [http-parser](https://github.com/nodejs/http-parser) libraries, both of which were developed by Joyent, Inc.
+The package is intended as a building block for other packages. It uses
+`libuv`, `http-parser`, `cpp4r`, and `later2`.
 
 ## Installing
 
-You can install the development version using **pak**. It is not on CRAN at the present time.
+The development version can be installed with **pak**:
 
 ```r
-# or if you want to test the development version here
 pak::pak("pachadotdev/httpserver")
 ```
 
-httpserver may optionally be built using a `libuv` system package, which you can install prior to installing the R package. It goes by different names on different package managers: `libuv1-dev` (deb), `libuv-devel` (rpm), `libuv` (brew). Version 1.43 or greater is required. If `libuv` is not found on the system, it will be built from source along with the R package.
+`httpserver` bundles the required `libuv` sources when a suitable system
+library is not available.
 
-## Basic Usage
+## Basic usage
 
-This is a basic web server that listens on port 8080 and responds to HTTP requests with a web page containing the current system time and the path of the request:
-
-```R
+```r
 library(httpserver)
 
-s <- start_server(host = "0.0.0.0", port = 8080,
+s <- start_server(
+  host = "127.0.0.1",
+  port = 8080,
   app = list(
     call = function(req) {
-      body <- paste0("Time: ", Sys.time(), "<br>Path requested: ", req$PATH_INFO)
       list(
         status = 200L,
-        headers = list('Content-Type' = 'text/html'),
-        body = body
+        headers = list("content-type" = "text/plain"),
+        body = paste0("Path requested: ", req$path_info)
       )
     }
   )
 )
-```
 
-Note that when `host` is 0.0.0.0, it listens on all network interfaces. If `host` is 127.0.0.1, it will only listen to connections from the local host.
-
-The `start_server()` function takes an _app object_, which is a named list with functions that are invoked in response to certain events. In the example above, the list contains a function `call`. This function is invoked when a complete HTTP request is received by the server, and it is passed an environment object `req`, which contains information about HTTP request. `req$PATH_INFO` is the path requested (if the request was for http://127.0.0.1:8080/foo, it would be `"/foo"`).
-
-The `call` function is expected to return a list containing `status`, `headers`, and `body`. That list will be transformed into a HTTP response and sent to the client.
-
-To stop the server:
-
-```R
 s$stop()
 ```
 
-Or, to stop all running httpserver servers:
+Use `host = "0.0.0.0"` to listen on all IPv4 interfaces. Applications return
+an HTTP response containing `status`, `headers`, and `body`. A response body
+may be a character string or a raw vector.
 
-```R
-stop_all_servers()
-```
+`run_server()` is the blocking convenience interface. For a background server,
+use `start_server()` and later call `$stop()`, `stop_server()`, or
+`stop_all_servers()`.
 
-### Static paths
+## Static files
 
-A httpserver server application can serve up files on disk. This happens entirely within the I/O thread, so doing so will not block or be blocked by activity in the main R thread.
+Static paths are served in the I/O thread and can be configured with
+`static_path()` and `static_path_options()`:
 
-To serve a path, use `static_paths` in the app. This will serve the `www/` subdirectory of the current directory (from when `start_server` is called) as the root of the web path:
-
-```R
-s <- start_server("0.0.0.0", 8080,
+```r
+s <- start_server(
+  "127.0.0.1",
+  8080,
   app = list(
-    staticPaths = list("/" = "www/")
-  )
-)
-```
-
-By default, if a file named `index.html` exists in the directory, it will be served when `/` is requested.
-
-`staticPaths` can be combined with `call`. In this example, the web paths `/assets` and `/lib` are served from disk, but requests for any other paths go through the `call` function.
-
-```R
-s <- start_server("0.0.0.0", 8080,
-  list(
-    call = function(req) {
-      list(
-        status = 200L,
-        headers = list(
-          'Content-Type' = 'text/html'
-        ),
-        body = "Hello world!"
-      )
-    },
-    staticPaths = list(
-      "/assets" = "content/assets/",
-      # Don't use index.html for /lib
-      "/lib" = staticPath("content/lib", index_html = FALSE)
+    static_paths = list(
+      "/" = static_path("www"),
+      "/assets" = static_path("public/assets", index_html = FALSE)
+    ),
+    static_path_options = static_path_options(
+      headers = list("cache-control" = "public, max-age=3600")
     )
   )
 )
 ```
 
-### WebSocket server
+Use `exclude_static_path()` to route a subpath back to the R application.
+`run_static_server()` provides a shorter interface for serving one directory.
 
-httpserver also can handle WebSocket connections. For example, this app acts as a WebSocket echo server:
+## WebSockets
 
-```R
-s <- start_server("127.0.0.1", 8080,
-  list(
-    onWSOpen = function(ws) {
-      # The ws object is a WebSocket object
-      cat("Server connection opened.\n")
+Register `on_wsopen` to receive a `web_socket` object. Messages can be sent
+with `$send()` and callbacks can be registered with `$on_message()` and
+`$on_close()`:
 
-      ws$onMessage(function(binary, message) {
-        cat("Server received message:", message, "\n")
+```r
+s <- start_server(
+  "127.0.0.1",
+  8080,
+  app = list(
+    on_wsopen = function(ws) {
+      ws$on_message(function(binary, message) {
         ws$send(message)
-      })
-      ws$onClose(function() {
-        cat("Server connection closed.\n")
       })
     }
   )
@@ -122,19 +97,6 @@ s <- start_server("127.0.0.1", 8080,
 
 ## Development
 
-### Debugging
-
-`httpserver` can be built with debugging options enabled. This can be done by uncommenting these lines in src/Makevars, and then installing. The first one enables thread assertions, to ensure that code is running on the correct thread; if not. The second one enables tracing statements: httpserver will print lots of messages when various events occur.
-
-```
-PKG_CPPFLAGS += -DDEBUG_THREAD -UNDEBUG
-PKG_CPPFLAGS += -DDEBUG_TRACE
-```
-
-### Updating libuv
-
-Run `make update-libuv VERSION=1.53.0` or another version listed at https://github.com/libuv/libuv/releases.
-
-### Full testing
-
-Requires the Apache suite (e.g., `sudo pacman -S apache`).
+Run `make update-libuv VERSION=1.53.0` to update the bundled `libuv` sources.
+The full test suite uses `tinytest`; HTTP integration tests additionally use
+`curl`.

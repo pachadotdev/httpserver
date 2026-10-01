@@ -65,9 +65,9 @@ jobs:
           USE_BUNDLED_LIBUV: ${{ matrix.config.use }}
         run: |
           if [ "$USE_BUNDLED_LIBUV" = "true" ]; then
-            grep "Using bundled copy of libuv" check/httpuv.Rcheck/00install.out
+            grep "Using bundled copy of libuv" check/httpserver.Rcheck/00install.out
           else
-            grep "Using libuv found by pkg-config" check/httpuv.Rcheck/00install.out
+            grep "Using libuv found by pkg-config" check/httpserver.Rcheck/00install.out
           fi
 
       - name: Confirm error if system libuv missing and use=false
