@@ -1,6 +1,7 @@
 #define _FILE_OFFSET_BITS 64
 
 #include <algorithm>
+#include <atomic>
 #include <assert.h>
 #include <cassert>
 #include <cctype>
@@ -11,6 +12,7 @@
 #include <functional>
 #include <iomanip>
 #include <initializer_list>
+#include <limits.h>
 #include <iostream>
 #include <map>
 #include <memory>

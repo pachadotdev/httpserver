@@ -39,15 +39,30 @@ public:
 };
 
 class StaticPathManager {
-  std::map<std::string, StaticPath> path_map;
-  // Mutex is used whenever path_map is accessed.
-  mutable uv_mutex_t mutex;
+  struct RouteSnapshot {
+    std::map<std::string, StaticPath> paths;
+    StaticPathOptions defaults;
+  };
 
+  std::shared_ptr<RouteSnapshot> snapshot;
+  mutable uv_mutex_t snapshot_mutex;
   StaticPathOptions options;
+
+  std::shared_ptr<RouteSnapshot> current_snapshot() const {
+    guard lock(snapshot_mutex);
+    std::shared_ptr<RouteSnapshot> current = snapshot;
+    return current;
+  }
+
+  void publish(std::shared_ptr<RouteSnapshot> next) {
+    guard lock(snapshot_mutex);
+    snapshot = next;
+  }
 
 public:
   StaticPathManager();
   StaticPathManager(const list &path_list, const list &options_list);
+  ~StaticPathManager() { uv_mutex_destroy(&snapshot_mutex); }
 
   std::experimental::optional<StaticPath> get(const std::string &path) const;
   std::experimental::optional<StaticPath> get(const strings &path) const;
@@ -244,16 +259,22 @@ list StaticPath::as_robject() const {
 // ============================================================================
 // StaticPathManager
 // ============================================================================
-StaticPathManager::StaticPathManager() { uv_mutex_init(&mutex); }
+StaticPathManager::StaticPathManager()
+    : snapshot(std::make_shared<RouteSnapshot>()) {
+  uv_mutex_init(&snapshot_mutex);
+}
 
 StaticPathManager::StaticPathManager(const list &path_list,
                                      const list &options_list) {
   ASSERT_MAIN_THREAD()
-  uv_mutex_init(&mutex);
-
+  uv_mutex_init(&snapshot_mutex);
   this->options = StaticPathOptions(options_list);
+  std::shared_ptr<RouteSnapshot> initial =
+      std::make_shared<RouteSnapshot>();
+  initial->defaults = this->options;
 
   if (path_list.size() == 0) {
+    snapshot = initial;
     return;
   }
 
@@ -271,24 +292,26 @@ StaticPathManager::StaticPathManager(const list &path_list,
     list sp(path_list[i]);
     StaticPath staticpath(sp);
 
-    this->path_map.insert(std::pair<std::string, StaticPath>(name, staticpath));
+    initial->paths.insert(std::pair<std::string, StaticPath>(name, staticpath));
   }
+  snapshot = initial;
 }
 
 // Returns a StaticPath object, which has its options merged with the overall
 // ones.
 std::experimental::optional<StaticPath>
 StaticPathManager::get(const std::string &path) const {
-  guard guard(mutex);
-  std::map<std::string, StaticPath>::const_iterator it = path_map.find(path);
-  if (it == path_map.end()) {
+  std::shared_ptr<RouteSnapshot> current = current_snapshot();
+  std::map<std::string, StaticPath>::const_iterator it =
+      current->paths.find(path);
+  if (it == current->paths.end()) {
     return std::experimental::nullopt;
   }
 
   // Get a copy of the StaticPath object; we'll modify the options in the copy
   // by merging it with the overall options.
   StaticPath sp = it->second;
-  sp.options = StaticPathOptions::merge(sp.options, this->options);
+  sp.options = StaticPathOptions::merge(sp.options, current->defaults);
   return sp;
 }
 
@@ -302,22 +325,22 @@ StaticPathManager::get(const strings &path) const {
 }
 
 void StaticPathManager::set(const std::string &path, const StaticPath &sp) {
-  guard guard(mutex);
-  // If the key already exists, replace the value.
-  std::map<std::string, StaticPath>::iterator it = path_map.find(path);
-  if (it != path_map.end()) {
-    it->second = sp;
-  }
-
-  // Otherwise, insert the pair.
-  path_map.insert(std::pair<std::string, StaticPath>(path, sp));
+  std::shared_ptr<RouteSnapshot> next =
+      std::make_shared<RouteSnapshot>(*current_snapshot());
+  next->paths.erase(path);
+  next->paths.insert(std::make_pair(path, sp));
+  publish(next);
 }
 
 void StaticPathManager::set(const std::map<std::string, StaticPath> &pmap) {
-  std::map<std::string, StaticPath>::const_iterator it;
-  for (it = pmap.begin(); it != pmap.end(); it++) {
-    set(it->first, it->second);
+  std::shared_ptr<RouteSnapshot> next =
+      std::make_shared<RouteSnapshot>(*current_snapshot());
+  for (std::map<std::string, StaticPath>::const_iterator it = pmap.begin();
+       it != pmap.end(); ++it) {
+    next->paths.erase(it->first);
+    next->paths.insert(std::make_pair(it->first, it->second));
   }
+  publish(next);
 }
 
 void StaticPathManager::set(const list &pmap) {
@@ -327,11 +350,10 @@ void StaticPathManager::set(const list &pmap) {
 }
 
 void StaticPathManager::remove(const std::string &path) {
-  guard guard(mutex);
-  std::map<std::string, StaticPath>::iterator it = path_map.find(path);
-  if (it != path_map.end()) {
-    path_map.erase(it);
-  }
+  std::shared_ptr<RouteSnapshot> next =
+      std::make_shared<RouteSnapshot>(*current_snapshot());
+  next->paths.erase(path);
+  publish(next);
 }
 
 void StaticPathManager::remove(const std::vector<std::string> &paths) {
@@ -382,9 +404,9 @@ StaticPathManager::match_static_path(const std::string &url_path) const {
 
   std::string path = url_path;
 
-  // Keep one lock for the complete lookup. Acquiring it once per path
-  // component makes deep URLs unnecessarily expensive.
-  guard guard(mutex);
+  // Read one immutable route snapshot for the complete lookup. Updates publish
+  // a replacement snapshot and never block active request lookups.
+  std::shared_ptr<RouteSnapshot> current = current_snapshot();
 
   std::string pre_slash;
   std::string post_slash;
@@ -400,7 +422,7 @@ StaticPathManager::match_static_path(const std::string &url_path) const {
 
   size_t found_idx = path.length() + 1;
 
-  // This loop searches for a match in path_map of pre_slash, the part before
+  // This loop searches the snapshot for pre_slash, the part before
   // the last split-on '/'. If found, it returns a pair with the part before
   // the slash, and the part after the slash. If not found, it splits on the
   // previous '/' and searches again, and so on, until there are no more to
@@ -408,11 +430,11 @@ StaticPathManager::match_static_path(const std::string &url_path) const {
   while (true) {
     // Check if the part before the split-on '/' is a static_path.
     std::map<std::string, StaticPath>::const_iterator it =
-        path_map.find(pre_slash);
+        current->paths.find(pre_slash);
 
-    if (it != path_map.end()) {
+    if (it != current->paths.end()) {
       StaticPath sp = it->second;
-      sp.options = StaticPathOptions::merge(sp.options, options);
+      sp.options = StaticPathOptions::merge(sp.options, current->defaults);
       return std::pair<StaticPath, std::string>(sp, post_slash);
     }
 
@@ -447,21 +469,25 @@ const StaticPathOptions &StaticPathManager::get_options() const {
 
 void StaticPathManager::set_options(const list &opts) {
   options.set_options(opts);
+  std::shared_ptr<RouteSnapshot> next =
+      std::make_shared<RouteSnapshot>(*current_snapshot());
+  next->defaults = options;
+  publish(next);
 }
 
 // Returns a list of R objects that reflect the StaticPaths, without merging
 // the overall options.
 list StaticPathManager::paths_as_robject() const {
   ASSERT_MAIN_THREAD()
-  guard guard(mutex);
+  std::shared_ptr<RouteSnapshot> current = current_snapshot();
 
-  R_xlen_t n = static_cast<R_xlen_t>(path_map.size());
+  R_xlen_t n = static_cast<R_xlen_t>(current->paths.size());
   writable::list obj(n);
   writable::strings nms(n);
 
   R_xlen_t i = 0;
   std::map<std::string, StaticPath>::const_iterator it;
-  for (it = path_map.begin(); it != path_map.end(); ++it, ++i) {
+  for (it = current->paths.begin(); it != current->paths.end(); ++it, ++i) {
     nms[i] = it->first;
     obj[i] = it->second.as_robject();
   }

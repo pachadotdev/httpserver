@@ -107,14 +107,34 @@ rook_call <- function(func, req, data = NULL, data_length = -1L) {
       resp$headers <- named_list()
     }
 
-    # coerce all headers to character
+    if (!is.list(resp$headers) || is.null(names(resp$headers)) ||
+        any(!nzchar(names(resp$headers)))) {
+      stop("response headers must be a named list.")
+    }
+
+    # Reject response splitting before values reach the HTTP writer.
+    if (any(grepl("[\r\n]", names(resp$headers), fixed = FALSE)) ||
+        any(vapply(resp$headers, function(x) {
+          any(grepl("[\r\n]", paste(x), fixed = FALSE))
+        }, logical(1)))) {
+      stop("response headers must not contain carriage returns or line feeds.")
+    }
+
+    # Coerce all headers to character after validating their names and values.
     resp$headers <- lapply(resp$headers, paste)
 
     if ("file" %in% names(resp$body)) {
       filename <- resp$body[["file"]]
+      if (!is.character(filename) || length(filename) != 1L ||
+          is.na(filename) || !nzchar(filename)) {
+        stop("response body `file` must be a non-empty path.")
+      }
       owned <- FALSE
       if ("owned" %in% names(resp$body)) {
-        owned <- as.logical(resp$body$owned)
+        owned <- resp$body$owned
+        if (!is.logical(owned) || length(owned) != 1L || is.na(owned)) {
+          stop("response body `owned` must be TRUE or FALSE.")
+        }
       }
 
       resp$body <- NULL

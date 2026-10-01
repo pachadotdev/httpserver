@@ -241,20 +241,19 @@ RWebApplication::RWebApplication(sexp on_headers, function on_body_data,
                                  list static_paths, list static_path_options)
     : _on_headers(on_headers), _on_body_data(on_body_data),
       _on_request(on_request), _on_wsopen(on_wsopen),
-      _on_wsmessage(on_wsmessage), _on_wsclose(on_wsclose) {
+      _on_wsmessage(on_wsmessage), _on_wsclose(on_wsclose),
+      _static_path_manager(static_paths, static_path_options) {
   ASSERT_MAIN_THREAD()
-
-  _static_path_manager = StaticPathManager(static_paths, static_path_options);
 }
 
-void RWebApplication::on_headers(
+void RWebApplication::dispatch_headers(
     std::shared_ptr<HttpRequest> p_request,
     std::function<void(std::shared_ptr<HttpResponse>)> callback) {
   ASSERT_MAIN_THREAD()
 
   request_to_env(p_request, &p_request->env());
 
-  // Call the R on_headers function. If an exception occurs during processing,
+  // Call the R header-stage function. If an exception occurs during processing,
   // catch it and then send a generic error response.
   list response;
   try {
@@ -281,15 +280,15 @@ void RWebApplication::on_headers(
   callback(p_response);
 }
 
-void RWebApplication::on_body_data(
+void RWebApplication::dispatch_body(
     std::shared_ptr<HttpRequest> p_request,
     std::shared_ptr<std::vector<char>> data,
     std::function<void(std::shared_ptr<HttpResponse>)> error_callback) {
   ASSERT_MAIN_THREAD()
-  debug_log("RWebApplication::on_body_data", LOG_DEBUG);
+  debug_log("RWebApplication::dispatch_body", LOG_DEBUG);
 
-  // We're in an error state, but the background thread has already scheduled
-  // more data to be processed here. Don't process more data.
+  // The background thread may already have queued more body chunks after an
+  // earlier dispatch failure. Do not process them.
   if (p_request->is_response_scheduled())
     return;
 
@@ -299,9 +298,8 @@ void RWebApplication::on_body_data(
     _on_body_data(p_request->env(), raw_vector);
   } catch (...) {
     debug_log("Exception occurred in _on_body_data", LOG_INFO);
-    // Send an error message to the client. It's very possible that
-    // get_response() or more calls to on_body_data() will have been scheduled
-    // on the main thread before the error_callback is called.
+    // Send an error message to the client. More dispatch stages may already
+    // have been queued before the error callback is reached.
     //
     // Note that some (most?) clients won't correctly handle a response that's
     // sent early, before the request is completed.
@@ -310,11 +308,11 @@ void RWebApplication::on_body_data(
   }
 }
 
-void RWebApplication::get_response(
+void RWebApplication::dispatch_complete(
     std::shared_ptr<HttpRequest> p_request,
     std::function<void(std::shared_ptr<HttpResponse>)> callback) {
   ASSERT_MAIN_THREAD()
-  debug_log("RWebApplication::get_response", LOG_DEBUG);
+  debug_log("RWebApplication::dispatch_complete", LOG_DEBUG);
 
   // Pass callback to R:
   // invoke_response_fun(callback, p_request, _1)
@@ -355,8 +353,9 @@ void RWebApplication::get_response(
   UNPROTECT(1);
 }
 
-void RWebApplication::on_wsopen(std::shared_ptr<HttpRequest> p_request,
-                                std::function<void(void)> error_callback) {
+void RWebApplication::dispatch_wsopen(
+    std::shared_ptr<HttpRequest> p_request,
+    std::function<void(void)> error_callback) {
   ASSERT_MAIN_THREAD()
   std::shared_ptr<WebSocketConnection> p_conn = p_request->websocket();
   if (!p_conn) {
@@ -371,10 +370,10 @@ void RWebApplication::on_wsopen(std::shared_ptr<HttpRequest> p_request,
   }
 }
 
-void RWebApplication::on_wsmessage(std::shared_ptr<WebSocketConnection> p_conn,
-                                   bool binary,
-                                   std::shared_ptr<std::vector<char>> data,
-                                   std::function<void(void)> error_callback) {
+void RWebApplication::dispatch_wsmessage(
+    std::shared_ptr<WebSocketConnection> p_conn, bool binary,
+    std::shared_ptr<std::vector<char>> data,
+    std::function<void(void)> error_callback) {
   ASSERT_MAIN_THREAD()
   try {
     if (binary)
@@ -388,7 +387,8 @@ void RWebApplication::on_wsmessage(std::shared_ptr<WebSocketConnection> p_conn,
   }
 }
 
-void RWebApplication::on_wsclose(std::shared_ptr<WebSocketConnection> p_conn) {
+void RWebApplication::dispatch_wsclose(
+    std::shared_ptr<WebSocketConnection> p_conn) {
   ASSERT_MAIN_THREAD()
   _on_wsclose(externalize_shared_ptr(p_conn));
 }
@@ -477,6 +477,17 @@ RWebApplication::static_file_response(std::shared_ptr<HttpRequest> p_request) {
   if (is_directory(local_path)) {
     if (*sp.options.index_html) {
       local_path = local_path + "/" + "index.html";
+    }
+  }
+
+  // The URL traversal check above is not sufficient: a file below the
+  // configured root may itself be a symlink. Resolve the final path before
+  // opening it so static serving cannot escape the declared directory.
+  if (path_exists(local_path) && !is_path_within(sp.path, local_path)) {
+    if (*sp.options.fallthrough) {
+      return std::shared_ptr<HttpResponse>();
+    } else {
+      return error_response(p_request, 403);
     }
   }
 

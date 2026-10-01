@@ -560,18 +560,18 @@ int HttpRequest::_on_headers_complete(http_parser *) {
       std::bind(&HttpRequest::_schedule_on_headers_complete_complete,
                 shared_from_this(), std::placeholders::_1));
 
-  // Use later to schedule _p_web_application->on_headers(this,
-  // schedule_bg_callback) to run on the main thread. That function in turn
+  // Use later to schedule the header stage of the dispatcher on the main
+  // thread. That stage in turn
   // calls this->_schedule_on_headers_complete_complete.
-  invoke_later(std::bind(&WebApplication::on_headers, _p_web_application,
+  invoke_later(std::bind(&RequestDispatcher::dispatch_headers,
+                         _p_web_application,
                          shared_from_this(), schedule_bg_callback));
 
   return 0;
 }
 
-// This is called at the end of WebApplication::on_headers(). It puts an item
-// on the write queue and signals to the background thread that there's
-// something there.
+// This is called when the dispatcher completes the header stage. It puts an
+// item on the write queue and signals the background thread.
 void HttpRequest::_schedule_on_headers_complete_complete(
     std::shared_ptr<HttpResponse> p_response) {
   ASSERT_MAIN_THREAD()
@@ -661,8 +661,9 @@ int HttpRequest::_on_body(http_parser *, const char *p_at, size_t length) {
                 std::placeholders::_1));
 
   // Schedule on main thread:
-  // _p_web_application->on_body_data(this, p_at, length, schedule_bg_callback);
-  invoke_later(std::bind(&WebApplication::on_body_data, _p_web_application,
+  // Hand the body chunk to the dispatcher on the main thread.
+  invoke_later(std::bind(&RequestDispatcher::dispatch_body,
+                         _p_web_application,
                          shared_from_this(), buf, schedule_bg_callback));
 
   return 0;
@@ -708,17 +709,18 @@ int HttpRequest::_on_message_complete(http_parser *) {
       std::bind(&HttpRequest::_schedule_on_message_complete_complete,
                 shared_from_this(), std::placeholders::_1));
 
-  // Use later to schedule _p_web_application->get_response(this,
-  // schedule_bg_callback) to run on the main thread. That function in turn
+  // Use later to schedule the completion stage on the main thread. That stage
+  // in turn
   // calls this->_schedule_on_message_complete_complete.
-  invoke_later(std::bind(&WebApplication::get_response, _p_web_application,
+  invoke_later(std::bind(&RequestDispatcher::dispatch_complete,
+                         _p_web_application,
                          shared_from_this(), schedule_bg_callback));
 
   return 0;
 }
 
 // This is called by the user's application code during or after the end of
-// WebApplication::get_response(). It puts an item on the background queue.
+// The completion stage puts an item on the background queue.
 void HttpRequest::_schedule_on_message_complete_complete(
     std::shared_ptr<HttpResponse> p_response) {
   ASSERT_MAIN_THREAD()
@@ -736,7 +738,7 @@ void HttpRequest::_on_message_complete_complete(
   ASSERT_BACKGROUND_THREAD()
   debug_log("HttpRequest::_on_message_complete_complete", LOG_DEBUG);
 
-  // This can happen if an error occured in WebApplication::on_body_data.
+  // This can happen if an error occurred during body dispatch.
   if (p_response == NULL) {
     return;
   }
@@ -781,8 +783,9 @@ void HttpRequest::on_wsmessage(bool binary, const char *data, size_t len) {
   }
 
   // Schedule:
-  // _p_web_application->on_wsmessage(p_wsc, binary, data, len);
-  invoke_later(std::bind(&WebApplication::on_wsmessage, _p_web_application,
+  // Dispatch the WebSocket message on the main thread.
+  invoke_later(std::bind(&RequestDispatcher::dispatch_wsmessage,
+                         _p_web_application,
                          p_wsc, binary, buf, error_callback));
 }
 
@@ -896,9 +899,10 @@ void HttpRequest::close() {
 
   if (p_wsc && _protocol == WebSockets) {
     // Schedule:
-    // _p_web_application->on_wsclose(p_wsc)
+    // Dispatch the WebSocket close event on the main thread.
     invoke_later(
-        std::bind(&WebApplication::on_wsclose, _p_web_application, p_wsc));
+        std::bind(&RequestDispatcher::dispatch_wsclose, _p_web_application,
+                  p_wsc));
   }
 
   _p_socket->remove_connection(shared_from_this());
@@ -927,7 +931,7 @@ void HttpRequest::_call_r_on_ws_open() {
   std::function<void(void)> error_callback(
       std::bind(&HttpRequest::schedule_close, shared_from_this()));
 
-  this->_p_web_application->on_wsopen(shared_from_this(), error_callback);
+  this->_p_web_application->dispatch_wsopen(shared_from_this(), error_callback);
 
   std::shared_ptr<WebSocketConnection> p_wsc = _p_web_socket_connection;
   // It's possible for _p_web_socket_connection to have had its refcount drop to

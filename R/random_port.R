@@ -19,8 +19,25 @@
 #'
 #' @export
 random_port <- function(min = 1024L, max = 49151L, host = "127.0.0.1", n = 20) {
+  validate_server_endpoint(host, 1L)
+  if (!is.numeric(min) || length(min) != 1L || is.na(min) ||
+      !is.finite(min) || min != floor(min)) {
+    stop("`min` must be a finite integer.")
+  }
+  if (!is.numeric(max) || length(max) != 1L || is.na(max) ||
+      !is.finite(max) || max != floor(max)) {
+    stop("`max` must be a finite integer.")
+  }
+  if (!is.numeric(n) || length(n) != 1L || is.na(n) ||
+      !is.finite(n) || n != floor(n) || n < 1) {
+    stop("`n` must be a positive integer.")
+  }
+
   min <- max(1L, min)
   max <- min(max, 65535L)
+  if (min > max) {
+    stop("`min` must not be greater than `max`.")
+  }
   valid_ports <- setdiff(seq.int(min, max), unsafe_ports)
 
   n <- min(n, length(valid_ports))

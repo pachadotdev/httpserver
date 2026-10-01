@@ -105,6 +105,8 @@ new_server <- function(private) {
 # object as described in start_server(). `quiet`, if TRUE, suppresses output
 # from the server.
 web_server <- function(host, port, app, quiet = FALSE) {
+  validate_server_endpoint(host, port)
+
   private <- new.env(parent = emptyenv())
   private$app_wrapper <- NULL
   private$handle <- NULL
@@ -150,6 +152,19 @@ web_server <- function(host, port, app, quiet = FALSE) {
   register_server(self)
 
   self
+}
+
+validate_server_endpoint <- function(host, port) {
+  if (!is.character(host) || length(host) != 1L || is.na(host) ||
+      !nzchar(host)) {
+    stop("`host` must be a non-empty string.")
+  }
+  if (!is.numeric(port) || length(port) != 1L || is.na(port) ||
+      !is.finite(port) || port != floor(port) || port < 1 ||
+      port > 65535) {
+    stop("`port` must be an integer between 1 and 65535.")
+  }
+  invisible(NULL)
 }
 
 # this represents a server running one application that listens on a named
